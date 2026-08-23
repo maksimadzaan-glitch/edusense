@@ -953,7 +953,6 @@ html.figure-lightbox-open body {
   background: #0a0f18;
   border-right: 1px solid var(--border);
 }
-}
 
 @keyframes slideInLeft {
   from { opacity: 0; transform: translateX(-18px); }
@@ -1298,7 +1297,7 @@ html.dash-ready .student-hero-glow {
   position: relative;
   min-width: 0;
   padding: 26px 28px 44px;
-  overflow: hidden;
+  overflow-x: clip;
 }
 
 .tab-watermark {
@@ -2017,20 +2016,6 @@ html.dash-ready .student-hero-glow {
     gap: 12px;
   }
   .main-head h1 { font-size: clamp(1.35rem, 5vw, 1.85rem); }
-  .sidebar-backdrop {
-    display: block;
-    position: fixed;
-    inset: 0;
-    z-index: 35;
-    background: rgba(4, 8, 16, 0.55);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s var(--ease);
-  }
-  .dash.is-nav-open .sidebar-backdrop {
-    opacity: 1;
-    pointer-events: auto;
-  }
   .sidebar {
     position: fixed;
     left: 0;
@@ -2039,7 +2024,7 @@ html.dash-ready .student-hero-glow {
     width: min(288px, 86vw);
     height: 100vh;
     height: 100dvh;
-    z-index: 40;
+    z-index: 120 !important;
     transform: translateX(-105%);
     transition: transform 0.28s var(--ease);
     border-right: 1px solid var(--border);
@@ -2048,6 +2033,20 @@ html.dash-ready .student-hero-glow {
     padding-bottom: max(16px, env(safe-area-inset-bottom));
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+  }
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 110 !important;
+    background: rgba(4, 8, 16, 0.55);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s var(--ease);
+  }
+  .dash.is-nav-open .sidebar-backdrop {
+    opacity: 1;
+    pointer-events: auto;
   }
   .dash.is-nav-open .sidebar {
     transform: translateX(0);
@@ -3982,7 +3981,77 @@ html.block-copy-exam #app * {
 
 @media (max-width: 560px) {
   #focus-player-root {
-    right: 12px;
-    bottom: 12px;
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    left: 10px;
+    width: auto;
+  }
+
+  .focus-player {
+    width: 100%;
+    max-width: none;
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .focus-player:not(.is-open) .focus-meta span {
+    display: none;
+  }
+
+  .work-focus-bar {
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .work-focus-bar .btn {
+    white-space: normal;
+    flex: 1 1 auto;
+    font-size: 0.92rem;
+    padding: 10px 12px;
+  }
+
+  .work-focus-bar .work-timer-wrap {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .work-focus-brand {
+    width: 100%;
+    order: -1;
+    font-size: 0.95rem;
+  }
+
+  .task-text,
+  .exam-sheet,
+  .work-card,
+  .math-block,
+  .katex-display {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+
+  .katex,
+  .katex-display,
+  .frac,
+  .math-frac,
+  .math-sqrt {
+    max-width: none;
+  }
+
+  .main-head-tools .head-logout {
+    padding: 8px 10px;
+    font-size: 0.82rem;
+  }
+
+  .work-submit-bar {
+    bottom: max(8px, env(safe-area-inset-bottom));
+    padding: 8px 10px;
+  }
+
+  .work-submit-spacer {
+    height: 110px;
   }
 }

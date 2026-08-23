@@ -248,7 +248,12 @@ body:has(.dash) .fx-mark {
   background: rgba(10, 10, 10, 0.78);
   border-right: 1px solid var(--border);
   backdrop-filter: blur(22px);
-  z-index: 2;
+}
+
+@media (min-width: 901px) {
+  .sidebar {
+    z-index: 2;
+  }
 }
 
 .dash,
