@@ -1,0 +1,20 @@
+<svg class="geo-fig fipi-fig" viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" aria-label="0@0;;5;>3@0<< ABCD, E A5@548=0 AB">
+  <rect x="0" y="0" width="280" height="200" fill="#ffffff"/>
+  <g fill="none" stroke="#111111" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- parallelogram ABCD -->
+    <polygon points="50,150 200,150 240,50 90,50"/>
+    <!-- triangle ADE -->
+    <line x1="90" y1="50" x2="125" y2="150"/>
+    <!-- midpoint mark on AE side of AB: E between A(50,150) and B(200,150) -->
+  </g>
+  <g fill="#111111" stroke="none">
+    <circle cx="125" cy="150" r="2.4"/>
+  </g>
+  <g fill="#111111" stroke="none" font-family="Times New Roman, Liberation Serif, serif" font-size="14">
+    <text x="42" y="168" text-anchor="middle">A</text>
+    <text x="208" y="168" text-anchor="middle">B</text>
+    <text x="252" y="48" text-anchor="middle">C</text>
+    <text x="80" y="42" text-anchor="middle">D</text>
+    <text x="125" y="172" text-anchor="middle">E</text>
+  </g>
+</svg>

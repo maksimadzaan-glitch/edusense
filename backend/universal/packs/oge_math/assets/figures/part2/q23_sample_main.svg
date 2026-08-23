@@ -1,0 +1,23 @@
+<svg class="geo-fig fipi-fig" viewBox="0 0 280 180" xmlns="http://www.w3.org/2000/svg" aria-label=" 02=>154@5==0O B@0?5F8O ABCD A 2?8A0==>9 >:@C6=>ABLN">
+  <rect x="0" y="0" width="280" height="180" fill="#ffffff"/>
+  <g fill="none" stroke="#111111" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- bases AD=18, BC=8; height = 2r = 12 (scaled) -->
+    <polygon points="40,140 240,140 190,50 90,50"/>
+    <circle cx="140" cy="95" r="45"/>
+    <!-- touch marks (midpoints of sides approx) -->
+    <circle cx="140" cy="50" r="2.2" fill="#111111" stroke="none"/>
+    <circle cx="140" cy="140" r="2.2" fill="#111111" stroke="none"/>
+    <circle cx="72" cy="95" r="2.2" fill="#111111" stroke="none"/>
+    <circle cx="208" cy="95" r="2.2" fill="#111111" stroke="none"/>
+  </g>
+  <g fill="#111111" stroke="none" font-family="Times New Roman, Liberation Serif, serif" font-size="14">
+    <text x="40" y="158" text-anchor="middle">A</text>
+    <text x="240" y="158" text-anchor="middle">D</text>
+    <text x="90" y="42" text-anchor="middle">B</text>
+    <text x="190" y="42" text-anchor="middle">C</text>
+    <text x="140" y="100" text-anchor="middle" font-size="12">O</text>
+    <text x="140" y="168" text-anchor="middle" font-size="12">18</text>
+    <text x="140" y="38" text-anchor="middle" font-size="12">8</text>
+    <text x="158" y="100" text-anchor="start" font-size="12">r=6</text>
+  </g>
+</svg>

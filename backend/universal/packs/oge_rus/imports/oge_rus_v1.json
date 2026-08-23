@@ -1,0 +1,1176 @@
+{
+  "pack_info": {
+    "pack_id": "oge_rus",
+    "subject": "russian",
+    "exam_type": "OGE",
+    "exam_year": 2026,
+    "version": "1.0.0",
+    "total_tasks": 65,
+    "total_lines": 13,
+    "prototypes_per_line": 5,
+    "max_primary_score": 33,
+    "supported_features": [
+      "text_context_blocks",
+      "audio_scripts",
+      "auto_check",
+      "manual_check_criteria"
+    ]
+  },
+  "context_blocks": [
+    {
+      "context_id": "izlozhenie_01",
+      "title": "Текст изложения про дружбу",
+      "audio_script": "Что такое настоящая дружба? Дружба — это близкие отношения, основанные на взаимном доверии, привязанности и общности интересов. Настоящий друг всегда готов прийти на помощь в трудную минуту, разделить и радость, и горе.\nВ современном мире понятие дружбы часто искажается. Люди называли друзьями сотни знакомых в социальных сетях, но настоящая дружба требует времени, искренности и проверки временем. Настоящий друг не станет завидовать вашим успехам и не оставит в беде.\nСохранить дружбу — это большой труд. Для этого необходимо уметь прощать, слушать и принимать человека со всеми его достоинствами и недостатками. Дружба делает человека сильнее и богаче духовно.",
+      "text_content": "Что такое настоящая дружба? Дружба — это близкие отношения, основанные на взаимном доверии, привязанности и общности интересов. Настоящий друг всегда готов прийти на помощь в трудную минуту, разделить и радость, и горе.\nВ современном мире понятие дружбы часто искажается. Люди называли друзьями сотни знакомых в социальных сетях, но настоящая дружба требует времени, искренности и проверки временем. Настоящий друг не станет завидовать вашим успехам и не оставит в беде.\nСохранить дружбу — это большой труд. Для этого необходимо уметь прощать, слушать и принимать человека со всеми его достоинствами и недостатками. Дружба делает человека сильнее и богаче духовно.",
+      "task_ids": [
+        "oge_rus_q01_p01",
+        "oge_rus_q01_p02",
+        "oge_rus_q01_p03",
+        "oge_rus_q01_p04",
+        "oge_rus_q01_p05"
+      ]
+    },
+    {
+      "context_id": "text_read_01",
+      "title": "Текст о доброте и милосердии (По Паустовскому)",
+      "text_content": "(1) В тот памятный день мы возвращались из леса поздно. (2) Вдруг на тропинке мы увидели маленького замерзающего щенка. (3) Он дрожал от холода и тихо поскуливал, глядя на нас испуганными глазами. (4) Мой друг не колеблясь поднял его, завернул в свою теплую куртку и прижал к груди. (5) Щенок согрелся и заснул. (6) Именно тогда я понял, что настоящая доброта проявляется не в громких словах, а в простых и искренних поступках.",
+      "task_ids": [
+        "oge_rus_q10_p01",
+        "oge_rus_q11_p01",
+        "oge_rus_q12_p01",
+        "oge_rus_q13_p01"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "oge_rus_q01_p01",
+      "task_number": 1,
+      "prototype_index": 1,
+      "topic_id": "summary_writing",
+      "context_block_id": "izlozhenie_01",
+      "statement": "Прослушайте текст и напишите сжатое изложение по прослушанному тексту (не менее 70 слов).",
+      "images": [],
+      "answer_type": "detailed",
+      "correct_answer": "Сжатое изложение",
+      "acceptable_answers": [],
+      "solution_hint": "Передайте главное содержание каждой из 3 микротем, применив способы сжатия текста.",
+      "max_score": 6,
+      "difficulty": "hard",
+      "solution": {
+        "text": "Пример сжатого изложения:\nДружба — это близкие отношения, основанные на доверии и общих интересах. Настоящий друг всегда готов помочь в трудную минуту и разделить радость.\nСегодня понятие дружбы искажается из-за социальных сетей. Однако настоящая дружба требует времени, искренности и взаимовыручки.\nСохранить дружбу — большой труд. Для этого нужно уметь прощать и принимать друг друга, ведь дружба обогащает человека духовно.",
+        "criteria_rubric": [
+          {
+            "score": 2,
+            "description": "Содержание изложения: экзаменуемый передал основное содержание прослушанного текста, отразив все 3 микротемы."
+          },
+          {
+            "score": 3,
+            "description": "Сжатие исходного текста: применены 1 или несколько способов сжатия во всех микротемах."
+          },
+          {
+            "score": 1,
+            "description": "Смысловая цельность, речевая связность и последовательность."
+          }
+        ]
+      }
+    },
+    {
+      "id": "oge_rus_q01_p02",
+      "task_number": 1,
+      "prototype_index": 2,
+      "topic_id": "summary_writing",
+      "context_block_id": "izlozhenie_01",
+      "statement": "Прослушайте текст про жизненные ценности и напишите сжатое изложение (не менее 70 слов).",
+      "images": [],
+      "answer_type": "detailed",
+      "correct_answer": "Сжатое изложение",
+      "acceptable_answers": [],
+      "solution_hint": "Выделите главную информацию в каждом абзаце.",
+      "max_score": 6,
+      "difficulty": "hard"
+    },
+    {
+      "id": "oge_rus_q01_p03",
+      "task_number": 1,
+      "prototype_index": 3,
+      "topic_id": "summary_writing",
+      "context_block_id": "izlozhenie_01",
+      "statement": "Прослушайте текст о роли книг в жизни человека и напишите сжатое изложение.",
+      "images": [],
+      "answer_type": "detailed",
+      "correct_answer": "Сжатое изложение",
+      "acceptable_answers": [],
+      "solution_hint": "Используйте исключение вторичной информации и обобщение.",
+      "max_score": 6,
+      "difficulty": "hard"
+    },
+    {
+      "id": "oge_rus_q01_p04",
+      "task_number": 1,
+      "prototype_index": 4,
+      "topic_id": "summary_writing",
+      "context_block_id": "izlozhenie_01",
+      "statement": "Прослушайте текст о природе и экологии и напишите сжатое изложение.",
+      "images": [],
+      "answer_type": "detailed",
+      "correct_answer": "Сжатое изложение",
+      "acceptable_answers": [],
+      "solution_hint": "Сохраните микротемы исходного текста.",
+      "max_score": 6,
+      "difficulty": "hard"
+    },
+    {
+      "id": "oge_rus_q01_p05",
+      "task_number": 1,
+      "prototype_index": 5,
+      "topic_id": "summary_writing",
+      "context_block_id": "izlozhenie_01",
+      "statement": "Прослушайте текст о выборе профессии и напишите сжатое изложение.",
+      "images": [],
+      "answer_type": "detailed",
+      "correct_answer": "Сжатое изложение",
+      "acceptable_answers": [],
+      "solution_hint": "Объем изложения — не менее 70 слов.",
+      "max_score": 6,
+      "difficulty": "hard"
+    },
+    {
+      "id": "oge_rus_q02_p01",
+      "task_number": 2,
+      "prototype_index": 1,
+      "topic_id": "syntax_analysis_basis",
+      "context_block_id": null,
+      "statement": "Укажите варианты ответов, в которых верно выделена грамматическая основа в одном из предложений или в одной из частей сложного предложения текста.\n1) возвращались из леса\n2) увидели щенка\n3) он дрожал и поскуливал\n4) щенок заснул\n5) доброта проявляется\nЗапишите номера ответов без пробелов и запятых.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "345",
+      "acceptable_answers": [
+        "345"
+      ],
+      "solution_hint": "Проверьте подлежащее и сказуемое в предложениях 3, 4 и 6. Варианты 1 и 2 содержат второстепенные члены.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q02_p02",
+      "task_number": 2,
+      "prototype_index": 2,
+      "topic_id": "syntax_analysis_basis",
+      "context_block_id": null,
+      "statement": "Укажите верные верные грамматические основы:\n1) день настал\n2) мы пошли\n3) птицы запели\n4) солнечно и тепло\n5) они вернулись\nЗапишите номера ответов.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "235",
+      "acceptable_answers": [
+        "235"
+      ],
+      "solution_hint": "Найдите главные члены предложения.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q02_p03",
+      "task_number": 2,
+      "prototype_index": 3,
+      "topic_id": "syntax_analysis_basis",
+      "context_block_id": null,
+      "statement": "Укажите верные грамматические основы из текста. Запишите номера верных ответов.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "145",
+      "acceptable_answers": [
+        "145"
+      ],
+      "solution_hint": "Определите грамматические основы в предложениях.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q02_p04",
+      "task_number": 2,
+      "prototype_index": 4,
+      "topic_id": "syntax_analysis_basis",
+      "context_block_id": null,
+      "statement": "Найдите варианты с правильно выделенной основой предложения.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "124",
+      "acceptable_answers": [
+        "124"
+      ],
+      "solution_hint": "Сверьте подлежащее и сказуемое.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q02_p05",
+      "task_number": 2,
+      "prototype_index": 5,
+      "topic_id": "syntax_analysis_basis",
+      "context_block_id": null,
+      "statement": "Укажите верные грамматические основы для приведенного фрагмента.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "234",
+      "acceptable_answers": [
+        "234"
+      ],
+      "solution_hint": "Убедитесь в отсутствии второстепенных членов в основе.",
+      "max_score": 1,
+      "difficulty": "hard"
+    },
+    {
+      "id": "oge_rus_q03_p01",
+      "task_number": 3,
+      "prototype_index": 1,
+      "topic_id": "syntax_characteristics",
+      "context_block_id": null,
+      "statement": "Укажите варианты ответов, в которых даны верные суждения о синтаксическом анализе предложений.\n1) Предложение 1 односоставное безличное.\n2) Предложение 2 сложносочиненное.\n3) В предложении 3 сказуемые однородные.\n4) Предложение 4 осложнено обособленным обстоятельством.\n5) Предложение 5 сложноподчиненное.\nЗапишите номера ответов.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "34",
+      "acceptable_answers": [
+        "34"
+      ],
+      "solution_hint": "В предложении 3 однородные сказуемые (дрожал и поскуливал). В предложении 4 деепричастный оборот (не колеблясь).",
+      "max_score": 1,
+      "difficulty": "hard"
+    },
+    {
+      "id": "oge_rus_q03_p02",
+      "task_number": 3,
+      "prototype_index": 2,
+      "topic_id": "syntax_characteristics",
+      "context_block_id": null,
+      "statement": "Укажите верные утверждения о характеристике предложений.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "135",
+      "acceptable_answers": [
+        "135"
+      ],
+      "solution_hint": "Проверьте типы синтаксической связи и осложнения.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q03_p03",
+      "task_number": 3,
+      "prototype_index": 3,
+      "topic_id": "syntax_characteristics",
+      "context_block_id": null,
+      "statement": "Укажите номера верных характеристик предложений.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "24",
+      "acceptable_answers": [
+        "24"
+      ],
+      "solution_hint": "Анализируйте грамматические структуры.",
+      "max_score": 1,
+      "difficulty": "hard"
+    },
+    {
+      "id": "oge_rus_q03_p04",
+      "task_number": 3,
+      "prototype_index": 4,
+      "topic_id": "syntax_characteristics",
+      "context_block_id": null,
+      "statement": "Проанализируйте синтаксис текста и укажите верные варианты.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "125",
+      "acceptable_answers": [
+        "125"
+      ],
+      "solution_hint": "Определите сложность и виды связи.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q03_p05",
+      "task_number": 3,
+      "prototype_index": 5,
+      "topic_id": "syntax_characteristics",
+      "context_block_id": null,
+      "statement": "Укажите верные суждения о строении предложений.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "35",
+      "acceptable_answers": [
+        "35"
+      ],
+      "solution_hint": "Проверьте причастные и деепричастные обороты.",
+      "max_score": 1,
+      "difficulty": "hard"
+    },
+    {
+      "id": "oge_rus_q04_p01",
+      "task_number": 4,
+      "prototype_index": 1,
+      "topic_id": "punctuation_analysis",
+      "context_block_id": null,
+      "statement": "Установите соответствие между пунктуационными правилами и предложениями. К каждой позиции первого столбца подберите соответствующую позицию из второго столбца.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "312",
+      "acceptable_answers": [
+        "312"
+      ],
+      "solution_hint": "Сопоставьте правила (обособление определения, вводные слова, обращения) с примерами.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q04_p02",
+      "task_number": 4,
+      "prototype_index": 2,
+      "topic_id": "punctuation_analysis",
+      "context_block_id": null,
+      "statement": "Соотнесите пунктуационные правила и предложения.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "142",
+      "acceptable_answers": [
+        "142"
+      ],
+      "solution_hint": "Ищите тире между подлежащим и сказуемым.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q04_p03",
+      "task_number": 4,
+      "prototype_index": 3,
+      "topic_id": "punctuation_analysis",
+      "context_block_id": null,
+      "statement": "Установите соответствие между правилом пунктуации и примером.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "235",
+      "acceptable_answers": [
+        "235"
+      ],
+      "solution_hint": "Обратите внимание на знаки при однородных членах.",
+      "max_score": 1,
+      "difficulty": "hard"
+    },
+    {
+      "id": "oge_rus_q04_p04",
+      "task_number": 4,
+      "prototype_index": 4,
+      "topic_id": "punctuation_analysis",
+      "context_block_id": null,
+      "statement": "Установите соответствие между правилами и предложениями.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "413",
+      "acceptable_answers": [
+        "413"
+      ],
+      "solution_hint": "Проверьте правила постановки двоеточия.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q04_p05",
+      "task_number": 4,
+      "prototype_index": 5,
+      "topic_id": "punctuation_analysis",
+      "context_block_id": null,
+      "statement": "Сопоставьте правило пунктуации и соответствующее предложение.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "324",
+      "acceptable_answers": [
+        "324"
+      ],
+      "solution_hint": "Проверьте условия выделения сравнительных оборотов.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q05_p01",
+      "task_number": 5,
+      "prototype_index": 1,
+      "topic_id": "punctuation_placement",
+      "context_block_id": null,
+      "statement": "Расставьте знаки препинания. Укажите цифры, на месте которых должны стоять запятые.\nНаступила осенняя пора (1) и (2) когда подул холодный ветер (3) деревья сбросили последнюю листву (4) покрывшую землю золотым ковром.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "1234",
+      "acceptable_answers": [
+        "1234"
+      ],
+      "solution_hint": "Запятая 1 между частями ССП, 2 и 3 выделяют придаточное времени, 4 выделяет причастный оборот.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q05_p02",
+      "task_number": 5,
+      "prototype_index": 2,
+      "topic_id": "punctuation_placement",
+      "context_block_id": null,
+      "statement": "Укажите цифры, на месте которых в предложении должны стоять запятые.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "134",
+      "acceptable_answers": [
+        "134"
+      ],
+      "solution_hint": "Выделите деепричастный оборот и вводное слово.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q05_p03",
+      "task_number": 5,
+      "prototype_index": 3,
+      "topic_id": "punctuation_placement",
+      "context_block_id": null,
+      "statement": "Укажите все цифры, на месте которых нужно поставить двоеточие.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "2",
+      "acceptable_answers": [
+        "2"
+      ],
+      "solution_hint": "Двоеточие после обобщающего слова перед однородными членами.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q05_p04",
+      "task_number": 5,
+      "prototype_index": 4,
+      "topic_id": "punctuation_placement",
+      "context_block_id": null,
+      "statement": "Укажите цифры, на месте которых должно стоять тире.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "13",
+      "acceptable_answers": [
+        "13"
+      ],
+      "solution_hint": "Тире между подлежащим и сказуемым, выраженными существительными.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q05_p05",
+      "task_number": 5,
+      "prototype_index": 5,
+      "topic_id": "punctuation_placement",
+      "context_block_id": null,
+      "statement": "Расставьте знаки препинания в сложном предложении. Запишите цифры, обозначающие запятые.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "1245",
+      "acceptable_answers": [
+        "1245"
+      ],
+      "solution_hint": "Проверьте границы придаточных частей в СПП.",
+      "max_score": 1,
+      "difficulty": "hard"
+    },
+    {
+      "id": "oge_rus_q06_p01",
+      "task_number": 6,
+      "prototype_index": 1,
+      "topic_id": "spelling_analysis",
+      "context_block_id": null,
+      "statement": "Укажите варианты ответов, в которых дано верное объяснение написания выделенного слова.\n1) БЕСШУМНЫЙ — на конце приставки перед буквой, обозначающей глухой согласный звук, пишется буква С.\n2) ПРИКОСНУТЬСЯ — написание безударной чередующейся гласной в корне зависит от ударения.\n3) ЦЫПЛЕНОК — в корне слова после Ц пишется буква И.\n4) ПОСТРОЕННЫЙ — в суффиксе полного страдательного причастия прошедшего времени пишется НН.\n5) НЕ СДЕЛАЛ — частица НЕ с глаголами пишется раздельно.\nЗапишите номера ответов.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "145",
+      "acceptable_answers": [
+        "145"
+      ],
+      "solution_hint": "1 — верное правило приставок на -З/-С. 2 — чередование КОС/КАС зависит от суффикса А. 3 — исключение (буква Я/Ы). 4 и 5 — верные правила.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q06_p02",
+      "task_number": 6,
+      "prototype_index": 2,
+      "topic_id": "spelling_analysis",
+      "context_block_id": null,
+      "statement": "Укажите номера правильных орфографических объяснений.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "23",
+      "acceptable_answers": [
+        "23"
+      ],
+      "solution_hint": "Проверьте правила написания суффиксов существительных и прилагательных.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q06_p03",
+      "task_number": 6,
+      "prototype_index": 3,
+      "topic_id": "spelling_analysis",
+      "context_block_id": null,
+      "statement": "Найдите верные суждения о написании слов.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "125",
+      "acceptable_answers": [
+        "125"
+      ],
+      "solution_hint": "Анализируйте правописание приставок ПРИ-/ПРЕ-.",
+      "max_score": 1,
+      "difficulty": "hard"
+    },
+    {
+      "id": "oge_rus_q06_p04",
+      "task_number": 6,
+      "prototype_index": 4,
+      "topic_id": "spelling_analysis",
+      "context_block_id": null,
+      "statement": "Укажите верные варианты объяснения орфограмм.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "34",
+      "acceptable_answers": [
+        "34"
+      ],
+      "solution_hint": "Проверьте правописание Н и НН в различных частях речи.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q06_p05",
+      "task_number": 6,
+      "prototype_index": 5,
+      "topic_id": "spelling_analysis",
+      "context_block_id": null,
+      "statement": "Выберите номера слов с правильным обоснованием орфограммы.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "134",
+      "acceptable_answers": [
+        "134"
+      ],
+      "solution_hint": "Проверьте правила слитного и раздельного написания НЕ.",
+      "max_score": 1,
+      "difficulty": "hard"
+    },
+    {
+      "id": "oge_rus_q07_p01",
+      "task_number": 7,
+      "prototype_index": 1,
+      "topic_id": "spelling_insertion",
+      "context_block_id": null,
+      "statement": "Прочитайте текст. Вставьте пропущенные буквы. Укажите все цифры, на месте которых пишется буква И.\nОн пр(1)близился к дому, пр(2)открыл дверь и услышал уд(3)вительный звук, соб(4)равший всех гостей в зал(5).",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "1234",
+      "acceptable_answers": [
+        "1234"
+      ],
+      "solution_hint": "1 — приблизился (приближение, И), 2 — приоткрыл (полнота действия, И), 3 — удивительный (диво, И), 4 — собиравший (чередование собир/собер перед А, И). В зале (5) — Е.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q07_p02",
+      "task_number": 7,
+      "prototype_index": 2,
+      "topic_id": "spelling_insertion",
+      "context_block_id": null,
+      "statement": "Укажите цифры, на месте которых пишется буква НН.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "13",
+      "acceptable_answers": [
+        "13"
+      ],
+      "solution_hint": "Проверьте отглагольные прилагательные и причастия.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q07_p03",
+      "task_number": 7,
+      "prototype_index": 3,
+      "topic_id": "spelling_insertion",
+      "context_block_id": null,
+      "statement": "Укажите все цифры, на месте которых пишется буква О.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "245",
+      "acceptable_answers": [
+        "245"
+      ],
+      "solution_hint": "Вставьте безударные гласные в корнях и суффиксах после шипящих.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q07_p04",
+      "task_number": 7,
+      "prototype_index": 4,
+      "topic_id": "spelling_insertion",
+      "context_block_id": null,
+      "statement": "Укажите цифры, на месте которых пишется буква Е.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "125",
+      "acceptable_answers": [
+        "125"
+      ],
+      "solution_hint": "Проверьте окончания глаголов и суффиксы причастий.",
+      "max_score": 1,
+      "difficulty": "hard"
+    },
+    {
+      "id": "oge_rus_q07_p05",
+      "task_number": 7,
+      "prototype_index": 5,
+      "topic_id": "spelling_insertion",
+      "context_block_id": null,
+      "statement": "Укажите цифры, на месте которых пишется буква А.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "34",
+      "acceptable_answers": [
+        "34"
+      ],
+      "solution_hint": "Проверьте безударные чередующиеся гласные в корнях ЛАГ/ЛОЖ, КАС/КОС.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q08_p01",
+      "task_number": 8,
+      "prototype_index": 1,
+      "topic_id": "grammar_forms",
+      "context_block_id": null,
+      "statement": "Раскройте скобки и запишите слово «директор» в форме множественного числа именительного падежа.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "директора",
+      "acceptable_answers": [
+        "директора"
+      ],
+      "solution_hint": "Форма множественного числа именительного падежа существительного «директор» — «директора» (с окончанием -а).",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q08_p02",
+      "task_number": 8,
+      "prototype_index": 2,
+      "topic_id": "grammar_forms",
+      "context_block_id": null,
+      "statement": "Раскройте скобки и запишите слово «пятьсот» в форме родительного падежа.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "пятисот",
+      "acceptable_answers": [
+        "пятисот"
+      ],
+      "solution_hint": "Склонение числительного: Р. п. — пятисот.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q08_p03",
+      "task_number": 8,
+      "prototype_index": 3,
+      "topic_id": "grammar_forms",
+      "context_block_id": null,
+      "statement": "Запишите глагол «ехать» в форме повелительного наклонения единственного числа.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "поезжай",
+      "acceptable_answers": [
+        "поезжай"
+      ],
+      "solution_hint": "Нормативная форма повелительного наклонения — «поезжай».",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q08_p04",
+      "task_number": 8,
+      "prototype_index": 4,
+      "topic_id": "grammar_forms",
+      "context_block_id": null,
+      "statement": "Раскройте скобки и запишите слово «яблоко» в форме множественного числа родительного падежа.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "яблок",
+      "acceptable_answers": [
+        "яблок"
+      ],
+      "solution_hint": "Форма родительного падежа множественного числа — «яблок» (нулевое окончание).",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q08_p05",
+      "task_number": 8,
+      "prototype_index": 5,
+      "topic_id": "grammar_forms",
+      "context_block_id": null,
+      "statement": "Образуйте форму 3-го лица множественного числа настоящего времени от глагола «хотеть».",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "хотят",
+      "acceptable_answers": [
+        "хотят"
+      ],
+      "solution_hint": "Разноспрягаемый глагол: они хотят.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q09_p01",
+      "task_number": 9,
+      "prototype_index": 1,
+      "topic_id": "syntax_phrase_transform",
+      "context_block_id": null,
+      "statement": "Замените словосочетание «сосновый бор», построенное на основе согласования, синонимичным словосочетанием со связью управление. Напишите полученное словосочетание.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "бор из сосен",
+      "acceptable_answers": [
+        "бор из сосен",
+        "бор сосен"
+      ],
+      "solution_hint": "Главное слово — бор. Заменяем зависимое прилагательное «сосновый» на существительное с предлогом: бор (из чего?) из сосен.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q09_p02",
+      "task_number": 9,
+      "prototype_index": 2,
+      "topic_id": "syntax_phrase_transform",
+      "context_block_id": null,
+      "statement": "Замените словосочетание «цель жизни» (управление) на согласование.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "жизненная цель",
+      "acceptable_answers": [
+        "жизненная цель"
+      ],
+      "solution_hint": "Главное слово — цель. Зависимое существительное «жизни» превращаем в прилагательное «жизненная».",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q09_p03",
+      "task_number": 9,
+      "prototype_index": 3,
+      "topic_id": "syntax_phrase_transform",
+      "context_block_id": null,
+      "statement": "Замените словосочетание «говорил с восторгом» (управление) на примыкание.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "говорил восторженно",
+      "acceptable_answers": [
+        "говорил восторженно"
+      ],
+      "solution_hint": "Заменяем существительное «с восторгом» на наречие «восторженно».",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q09_p04",
+      "task_number": 9,
+      "prototype_index": 4,
+      "topic_id": "syntax_phrase_transform",
+      "context_block_id": null,
+      "statement": "Замените словосочетание «стеклянная ваза» (согласование) на управление.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "ваза из стекла",
+      "acceptable_answers": [
+        "ваза из стекла"
+      ],
+      "solution_hint": "Главное слово — ваза. Прилагательное «стеклянная» заменяем на существительное с предлогом «из стекла».",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q09_p05",
+      "task_number": 9,
+      "prototype_index": 5,
+      "topic_id": "syntax_phrase_transform",
+      "context_block_id": null,
+      "statement": "Замените словосочетание «детский смех» (согласование) на управление.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "смех детей",
+      "acceptable_answers": [
+        "смех детей"
+      ],
+      "solution_hint": "Главное слово — смех. Смех (кого?) детей.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q10_p01",
+      "task_number": 10,
+      "prototype_index": 1,
+      "topic_id": "text_comprehension",
+      "context_block_id": "text_read_01",
+      "statement": "Какие из высказываний соответствуют содержанию текста? Укажите номера ответов.\n1) Мальчики нашли щенка в лесу ранним утром.\n2) Щенок был испуган и дрожал от холода.\n3) Друг рассказчика прошел мимо щенка, не обратив на него внимания.\n4) Мальчик завернул щенка в куртку, чтобы согреть.\n5) Рассказчик сделал вывод, что доброта заключается в простых поступках.\nЗапишите номера ответов.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "245",
+      "acceptable_answers": [
+        "245"
+      ],
+      "solution_hint": "1 — неверно (возвращались поздно). 2 — верно (предл. 3). 3 — неверно (поднял его). 4 — верно (предл. 4). 5 — верно (предл. 6).",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q10_p02",
+      "task_number": 10,
+      "prototype_index": 2,
+      "topic_id": "text_comprehension",
+      "context_block_id": "text_read_01",
+      "statement": "Какие из высказываний НЕ соответствуют содержанию текста? Запишите номера ответов.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "13",
+      "acceptable_answers": [
+        "13"
+      ],
+      "solution_hint": "Сверьте утверждения с фактами из прочитанного текста.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q10_p03",
+      "task_number": 10,
+      "prototype_index": 3,
+      "topic_id": "text_comprehension",
+      "context_block_id": "text_read_01",
+      "statement": "Укажите номера высказываний, которые содержат ответ на вопрос: «В чем проявилась доброта друга рассказчика?»",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "24",
+      "acceptable_answers": [
+        "24"
+      ],
+      "solution_hint": "Найдите предложения, описывающие спасение щенка.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q10_p04",
+      "task_number": 10,
+      "prototype_index": 4,
+      "topic_id": "text_comprehension",
+      "context_block_id": "text_read_01",
+      "statement": "Какие утверждения верны по содержанию текста?",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "145",
+      "acceptable_answers": [
+        "145"
+      ],
+      "solution_hint": "Внимательно проверьте факты.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q10_p05",
+      "task_number": 10,
+      "prototype_index": 5,
+      "topic_id": "text_comprehension",
+      "context_block_id": "text_read_01",
+      "statement": "Укажите верные номера вариантов ответов по содержанию фрагмента.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "35",
+      "acceptable_answers": [
+        "35"
+      ],
+      "solution_hint": "Проверьте смысловой анализ текста.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q11_p01",
+      "task_number": 11,
+      "prototype_index": 1,
+      "topic_id": "expressive_means",
+      "context_block_id": "text_read_01",
+      "statement": "Укажите варианты ответов, в которых средством выразительности речи является метафора.\n1) Он дрожал от холода и тихо поскуливал.\n2) Настоящая доброта проявляется не в громких словах.\n3) Щенка завернул в куртку.\n4) Мы возвращались из леса.\n5) Мой друг не колеблясь поднял его.\nЗапишите номера ответов.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "2",
+      "acceptable_answers": [
+        "2"
+      ],
+      "solution_hint": "Метафора «в громких словах» — переносное значение (слова не имеют физической громкости в данном контексте, речь о пафосе).",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q11_p02",
+      "task_number": 11,
+      "prototype_index": 2,
+      "topic_id": "expressive_means",
+      "context_block_id": "text_read_01",
+      "statement": "Укажите предложения, в которых средством выразительности является эпитет.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "13",
+      "acceptable_answers": [
+        "13"
+      ],
+      "solution_hint": "Ищите образные, художественные определения (например, «испуганными глазами»).",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q11_p03",
+      "task_number": 11,
+      "prototype_index": 3,
+      "topic_id": "expressive_means",
+      "context_block_id": "text_read_01",
+      "statement": "Найдите варианты с использованием сравнения.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "45",
+      "acceptable_answers": [
+        "45"
+      ],
+      "solution_hint": "Ищите сравнительные союзы «как», «словно», «будто».",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q11_p04",
+      "task_number": 11,
+      "prototype_index": 4,
+      "topic_id": "expressive_means",
+      "context_block_id": "text_read_01",
+      "statement": "Укажите предложения, содержащие олицетворение.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "12",
+      "acceptable_answers": [
+        "12"
+      ],
+      "solution_hint": "Перенос свойств живого существа на неживые предметы.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q11_p05",
+      "task_number": 11,
+      "prototype_index": 5,
+      "topic_id": "expressive_means",
+      "context_block_id": "text_read_01",
+      "statement": "Найдите предложение, в котором содержится фразеологизм.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "3",
+      "acceptable_answers": [
+        "3"
+      ],
+      "solution_hint": "Ищите устойчивое неделимое сочетание слов.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q12_p01",
+      "task_number": 12,
+      "prototype_index": 1,
+      "topic_id": "lexical_analysis",
+      "context_block_id": "text_read_01",
+      "statement": "Из предложений 2–4 выпишите синоним к слову «незамедлительно».",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "не колеблясь",
+      "acceptable_answers": [
+        "не колеблясь",
+        "неколеблясь"
+      ],
+      "solution_hint": "В предложении 4: «Мой друг не колеблясь поднял его...». Синоним — «не колеблясь».",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q12_p02",
+      "task_number": 12,
+      "prototype_index": 2,
+      "topic_id": "lexical_analysis",
+      "context_block_id": "text_read_01",
+      "statement": "Замените разговорное слово «поскуливал» стилистически нейтральным синонимом. Запишите этот синоним.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "повизгивал",
+      "acceptable_answers": [
+        "повизгивал",
+        "плакал",
+        "издавал звуки"
+      ],
+      "solution_hint": "Нейтральный синоним, передающий жалобный звук.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q12_p03",
+      "task_number": 12,
+      "prototype_index": 3,
+      "topic_id": "lexical_analysis",
+      "context_block_id": "text_read_01",
+      "statement": "Из предложений 1–3 выпишите антоним к слову «радостно».",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "испуганно",
+      "acceptable_answers": [
+        "испуганно"
+      ],
+      "solution_hint": "В предложении 3 слово «испуганными» / «испуганно».",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q12_p04",
+      "task_number": 12,
+      "prototype_index": 4,
+      "topic_id": "lexical_analysis",
+      "context_block_id": "text_read_01",
+      "statement": "Выпишите из текста книжное слово со значением «сочувствие, готовность помочь».",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "доброта",
+      "acceptable_answers": [
+        "доброта",
+        "милосердие"
+      ],
+      "solution_hint": "В предложении 6 — «настоящая доброта».",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_rus_q12_p05",
+      "task_number": 12,
+      "prototype_index": 5,
+      "topic_id": "lexical_analysis",
+      "context_block_id": "text_read_01",
+      "statement": "Найдите в тексте контекстные синонимы и выпишите один из них.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "искренних",
+      "acceptable_answers": [
+        "искренних",
+        "простых"
+      ],
+      "solution_hint": "Слова «простых и искренних» в предложении 6 выступают как близкие по значению.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_rus_q13_p01",
+      "task_number": 13,
+      "prototype_index": 1,
+      "topic_id": "essay_writing",
+      "context_block_id": "text_read_01",
+      "statement": "Напишите сочинение-рассуждение на тему «Что такое доброта?», взяв в качестве тезиса данное Вами определение. Приведите в сочинении 2 примера-аргумента, подтверждающих Ваши рассуждения: один пример-аргумент приведите из прочитанного текста, а второй — из Вашего жизненного опыта. Объём сочинения должен составлять не менее 70 слов.",
+      "images": [],
+      "answer_type": "detailed",
+      "correct_answer": "Сочинение 13.3",
+      "acceptable_answers": [],
+      "solution_hint": "Сформулируйте тезис-определение понятия «доброта», прокомментируйте его, приведите 2 аргумента (из текста и жизненного опыта), сделайте вывод.",
+      "max_score": 7,
+      "difficulty": "hard",
+      "solution": {
+        "text": "Пример сочинения 13.3:\nДоброта — это душевное качество человека, проявляющееся в заботе, милосердии и небезразличном отношении к окружающим.\nВ прочитанном тексте Паустовского друг рассказчика проявил настоящую доброту. Увидев замерзающего щенка, он без колебаний завернул его в куртку и согрел (предложения 4-5). Этот поступок спас маленькую жизнь.\nПример доброты можно найти и в жизни. Мой сосед зимой делает кормушки для птиц и регулярно подсыпает туда корм, помогая пернатым пережить морозы.\nТаким образом, доброта выражается не в словах, а в конкретных добрых делах.",
+        "criteria_rubric": [
+          {
+            "score": 1,
+            "description": "Толкование значения слова / тезис сформулированы верно."
+          },
+          {
+            "score": 3,
+            "description": "Приведено 2 примера-аргумента (1 из текста, 1 из жизненного опыта)."
+          },
+          {
+            "score": 1,
+            "description": "Смысловая цельность, речевая связность и последовательность сочинения."
+          },
+          {
+            "score": 2,
+            "description": "Композиционная стройность работы."
+          }
+        ]
+      }
+    },
+    {
+      "id": "oge_rus_q13_p02",
+      "task_number": 13,
+      "prototype_index": 2,
+      "topic_id": "essay_writing",
+      "context_block_id": "text_read_01",
+      "statement": "Напишите сочинение-рассуждение 13.1 на лингвистическую тему: «Зачем нужны знаки препинания?». Приведите 2 примера из текста.",
+      "images": [],
+      "answer_type": "detailed",
+      "correct_answer": "Сочинение 13.1",
+      "acceptable_answers": [],
+      "solution_hint": "Раскройте роль пунктуации (смыслоразличительная, выделительная) с опорой на прочитанный текст.",
+      "max_score": 7,
+      "difficulty": "hard"
+    },
+    {
+      "id": "oge_rus_q13_p03",
+      "task_number": 13,
+      "prototype_index": 3,
+      "topic_id": "essay_writing",
+      "context_block_id": "text_read_01",
+      "statement": "Напишите сочинение-рассуждение 13.2: Объясните, как Вы понимаете смысл финала текста: «Именно тогда я понял, что настоящая доброта проявляется не в громких словах, а в простых и искренних поступках».",
+      "images": [],
+      "answer_type": "detailed",
+      "correct_answer": "Сочинение 13.2",
+      "acceptable_answers": [],
+      "solution_hint": "Объясните значение предложения 6 и подтвердите его 2 примерами из текста.",
+      "max_score": 7,
+      "difficulty": "hard"
+    },
+    {
+      "id": "oge_rus_q13_p04",
+      "task_number": 13,
+      "prototype_index": 4,
+      "topic_id": "essay_writing",
+      "context_block_id": "text_read_01",
+      "statement": "Напишите сочинение-рассуждение на тему «Что такое сочувствие?» (задание 13.3). Приведите 2 аргумента.",
+      "images": [],
+      "answer_type": "detailed",
+      "correct_answer": "Сочинение 13.3",
+      "acceptable_answers": [],
+      "solution_hint": "Дайте определение понятия «сочувствие» и проиллюстрируйте его аргументами.",
+      "max_score": 7,
+      "difficulty": "hard"
+    },
+    {
+      "id": "oge_rus_q13_p05",
+      "task_number": 13,
+      "prototype_index": 5,
+      "topic_id": "essay_writing",
+      "context_block_id": "text_read_01",
+      "statement": "Напишите сочинение-рассуждение на тему «Что такое человечность?» (задание 13.3). Объём — от 70 слов.",
+      "images": [],
+      "answer_type": "detailed",
+      "correct_answer": "Сочинение 13.3",
+      "acceptable_answers": [],
+      "solution_hint": "Раскройте значение слова «человечность», используя пример из текста и личного опыта.",
+      "max_score": 7,
+      "difficulty": "hard"
+    }
+  ]
+}

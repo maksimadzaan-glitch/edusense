@@ -1,0 +1,20 @@
+{
+  "note": "Слоты 1–5 живут в context_blocks/*.json (связный блок, 12 шт.). Слоты 6–19 — из specs/math_oge.json + math_oge_finish_extra.json при seed_all_subjects.",
+  "source_spec": "backend/universal/specs/math_oge.json",
+  "extra_spec": "backend/universal/specs/math_oge_finish_extra.json",
+  "slots": {
+    "1-5": "context_blocks (один блок на вариант)",
+    "6-19": "math_oge.json + finish_extra prototypes (случайный подтип на слот)"
+  },
+  "samples": [
+    {
+      "task_number": 6,
+      "part": 1,
+      "prototype_title": "pack sample · 6a дроби",
+      "template_text": "Найдите значение выражения: ([[1|4]] + [[1|5]]) · 20",
+      "template_answer": "9",
+      "answer_type": "number",
+      "max_score": 1
+    }
+  ]
+}

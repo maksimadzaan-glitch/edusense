@@ -1,0 +1,149 @@
+{
+  "note": "Samples figure_data для слотов 23–25 (finish pack).",
+  "samples": [
+    {
+      "task_number": 23,
+      "subtype_code": "23a",
+      "figure_kind": "asset",
+      "figure_data": {
+        "has_condition_figure": true,
+        "has_solution_figure": true,
+        "figure_type": "trapezoid",
+        "main_figure_url": "assets/figures/part2/q23_sample_main.svg",
+        "steps": []
+      }
+    },
+    {
+      "task_number": 23,
+      "subtype_code": "23b",
+      "figure_kind": "asset",
+      "figure_data": {
+        "has_condition_figure": true,
+        "has_solution_figure": true,
+        "figure_type": "intersecting_chords",
+        "main_figure_url": "assets/figures/part2/q23_23b_main.svg",
+        "steps": []
+      }
+    },
+    {
+      "task_number": 23,
+      "subtype_code": "23c",
+      "figure_kind": "asset",
+      "figure_data": {
+        "has_condition_figure": true,
+        "has_solution_figure": true,
+        "figure_type": "right_triangle_altitude",
+        "main_figure_url": "assets/figures/part2/q23_23c_main.svg",
+        "steps": []
+      }
+    },
+    {
+      "task_number": 23,
+      "subtype_code": "23d",
+      "figure_kind": "asset",
+      "figure_data": {
+        "has_condition_figure": true,
+        "has_solution_figure": true,
+        "figure_type": "rhombus_diagonals",
+        "main_figure_url": "assets/figures/part2/q23_23d_main.svg",
+        "steps": []
+      }
+    },
+    {
+      "task_number": 24,
+      "subtype_code": "24a",
+      "figure_kind": "asset",
+      "figure_data": {
+        "has_condition_figure": true,
+        "has_solution_figure": true,
+        "figure_type": "parallelogram",
+        "main_figure_url": "assets/figures/part2/q24_sample_main.svg",
+        "steps": []
+      }
+    },
+    {
+      "task_number": 24,
+      "subtype_code": "24b",
+      "figure_kind": "asset",
+      "figure_data": {
+        "has_condition_figure": true,
+        "has_solution_figure": true,
+        "figure_type": "orthocenter_cyclic",
+        "main_figure_url": "assets/figures/part2/q24_24b_main.svg",
+        "steps": []
+      }
+    },
+    {
+      "task_number": 24,
+      "subtype_code": "24c",
+      "figure_kind": "asset",
+      "figure_data": {
+        "has_condition_figure": true,
+        "has_solution_figure": true,
+        "figure_type": "midline",
+        "main_figure_url": "assets/figures/part2/q24_24c_main.svg",
+        "steps": []
+      }
+    },
+    {
+      "task_number": 24,
+      "subtype_code": "24d",
+      "figure_kind": "asset",
+      "figure_data": {
+        "has_condition_figure": true,
+        "has_solution_figure": true,
+        "figure_type": "isosceles_angles",
+        "main_figure_url": "assets/figures/part2/q24_24d_main.svg",
+        "steps": []
+      }
+    },
+    {
+      "task_number": 25,
+      "subtype_code": "25a",
+      "figure_kind": "asset",
+      "figure_data": {
+        "has_condition_figure": true,
+        "has_solution_figure": true,
+        "figure_type": "two_circles_tangent",
+        "main_figure_url": "assets/figures/part2/q25_sample_main.svg",
+        "steps": []
+      }
+    },
+    {
+      "task_number": 25,
+      "subtype_code": "25b",
+      "figure_kind": "asset",
+      "figure_data": {
+        "has_condition_figure": true,
+        "has_solution_figure": true,
+        "figure_type": "incircle",
+        "main_figure_url": "assets/figures/part2/q25_25b_main.svg",
+        "steps": []
+      }
+    },
+    {
+      "task_number": 25,
+      "subtype_code": "25c",
+      "figure_kind": "asset",
+      "figure_data": {
+        "has_condition_figure": true,
+        "has_solution_figure": true,
+        "figure_type": "altitude_projection",
+        "main_figure_url": "assets/figures/part2/q25_25c_main.svg",
+        "steps": []
+      }
+    },
+    {
+      "task_number": 25,
+      "subtype_code": "25d",
+      "figure_kind": "asset",
+      "figure_data": {
+        "has_condition_figure": true,
+        "has_solution_figure": true,
+        "figure_type": "tangential_quad",
+        "main_figure_url": "assets/figures/part2/q25_25d_main.svg",
+        "steps": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "name": "EduSense",
+  "short_name": "EduSense",
+  "description": "Варианты ОГЭ для всего класса — математика и русский",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#070b12",
+  "theme_color": "#0e1420",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "/assets/edusense-mark-192.png?v=8",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/edusense-mark-512.png?v=8",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/edusense-maskable-512.png?v=8",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

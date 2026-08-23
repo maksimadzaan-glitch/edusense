@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "description": "Шаблон универсальных заданий: 5 предметов × 5 механик ответа",
+  "tasks": [
+    {
+      "id": "demo-rus-choice-single-01",
+      "subject": "RUSSIAN",
+      "exam_type": "OGE",
+      "task_number": 3,
+      "type": "CHOICE_SINGLE",
+      "statement": "Укажите предложение, в котором нужно поставить тире.",
+      "payload": {
+        "options": [
+          { "id": "1", "text": "Лес густой и тёмный." },
+          { "id": "2", "text": "Чтение вот лучшее учение." },
+          { "id": "3", "text": "Наступила осень." },
+          { "id": "4", "text": "Мы долго шли по дороге." }
+        ]
+      },
+      "correct_answer": "2",
+      "max_score": 1,
+      "topic": "Пунктуация",
+      "difficulty": "easy",
+      "active": true
+    },
+    {
+      "id": "demo-math-choice-multi-01",
+      "subject": "MATH",
+      "exam_type": "OGE",
+      "task_number": 7,
+      "type": "CHOICE_MULTI",
+      "statement": "Какие из чисел являются корнями уравнения $x^2 - 5x + 6 = 0$? Укажите все верные варианты.",
+      "payload": {
+        "options": [
+          { "id": "1", "text": "2" },
+          { "id": "2", "text": "3" },
+          { "id": "3", "text": "5" },
+          { "id": "4", "text": "6" }
+        ]
+      },
+      "correct_answer": "12",
+      "max_score": 1,
+      "topic": "Квадратные уравнения",
+      "difficulty": "medium",
+      "active": true
+    },
+    {
+      "id": "demo-social-matching-01",
+      "subject": "SOCIAL",
+      "exam_type": "EGE",
+      "task_number": 5,
+      "type": "MATCHING",
+      "statement": "Установите соответствие между понятиями и их определениями. В ответе запишите цифры в порядке, соответствующем буквам АБВ.",
+      "payload": {
+        "left": [
+          { "id": "A", "text": "Государство" },
+          { "id": "B", "text": "Право" },
+          { "id": "C", "text": "Мораль" }
+        ],
+        "right": [
+          { "id": "1", "text": "Система общеобязательных норм, охраняемых государством" },
+          { "id": "2", "text": "Политическая организация общества на определённой территории" },
+          { "id": "3", "text": "Совокупность представлений о добре и зле" },
+          { "id": "4", "text": "Форма обмена товарами" }
+        ]
+      },
+      "correct_answer": "213",
+      "max_score": 2,
+      "topic": "Общество и человек",
+      "difficulty": "medium",
+      "active": true
+    },
+    {
+      "id": "demo-physics-short-01",
+      "subject": "PHYSICS",
+      "exam_type": "EGE",
+      "task_number": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Автомобиль проехал 120 км за 2 часа. Чему равна средняя скорость (км/ч)? В ответе укажите число.",
+      "payload": {
+        "unit": "км/ч",
+        "input_hint": "целое число"
+      },
+      "correct_answer": "60",
+      "max_score": 1,
+      "topic": "Кинематика",
+      "difficulty": "easy",
+      "active": true
+    },
+    {
+      "id": "demo-biology-free-01",
+      "subject": "BIOLOGY",
+      "exam_type": "EGE",
+      "task_number": 22,
+      "type": "FREE_RESPONSE",
+      "statement": "Объясните, почему митохондрии называют «энергетическими станциями» клетки. Приведите не менее двух аргументов.",
+      "payload": {
+        "min_words": 40,
+        "criteria_hint": "Проверяется учителем; автобалл не ставится."
+      },
+      "correct_answer": "",
+      "max_score": 3,
+      "topic": "Клетка",
+      "difficulty": "hard",
+      "active": true
+    }
+  ]
+}

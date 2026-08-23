@@ -1,0 +1,22 @@
+<svg class="geo-fig fipi-fig" viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg" aria-label=""@5C3>;L=8: A> 2?8A0==>9 >:@C6=>ABLN">
+  <rect x="0" y="0" width="300" height="260" fill="#ffffff"/>
+  <g fill="none" stroke="#111111" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="40,220 260,220 150,40"/>
+    <circle cx="150" cy="168" r="42"/>
+    <line x1="150" y1="168" x2="150" y2="210" stroke-dasharray="3 3"/>
+  </g>
+  <g fill="#111111" stroke="none">
+    <circle cx="150" cy="168" r="2.2"/>
+    <circle cx="150" cy="210" r="2.2"/>
+  </g>
+  <g fill="#111111" stroke="none" font-family="Times New Roman, Liberation Serif, serif" font-size="14">
+    <text x="150" y="30" text-anchor="middle">A</text>
+    <text x="28" y="232" text-anchor="middle">B</text>
+    <text x="272" y="232" text-anchor="middle">C</text>
+    <text x="162" y="168" text-anchor="start">I</text>
+    <text x="158" y="198" text-anchor="start" font-size="12">r</text>
+    <text x="150" y="248" text-anchor="middle" font-size="12">14</text>
+    <text x="85" y="130" text-anchor="middle" font-size="12">13</text>
+    <text x="220" y="130" text-anchor="middle" font-size="12">15</text>
+  </g>
+</svg>

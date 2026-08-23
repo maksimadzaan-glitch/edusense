@@ -1,0 +1,79 @@
+{
+  "context_id": "umbrellas_shop_01",
+  "title": "Зонты в магазине",
+  "description_text": "В магазине продаются зонты трёх моделей. В таблице приведены цена и характеристики.\n\nМодель | Цена, руб. | Диаметр купола, см | Масса, г | Чехол\nA «Город» | 890 | 98 | 320 | есть\nB «Шторм» | 1490 | 120 | 480 | есть\nC «Компакт» | 690 | 90 | 250 | нет",
+  "figure_kind": "scheme",
+  "figure_params": {
+    "theme": "umbrella",
+    "asset_id": "UmbrellaDiagram"
+  },
+  "exam_code": "OGE",
+  "subject_code": "math",
+  "tasks": [
+    {
+      "task_number": 1,
+      "part": 1,
+      "prototype_title": "Зонты · сопоставление моделей",
+      "prompt_instruction": "Тип ОГЭ №1: сопоставление по таблице товаров. Ответ — последовательность букв или цифр.",
+      "template_text": "В магазине продаются зонты трёх моделей: 1 — A «Город» (890 руб., диаметр 98 см, 320 г, есть чехол); 2 — B «Шторм» (1490 руб., 120 см, 480 г, есть чехол); 3 — C «Компакт» (690 руб., 90 см, 250 г, без чехла).\n\nОпределите номера моделей: самый лёгкий зонт; зонт с наибольшим диаметром купола; самый дорогой зонт. В ответ запишите последовательность трёх цифр.",
+      "template_answer": "322",
+      "template_solution": "Самый лёгкий — C (3). Наибольший диаметр — B (2). Самый дорогой — B (2). Ответ: 322.",
+      "difficulty": "easy",
+      "answer_type": "string",
+      "max_score": 1,
+      "acceptable_answers": ["322"]
+    },
+    {
+      "task_number": 2,
+      "part": 1,
+      "prototype_title": "Зонты · стоимость комплекта",
+      "prompt_instruction": "Тип ОГЭ №2: стоимость покупки нескольких товаров. Ответ — число.",
+      "template_text": "Зонт «Город» стоит 890 руб., зонт «Компакт» — 690 руб. Сколько рублей стоят два зонта «Город» и один зонт «Компакт»?",
+      "template_answer": "2470",
+      "template_solution": "2 · 890 + 690 = 1780 + 690 = 2470.",
+      "difficulty": "easy",
+      "answer_type": "number",
+      "max_score": 1,
+      "acceptable_answers": ["2470"]
+    },
+    {
+      "task_number": 3,
+      "part": 1,
+      "prototype_title": "Зонты · радиус купола",
+      "prompt_instruction": "Тип ОГЭ №3: радиус по диаметру. Ответ — число.",
+      "template_text": "Диаметр купола зонта «Шторм» равен 120 см. Найдите радиус купола в сантиметрах.",
+      "template_answer": "60",
+      "template_solution": "R = 120 / 2 = 60 см.",
+      "difficulty": "easy",
+      "answer_type": "number",
+      "max_score": 1,
+      "acceptable_answers": ["60"]
+    },
+    {
+      "task_number": 4,
+      "part": 1,
+      "prototype_title": "Зонты · скидка",
+      "prompt_instruction": "Тип ОГЭ №4: процентная скидка. Ответ — число.",
+      "template_text": "Зонт «Шторм» стоит 1490 руб. В распродажу скидка 20%. Сколько рублей стоит зонт со скидкой?",
+      "template_answer": "1192",
+      "template_solution": "1490 · 0,8 = 1192.",
+      "difficulty": "easy",
+      "answer_type": "number",
+      "max_score": 1,
+      "acceptable_answers": ["1192"]
+    },
+    {
+      "task_number": 5,
+      "part": 1,
+      "prototype_title": "Зонты · выбор по условиям",
+      "prompt_instruction": "Тип ОГЭ №5: оптимальный выбор товара. Ответ — цена.",
+      "template_text": "Покупателю нужен зонт с чехлом и диаметром купола не менее 95 см. Подходят модели A (890 руб.) и B (1490 руб.). Какова наименьшая цена подходящего зонта в рублях?",
+      "template_answer": "890",
+      "template_solution": "C без чехла и диаметр 90 < 95 — не подходит. Из A и B дешевле A: 890 руб.",
+      "difficulty": "easy",
+      "answer_type": "number",
+      "max_score": 1,
+      "acceptable_answers": ["890"]
+    }
+  ]
+}

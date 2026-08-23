@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 320" role="img" aria-label="EduSense">
+  <!-- E -->
+  <path fill="#f4f7fb" d="M48 56h168v44H104v36h96v40H104v40h124v44H48z"/>
+  <!-- Book -->
+  <path fill="none" stroke="#c5cdd8" stroke-width="14" stroke-linejoin="round"
+    d="M286 168c28-36 70-52 108-52 8 0 22 2 22 2v128s-16-4-24-4c-36 0-74 16-106 48-32-32-70-48-106-48-8 0-24 4-24 4V118s14-2 22-2c38 0 80 16 108 52z"/>
+  <path fill="none" stroke="#c5cdd8" stroke-width="12" d="M286 168v122"/>
+  <!-- 4-point star -->
+  <path fill="#d7dee8" d="M392 42l10 28 28 10-28 10-10 28-10-28-28-10 28-10z"/>
+</svg>

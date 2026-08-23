@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Установка EduSense</title>
+  <link rel="icon" href="/assets/favicon.ico" sizes="any" />
+  <link rel="icon" href="/assets/edusense-mark-192.png?v=8" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/edusense-mark-180.png?v=8" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#0e1420" />
+  <script>
+    window.__edusenseBip = null;
+    window.addEventListener("beforeinstallprompt", function (e) {
+      e.preventDefault();
+      window.__edusenseBip = e;
+      window.dispatchEvent(new Event("edusense-bip"));
+    });
+  </script>
+  <link rel="stylesheet" href="/css/install.css?v=8" />
+</head>
+<body>
+  <header class="in-top">
+    <a class="in-back" href="javascript:history.back()">← Назад</a>
+    <strong>Установка</strong>
+  </header>
+
+  <section class="in-hero">
+    <img class="in-mark" src="/assets/edusense-mark-192.png?v=8" alt="EduSense" width="76" height="76" />
+    <span class="in-badge">Как обычная программа</span>
+    <h1>EduSense</h1>
+    <p class="in-sub" id="in-sub">Это не файл и не APK. Яндекс или Chrome сами ставят программу — отдельное окно, значок на панели.</p>
+
+    <div class="in-strip" id="in-strip">
+      <div class="in-strip-item">
+        <span class="in-strip-n">1</span>
+        <b>Снимите старый значок</b>
+      </div>
+      <div class="in-strip-arr">→</div>
+      <div class="in-strip-item">
+        <span class="in-strip-n">2</span>
+        <b>☰ → Установить</b>
+      </div>
+      <div class="in-strip-arr">→</div>
+      <div class="in-strip-item">
+        <span class="in-strip-n">3</span>
+        <b>E + книга + звезда</b>
+      </div>
+    </div>
+
+    <button type="button" class="in-cta" id="btn-install">Установить как программу</button>
+    <p class="in-ok" id="in-ok" hidden></p>
+    <div class="in-shelf" id="in-shelf" hidden>
+      <img src="/assets/edusense-mark-192.png" alt="" />
+      <div><b>EduSense.url</b><span>смотрите вниз экрана Chrome — панель загрузок</span></div>
+      <span class="in-shelf-arrow">↓</span>
+    </div>
+    <p class="in-note" id="in-note"></p>
+  </section>
+
+  <p class="in-h2">Если окно не открылось</p>
+
+  <div class="in-tabs">
+    <button type="button" class="in-tab" data-os-tab="ios">iPhone</button>
+    <button type="button" class="in-tab" data-os-tab="android">Android</button>
+    <button type="button" class="in-tab" data-os-tab="win">Компьютер</button>
+  </div>
+
+  <div class="in-bar" id="in-bar"></div>
+
+  <section class="in-guide" data-os-guide="win" hidden>
+    <article class="in-card" data-step="0">
+      <span class="in-num">1</span>
+      <h2>Уберите старые значки</h2>
+      <p>На панели задач куб и одна буква «E» — это старые установки. ПКМ по значку → «Открепить от панели задач». Если есть «Удалить» — тоже нажмите.</p>
+      <div class="in-art">куб ✕ &nbsp;&nbsp; синяя E ✕</div>
+      <nav class="in-nav">
+        <button type="button" class="in-next" data-next>Далее</button>
+      </nav>
+    </article>
+    <article class="in-card" data-step="1" hidden>
+      <span class="in-num">2</span>
+      <h2>В Яндексе: меню → Установить</h2>
+      <p>Не скачивайте файл. В Яндекс Браузере нажмите ☰ справа вверху (или ⊕ в адресной строке) и выберите «Установить EduSense» / «Добавить на рабочий стол».</p>
+      <div class="in-art">Яндекс <span class="in-chip">☰</span> Установить</div>
+      <nav class="in-nav">
+        <button type="button" class="in-prev" data-prev>Назад</button>
+        <button type="button" class="in-next" data-next>Далее</button>
+      </nav>
+    </article>
+    <article class="in-card" data-step="2" hidden>
+      <span class="in-num">3</span>
+      <h2>Должен быть E, книга и звезда</h2>
+      <p>После «Установить» появится отдельное окно и значок: белая E, открытая книга и бирюзовая звезда — не куб и не одна буква.</p>
+      <div class="win-desk" aria-hidden="true">
+        <div class="win-desk-icon">
+          <img src="/assets/edusense-mark-192.png?v=8" alt="" />
+          <b>EduSense</b>
+        </div>
+        <div class="win-task"></div>
+      </div>
+      <nav class="in-nav">
+        <button type="button" class="in-prev" data-prev>Назад</button>
+        <a class="in-next" href="/">Открыть сайт</a>
+      </nav>
+    </article>
+  </section>
+
+  <section class="in-guide" data-os-guide="android" hidden>
+    <article class="in-card" data-step="0">
+      <span class="in-num">1</span>
+      <h2>Меню Chrome ⋮</h2>
+      <p>Три точки справа вверху браузера.</p>
+      <div class="in-art">Chrome <span class="in-chip">⋮</span></div>
+      <nav class="in-nav">
+        <button type="button" class="in-next" data-next>Далее</button>
+      </nav>
+    </article>
+    <article class="in-card" data-step="1" hidden>
+      <span class="in-num">2</span>
+      <h2>«Установить приложение»</h2>
+      <p>В меню выберите «Установить приложение» или «Добавить на главный экран».</p>
+      <div class="in-art"><span class="on">Установить приложение</span></div>
+      <nav class="in-nav">
+        <button type="button" class="in-prev" data-prev>Назад</button>
+        <button type="button" class="in-next" data-next>Далее</button>
+      </nav>
+    </article>
+    <article class="in-card" data-step="2" hidden>
+      <span class="in-num">3</span>
+      <h2>Готово</h2>
+      <p>Значок EduSense встанет на главный экран рядом с другими приложениями — как после установки APK, только без файла.</p>
+      <div class="in-art"><img src="/assets/edusense-mark-192.png" alt="" /> EduSense</div>
+      <nav class="in-nav">
+        <button type="button" class="in-prev" data-prev>Назад</button>
+        <a class="in-next" href="/">Открыть</a>
+      </nav>
+    </article>
+  </section>
+
+  <section class="in-guide" data-os-guide="ios" hidden>
+    <article class="in-card" data-step="0">
+      <span class="in-num">1</span>
+      <h2>Откройте в Safari</h2>
+      <p>На iPhone ярлык ставит только Safari. Если вы в Chrome — «Поделиться» → Safari.</p>
+      <div class="in-art">Chrome → <span class="on">Safari</span></div>
+      <nav class="in-nav">
+        <button type="button" class="in-next" data-next>Далее</button>
+      </nav>
+    </article>
+    <article class="in-card" data-step="1" hidden>
+      <span class="in-num">2</span>
+      <h2>Поделиться → На экран «Домой»</h2>
+      <p>Внизу Safari — квадрат со стрелкой вверх, затем «На экран „Домой“».</p>
+      <div class="in-art"><span class="in-chip">⇧</span> На экран «Домой»</div>
+      <nav class="in-nav">
+        <button type="button" class="in-prev" data-prev>Назад</button>
+        <button type="button" class="in-next" data-next>Далее</button>
+      </nav>
+    </article>
+    <article class="in-card" data-step="2" hidden>
+      <span class="in-num">3</span>
+      <h2>Нажмите «Добавить»</h2>
+      <p>Проверьте имя EduSense и нажмите «Добавить». Значок появится на экране телефона.</p>
+      <div class="in-art"><img src="/assets/edusense-mark-192.png" alt="" /> EduSense</div>
+      <nav class="in-nav">
+        <button type="button" class="in-prev" data-prev>Назад</button>
+        <a class="in-next" href="/">Открыть</a>
+      </nav>
+    </article>
+  </section>
+
+  <script src="/js/install.js?v=8"></script>
+</body>
+</html>

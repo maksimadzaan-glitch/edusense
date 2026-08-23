@@ -1,0 +1,76 @@
+{
+  "pack_id": "oge_rus",
+  "exam_code": "OGE",
+  "subject_code": "russian",
+  "subject_name": "Русский язык",
+  "exam_name": "ОГЭ",
+  "kim_year": 2026,
+  "title": "ОГЭ Русский язык — цельные варианты",
+  "version": "2.1.0",
+  "primary_max_score": 33,
+  "slot_count": 13,
+  "parts": [
+    {
+      "part": 1,
+      "task_numbers": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "max_score_per_task": 1,
+      "primary_total": 11,
+      "answer_style": "short"
+    },
+    {
+      "part": 2,
+      "task_numbers": [
+        1,
+        13
+      ],
+      "max_scores": {
+        "1": 6,
+        "13": 7
+      },
+      "primary_total": 13,
+      "answer_style": "extended",
+      "notes": "Изложение (1) и сочинение (13); варианты 13.1/13.2/13.3 в одной карточке. listening_text ≠ grammar_text ≠ reading_text."
+    }
+  ],
+  "context_policy": "whole_variant — generate picks one context_id (variant), never mixes",
+  "runtime": {
+    "store": "postgres",
+    "tables": [
+      "context_blocks",
+      "task_prototypes"
+    ],
+    "seed_command": "python -m backend.scripts.import_oge_rus_variants --json backend/universal/packs/oge_rus/imports/oge_rus_variants_full.json",
+    "generate": "generate_variant(russian, OGE) — 13 слотов из одного полного oge_rus_var_*"
+  },
+  "sources": [
+    "ФИПИ / структура Решу ОГЭ (типы 1–13)",
+    "imports/oge_rus_variants_full.json",
+    "imports/oge_rus_var_kim.json",
+    "imports/oge_rus_variants_v2.json"
+  ],
+  "variant_ids": [
+    "oge_rus_var_molchanie",
+    "oge_rus_var_01",
+    "oge_rus_var_02",
+    "oge_rus_var_03",
+    "oge_rus_var_04",
+    "oge_rus_var_05",
+    "oge_rus_var_a"
+  ],
+  "complete_variant_ids": [
+    "oge_rus_var_molchanie"
+  ],
+  "upstream_pack_id": null
+}

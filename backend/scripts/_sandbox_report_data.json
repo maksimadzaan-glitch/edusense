@@ -1,0 +1,328 @@
+{
+  "pass": 46,
+  "fail": 0,
+  "pg_available": true,
+  "class_code": "EDU-0987",
+  "assign_code": "EDU-2899",
+  "results": [
+    {
+      "name": "GET /teacher",
+      "status": "PASS",
+      "detail": "1622 bytes"
+    },
+    {
+      "name": "GET /student",
+      "status": "PASS",
+      "detail": "1624 bytes"
+    },
+    {
+      "name": "GET /student/join",
+      "status": "PASS",
+      "detail": "1624 bytes"
+    },
+    {
+      "name": "GET /student/dashboard",
+      "status": "PASS",
+      "detail": "1624 bytes"
+    },
+    {
+      "name": "static /css/teacher.css?v=118",
+      "status": "PASS",
+      "detail": "81396 bytes"
+    },
+    {
+      "name": "static /css/student.css?v=118",
+      "status": "PASS",
+      "detail": "37568 bytes"
+    },
+    {
+      "name": "static /css/oge_rus_exam.css?v=118",
+      "status": "PASS",
+      "detail": "21921 bytes"
+    },
+    {
+      "name": "static /css/styles.css?v=118",
+      "status": "PASS",
+      "detail": "19089 bytes"
+    },
+    {
+      "name": "static /js/teacher.js?v=118",
+      "status": "PASS",
+      "detail": "179027 bytes"
+    },
+    {
+      "name": "static /js/student.js?v=118",
+      "status": "PASS",
+      "detail": "75177 bytes"
+    },
+    {
+      "name": "static /js/oge_rus_ui.js?v=118",
+      "status": "PASS",
+      "detail": "61792 bytes"
+    },
+    {
+      "name": "static /js/math.js?v=34",
+      "status": "PASS",
+      "detail": "10545 bytes"
+    },
+    {
+      "name": "landing beta badge",
+      "status": "PASS",
+      "detail": "HTML"
+    },
+    {
+      "name": "teacher beta badge",
+      "status": "PASS",
+      "detail": "JS"
+    },
+    {
+      "name": "student beta badge",
+      "status": "PASS",
+      "detail": "JS"
+    },
+    {
+      "name": "create class",
+      "status": "PASS",
+      "detail": "code=EDU-0987 id=15"
+    },
+    {
+      "name": "generate OGE math",
+      "status": "PASS",
+      "detail": "25 tasks, exam_ui=None"
+    },
+    {
+      "name": "math no oge_rus chrome",
+      "status": "PASS",
+      "detail": "clean"
+    },
+    {
+      "name": "generate OGE russian",
+      "status": "PASS",
+      "detail": "13 tasks, exam_ui=oge_rus_kim"
+    },
+    {
+      "name": "rus has structure",
+      "status": "PASS",
+      "detail": "13/13"
+    },
+    {
+      "name": "publish assignment",
+      "status": "PASS",
+      "detail": "code=EDU-2899 q=25"
+    },
+    {
+      "name": "student join assignment",
+      "status": "PASS",
+      "detail": "class=EDU-0987"
+    },
+    {
+      "name": "student tasks active",
+      "status": "PASS",
+      "detail": "active=1"
+    },
+    {
+      "name": "no answer keys on public GET",
+      "status": "PASS",
+      "detail": "25 questions stripped"
+    },
+    {
+      "name": "timer_minutes present",
+      "status": "PASS",
+      "detail": "timer=45"
+    },
+    {
+      "name": "submit answers",
+      "status": "PASS",
+      "detail": "score=5.0 status=ai_reviewed id=21"
+    },
+    {
+      "name": "second submit upserts",
+      "status": "PASS",
+      "detail": "status=200 id=21 score=4.0"
+    },
+    {
+      "name": "teacher sees one row per student",
+      "status": "PASS",
+      "detail": "score=4.0 status=ai_reviewed"
+    },
+    {
+      "name": "tasks APIs after submit",
+      "status": "PASS",
+      "detail": "in completed, not active"
+    },
+    {
+      "name": "join with class code",
+      "status": "PASS",
+      "detail": "200"
+    },
+    {
+      "name": "class-code join lists active",
+      "status": "PASS",
+      "detail": "n=1"
+    },
+    {
+      "name": "assignments by-class",
+      "status": "PASS",
+      "detail": "n=1"
+    },
+    {
+      "name": "GET roster",
+      "status": "PASS",
+      "detail": "/api/classes/EDU-0987/roster"
+    },
+    {
+      "name": "PUT roster",
+      "status": "PASS",
+      "detail": "n=2"
+    },
+    {
+      "name": "GET students",
+      "status": "PASS",
+      "detail": "/api/classes/EDU-0987/students n=2"
+    },
+    {
+      "name": "GET analytics",
+      "status": "PASS",
+      "detail": "/api/classes/EDU-0987/analytics"
+    },
+    {
+      "name": "analytics topics Russian",
+      "status": "PASS",
+      "detail": "heat=25"
+    },
+    {
+      "name": "analytics trend no smoke titles",
+      "status": "PASS",
+      "detail": "points=1"
+    },
+    {
+      "name": "remediation gate fields",
+      "status": "PASS",
+      "detail": "ready=False hint=Ждём сдачи всех из списка: сдано 1 из 2 (нет: Сидоров QA)"
+    },
+    {
+      "name": "remediation gated until all submitted",
+      "status": "PASS",
+      "detail": "ready=false"
+    },
+    {
+      "name": "analytics summary_lines",
+      "status": "PASS",
+      "detail": "Сдали 1 из 2 (50.0%)."
+    },
+    {
+      "name": "close accepting",
+      "status": "PASS",
+      "detail": "status=closed"
+    },
+    {
+      "name": "submit closed -> 403",
+      "status": "PASS",
+      "detail": "Приём работ закрыт"
+    },
+    {
+      "name": "join closed shows closed",
+      "status": "PASS",
+      "detail": "{'message': 'Приём ответов закрыт', 'closed': True, 'title': 'QA Sandbox Assignment', 'subject': 'Математика', 'code': '"
+    },
+    {
+      "name": "rus task4 matching/structure",
+      "status": "PASS",
+      "detail": "type=Тип 4 keys=['oge_rus', 'kim_type', 'ui', 'image_urls', 'matching', 'media', 'image_paths', 'etalon', 'provenance']"
+    },
+    {
+      "name": "no stub math etalon",
+      "status": "PASS",
+      "detail": "clean"
+    }
+  ],
+  "math_sample": [
+    {
+      "num": 1,
+      "part": 1,
+      "type": "Краткий ответ",
+      "topic": "· practical_context_matching",
+      "text": "На плане изображено домохозяйство по адресу: с. Тарасово, 1-й Поперечный пер., д. 13 (сторона каждой клетки равна 2 м). Участок имеет прямоугольную форму. Выезд и въезд осуществляются через единственные ворота. При входе на участок справа от ворот находится баня, а слева — гараж, отмеченный на плане цифрой 7. Площадь, занятая гаражом, составляет 48 кв. м. Жилой дом расположен в глубине территории. Помимо гаража, жилого дома и бани, на участке имеется сарай, расположенный рядом с гаражом, и теплица, построенная на территории огорода (огород отмечен цифрой 2). Перед жилым домом имеются яблоневые посадки. Все дорожки внутри участка имеют ширину 1 м и вымощены тротуарной плиткой размером 1 м × 1 м. Между гаражом и баней имеется площадка площадью 64 кв. м, вымощенная такой же плиткой.\nДля объектов, указанных в таблице, определите, какими цифрами они обозначены на плане. Заполните таблицу, в ответ запишите последовательность четырех цифр без пробелов и запятых. Объекты: Жилой дом, Сарай, Баня, Теплица.",
+      "answer": "3541",
+      "max_score": 1,
+      "section": null,
+      "needs_figure": true,
+      "figure_kind": "plan",
+      "figure_svg": "<svg class=\"geo-fig fipi-fig\" viewBox=\"0 0 300 280\" xmlns=\"http://www.w3.org/2000/svg\" aria-label=\"План\"><rect x=\"0\" y=\"0\" width=\"300\" height=\"280\" fill=\"#ffffff\"/><g fill=\"none\" stroke=\"#111111\" stroke-width=\"1.15\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"36.0\" y1=\"56.5\" x2=\"36.0\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"51.5\" y1=\"56.5\" x2=\"51.5\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"67.0\" y1=\"56.5\" x2=\"67.0\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"82.5\" y1=\"56.5\" x2=\"82.5\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"98.0\" y1=\"56.5\" x2=\"98.0\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"113.5\" y1=\"56.5\" x2=\"113.5\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"129.0\" y1=\"56.5\" x2=\"129.0\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"144.5\" y1=\"56.5\" x2=\"144.5\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"160.0\" y1=\"56.5\" x2=\"160.0\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"175.5\" y1=\"56.5\" x2=\"175.5\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"191.0\" y1=\"56.5\" x2=\"191.0\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"206.5\" y1=\"56.5\" x2=\"206.5\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"222.0\" y1=\"56.5\" x2=\"222.0\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"237.5\" y1=\"56.5\" x2=\"237.5\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"253.0\" y1=\"56.5\" x2=\"253.0\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"268.5\" y1=\"56.5\" x2=\"268.5\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"284.0\" y1=\"56.5\" x2=\"284.0\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"36.0\" y1=\"56.5\" x2=\"284.0\" y2=\"56.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"36.0\" y1=\"72.0\" x2=\"284.0\" y2=\"72.0\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"36.0\" y1=\"87.5\" x2=\"284.0\" y2=\"87.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"36.0\" y1=\"103.0\" x2=\"284.0\" y2=\"103.0\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"36.0\" y1=\"118.5\" x2=\"284.0\" y2=\"118.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"36.0\" y1=\"134.0\" x2=\"284.0\" y2=\"134.0\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"36.0\" y1=\"149.5\" x2=\"284.0\" y2=\"149.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"36.0\" y1=\"165.0\" x2=\"284.0\" y2=\"165.0\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"36.0\" y1=\"180.5\" x2=\"284.0\" y2=\"180.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"36.0\" y1=\"196.0\" x2=\"284.0\" y2=\"196.0\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<line x1=\"36.0\" y1=\"211.5\" x2=\"284.0\" y2=\"211.5\" stroke=\"#bbbbbb\" stroke-width=\"0.7\"/>\n<rect x=\"36.0\" y=\"56.5\" width=\"248.0\" height=\"155.0\" fill=\"none\" stroke=\"#111111\" stroke-width=\"1.6\"/>\n<text x=\"36.0\" y=\"50.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">0</text>\n<text x=\"51.5\" y=\"50.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">1</text>\n<text x=\"67.0\" y=\"50.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">2</text>\n<text x=\"82.5\" y=\"50.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">3</text>\n<text x=\"98.0\" y=\"50.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">4</text>\n<text x=\"113.5\" y=\"50.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">5</text>\n<text x=\"129.0\" y=\"50.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">6</text>\n<text x=\"144.5\" y=\"50.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">7</text>\n<text x=\"160.0\" y=\"50.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">8</text>\n<text x=\"175.5\" y=\"50.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">9</text>\n<text x=\"191.0\" y=\"50.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">10</text>\n<text x=\"206.5\" y=\"50.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">11</text>\n<text x=\"222.0\" y=\"50.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">12</text>\n<text x=\"237.5\" y=\"50.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">13</text>\n<text x=\"253.0\" y=\"50.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">14</text>\n<text x=\"268.5\" y=\"50.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">15</text>\n<text x=\"284.0\" y=\"50.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">16</text>\n<text x=\"26.0\" y=\"60.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">0</text>\n<text x=\"26.0\" y=\"76.0\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">1</text>\n<text x=\"26.0\" y=\"91.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">2</text>\n<text x=\"26.0\" y=\"107.0\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">3</text>\n<text x=\"26.0\" y=\"122.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">4</text>\n<text x=\"26.0\" y=\"138.0\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">5</text>\n<text x=\"26.0\" y=\"153.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">6</text>\n<text x=\"26.0\" y=\"169.0\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">7</text>\n<text x=\"26.0\" y=\"184.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">8</text>\n<text x=\"26.0\" y=\"200.0\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">9</text>\n<text x=\"26.0\" y=\"215.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">10</text>\n<rect x=\"36.0\" y=\"56.5\" width=\"77.5\" height=\"62.0\" fill=\"#ffffff\" stroke=\"#111111\" stroke-width=\"1.35\"/>\n<text x=\"74.75\" y=\"92.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"18\" font-family=\"Times New Roman, Liberation Serif, serif\">2</text>\n<rect x=\"51.5\" y=\"72.0\" width=\"31.0\" height=\"31.0\" fill=\"#ffffff\" stroke=\"#111111\" stroke-width=\"1.35\"/>\n<text x=\"67.0\" y=\"92.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"18\" font-family=\"Times New Roman, Liberation Serif, serif\">1</text>\n<rect x=\"160.0\" y=\"56.5\" width=\"108.5\" height=\"46.5\" fill=\"#ffffff\" stroke=\"#111111\" stroke-width=\"1.35\"/>\n<text x=\"214.25\" y=\"84.75\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"18\" font-family=\"Times New Roman, Liberation Serif, serif\">3</text>\n<rect x=\"36.0\" y=\"149.5\" width=\"62.0\" height=\"46.5\" fill=\"#ffffff\" stroke=\"#111111\" stroke-width=\"1.35\"/>\n<text x=\"67.0\" y=\"177.75\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"18\" font-family=\"Times New Roman, Liberation Serif, serif\">7</text>\n<rect x=\"98.0\" y=\"149.5\" width=\"31.0\" height=\"31.0\" fill=\"#ffffff\" stroke=\"#111111\" stroke-width=\"1.35\"/>\n<text x=\"113.5\" y=\"170.0\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"18\" font-family=\"Times New Roman, Liberation Serif, serif\">5</text>\n<rect x=\"191.0\" y=\"165.0\" width=\"46.5\" height=\"46.5\" fill=\"#ffffff\" stroke=\"#111111\" stroke-width=\"1.35\"/>\n<text x=\"214.25\" y=\"193.25\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"18\" font-family=\"Times New Roman, Liberation Serif, serif\">4</text>\n<line x1=\"144.5\" y1=\"211.5\" x2=\"175.5\" y2=\"211.5\" stroke-width=\"3.4\"/>\n<text x=\"160.0\" y=\"225.5\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"10\" font-family=\"Times New Roman, Liberation Serif, serif\">вход</text>\n<text x=\"150.0\" y=\"268.0\" text-anchor=\"middle\" fill=\"#111111\" stroke=\"none\" font-size=\"12\" font-family=\"Times New Roman, Liberation Serif, serif\">сторона клетки = 2 м</text></g></svg>",
+      "solution_figure_svg": null,
+      "payload": null,
+      "kim_order": false,
+      "acceptable_answers": null
+    }
+  ],
+  "rus_q4": {
+    "num": 4,
+    "part": 1,
+    "type": "Тип 4",
+    "topic": "punctuation matching",
+    "text": "Установите соответствие между пунктуационными правилами и предложениями, которые могут служить примерами для данных пунктуационных правил: к каждой позиции первого столбца подберите соответствующую позицию из второго столбца.",
+    "answer": "321",
+    "max_score": 1,
+    "section": null,
+    "needs_figure": false,
+    "figure_kind": null,
+    "figure_svg": null,
+    "solution_figure_svg": null,
+    "payload": {
+      "oge_rus": true,
+      "kim_type": 4,
+      "ui": "matching",
+      "image_urls": [],
+      "matching": {
+        "left": [
+          {
+            "id": "А",
+            "text": "Между частями сложноподчинённого предложения ставится запятая."
+          },
+          {
+            "id": "Б",
+            "text": "Между однородными членами предложения перед противительным союзом ставится запятая."
+          },
+          {
+            "id": "В",
+            "text": "Вводное слово выделяется запятыми."
+          }
+        ],
+        "right": [
+          {
+            "id": "1",
+            "text": "Товарищ стоял возле дома, осматриваясь по сторонам, и, очевидно, ждал кого-то."
+          },
+          {
+            "id": "2",
+            "text": "Далеко где-то ещё молча, но грозно сверкнула молния, и спустя секунду рыкнул гром, на землю упали крупные капли дождя."
+          },
+          {
+            "id": "3",
+            "text": "Как ни напрягаешь память, добраться до раннего детства почти невозможно."
+          },
+          {
+            "id": "4",
+            "text": "Давно уже не было слышно ни звона колокольчиков, ни стука колёс по кремнистой дороге, а бедный старик ещё стоял на том же месте в глубокой задумчивости."
+          },
+          {
+            "id": "5",
+            "text": "Ах, няня, няня, я тоскую, мне тошно, милая моя."
+          }
+        ]
+      },
+      "media": [],
+      "image_paths": [],
+      "etalon": true,
+      "provenance": {
+        "variant_code": "oge_rus_var_kim",
+        "kim_spec_id": "oge_rus_2026",
+        "content_hash": "sha256:7974541026efffc0c8af82294acf0b8e9f1785852898703a350524f08494e088",
+        "source": "manual_teacher",
+        "year": 2026
+      }
+    },
+    "kim_order": true,
+    "acceptable_answers": null
+  }
+}

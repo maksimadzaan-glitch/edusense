@@ -1,0 +1,126 @@
+{
+  "kim_spec_id": "oge_rus_2026",
+  "exam_code": "OGE",
+  "subject_code": "russian",
+  "year": 2026,
+  "slot_count": 13,
+  "slots": [
+    {
+      "task_number": 1,
+      "part": 2,
+      "answer_type": "EXTENDED",
+      "max_score": 7,
+      "needs_passage": false,
+      "needs_media": true,
+      "matching": false
+    },
+    {
+      "task_number": 2,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": true,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 3,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": true,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 4,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": true
+    },
+    {
+      "task_number": 5,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 6,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 7,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 8,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 9,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 10,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": true,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 11,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": true,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 12,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": true,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 13,
+      "part": 2,
+      "answer_type": "EXTENDED",
+      "max_score": 7,
+      "needs_passage": true,
+      "needs_media": false,
+      "matching": false
+    }
+  ]
+}

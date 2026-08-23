@@ -1,0 +1,631 @@
+{
+  "pack_info": {
+    "pack_id": "oge_math",
+    "subject": "math",
+    "exam_type": "OGE",
+    "version": "1.0.0",
+    "total_tasks": 25,
+    "max_primary_score": 31,
+    "supported_features": [
+      "latex",
+      "context_blocks",
+      "auto_check",
+      "manual_check_criteria",
+      "svg_declarative"
+    ]
+  },
+  "context_blocks": [
+    {
+      "context_id": "plan_uchastka_01",
+      "title": "План домохозяйства",
+      "description_text": "На плане изображено домохозяйство по адресу: с. Тарасово, 1-й Поперечный пер., д. 13 (сторона каждой клетки равна 2 м). Участок имеет прямоугольную форму. Выезд и въезд осуществляются через единственные ворота. При входе на участок справа от ворот находится баня, а слева — гараж, отмеченный на плане цифрой 7. Площадь, занятая гаражом, составляет 48 кв. м. Жилой дом расположен в глубине территории. Помимо гаража, жилого дома и бани, на участке имеется сарай, расположенный рядом с гаражом, и теплица, построенная на территории огорода (огород отмечен цифрой 2). Перед жилым домом имеются яблоневые посадки. Все дорожки внутри участка имеют ширину 1 м и вымощены тротуарной плиткой размером 1 м × 1 м. Между гаражом и баней имеется площадка площадью 64 кв. м, вымощенная такой же плиткой.",
+      "shared_images": [
+        "/assets/plans/plan_uchastka_01.svg"
+      ],
+      "task_ids": [
+        "oge_math_q01_001",
+        "oge_math_q02_001",
+        "oge_math_q03_001",
+        "oge_math_q04_001",
+        "oge_math_q05_001"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "oge_math_q01_001",
+      "task_number": 1,
+      "topic_id": "practical_context_matching",
+      "context_block_id": "plan_uchastka_01",
+      "statement": "Для объектов, указанных в таблице, определите, какими цифрами они обозначены на плане. Заполните таблицу, в ответ запишите последовательность четырех цифр без пробелов и запятых.\nОбъекты: Жилой дом, Сарай, Баня, Теплица.",
+      "images": [],
+      "answer_type": "string",
+      "correct_answer": "3541",
+      "acceptable_answers": [
+        "3541"
+      ],
+      "solution_hint": "Сопоставьте описание объектов на плане с цифрами: Жилой дом — 3, Сарай — 5, Баня — 4, Теплица — 1.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_math_q02_001",
+      "task_number": 2,
+      "topic_id": "practical_context_tiles",
+      "context_block_id": "plan_uchastka_01",
+      "statement": "Тротуарная плитка продаётся в упаковках по 4 штуки. Сколько упаковок плитки понадобилось, чтобы вымостить все дорожки и площадку перед гаражом?",
+      "images": [],
+      "answer_type": "number",
+      "correct_answer": "28",
+      "acceptable_answers": [
+        "28"
+      ],
+      "solution_hint": "Посчитайте общее количество плиток для дорожек и площадки (112 штук) и разделите на 4: 112 / 4 = 28 упаковок.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_math_q03_001",
+      "task_number": 3,
+      "topic_id": "practical_context_area",
+      "context_block_id": "plan_uchastka_01",
+      "statement": "Найдите площадь, которую занимает жилой дом. Ответ дайте в квадратных метрах.",
+      "images": [],
+      "answer_type": "number",
+      "correct_answer": "84",
+      "acceptable_answers": [
+        "84"
+      ],
+      "solution_hint": "Дом занимает 21 клетку на плане. Площадь одной клетки равна 2 м × 2 м = 4 кв. м. Общая площадь: 21 × 4 = 84 кв. м.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_math_q04_001",
+      "task_number": 4,
+      "topic_id": "practical_context_distance",
+      "context_block_id": "plan_uchastka_01",
+      "statement": "Найдите расстояние от жилого дома до гаража (расстояние между ближайшими точками по прямой) в метрах.",
+      "images": [],
+      "answer_type": "number",
+      "correct_answer": "10",
+      "acceptable_answers": [
+        "10"
+      ],
+      "solution_hint": "Ближайшие точки дома и гаража образуют прямоугольный треугольник с катетами 3 и 4 клетки (6 и 8 метров). По теореме Пифагора гипотенуза равна sqrt(6^2 + 8^2) = 10 м.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_math_q05_001",
+      "task_number": 5,
+      "topic_id": "practical_context_choice",
+      "context_block_id": "plan_uchastka_01",
+      "statement": "Хозяин участка планирует установить систему отопления. Он рассматривает два варианта: газовое или электрическое отопление. Цены на оборудование и стоимость его установки, данные о расходе газа и электроэнергии даны в таблице. Обдумав оба варианта, хозяин решил установить газовое оборудование. Через сколько часов непрерывной работы отопления экономия от использования газа вместо электричества компенсирует разницу в стоимости установки и оборудования?",
+      "images": [],
+      "answer_type": "number",
+      "correct_answer": "400",
+      "acceptable_answers": [
+        "400"
+      ],
+      "solution_hint": "Разница в стоимости оборудования: (24000 + 18280) - (15000 + 10000) = 17280 руб. Экономия в час: (5.6 * 5.2) - (1.4 * 5.6) = 29.12 - 7.84 = 43.2 руб./час. Время окупаемости: 17280 / 43.2 = 400 часов.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_math_q06_001",
+      "task_number": 6,
+      "topic_id": "algebra_fractions",
+      "context_block_id": null,
+      "statement": "Найдите значение выражения $\\frac{1}{4} + 0{,}07$.",
+      "images": [],
+      "answer_type": "number",
+      "correct_answer": "0.32",
+      "acceptable_answers": [
+        "0.32",
+        "0,32"
+      ],
+      "solution_hint": "Переведем обыкновенную дробь в десятичную: 1/4 = 0.25. Затем вычислим сумму: 0.25 + 0.07 = 0.32.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_math_q07_001",
+      "task_number": 7,
+      "topic_id": "algebra_number_line",
+      "context_block_id": null,
+      "statement": "На координатной прямой отмечена точка $A$. Известно, что она соответствует одному из четырех указанных ниже чисел. Какому числу соответствует точка $A$?\n1) $\\sqrt{37}$\n2) $\\sqrt{42}$\n3) $\\sqrt{53}$\n4) $\\sqrt{61}$",
+      "images": [
+        "/assets/tasks/q07_number_line.svg"
+      ],
+      "answer_type": "number",
+      "correct_answer": "2",
+      "acceptable_answers": [
+        "2"
+      ],
+      "solution_hint": "Точка A лежит между 6 и 7, ближе к 6. Так как 6 = sqrt(36), а 7 = sqrt(49), из вариантов подходит sqrt(42), что соответствует номеру 2.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_math_q08_001",
+      "task_number": 8,
+      "topic_id": "algebra_powers_roots",
+      "context_block_id": null,
+      "statement": "Найдите значение выражения $(a^4)^{-3} \\cdot a^{15}$ при $a = 2$.",
+      "images": [],
+      "answer_type": "number",
+      "correct_answer": "8",
+      "acceptable_answers": [
+        "8"
+      ],
+      "solution_hint": "Упростим выражение: (a^4)^(-3) * a^15 = a^(-12) * a^15 = a^(-12 + 15) = a^3. Подставим a = 2: 2^3 = 8.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_math_q09_001",
+      "task_number": 9,
+      "topic_id": "algebra_equations",
+      "context_block_id": null,
+      "statement": "Найдите корень уравнения $x^2 - 9 = 0$. Если уравнение имеет более одного корня, в ответе запишите больший из корней.",
+      "images": [],
+      "answer_type": "number",
+      "correct_answer": "3",
+      "acceptable_answers": [
+        "3"
+      ],
+      "solution_hint": "x^2 = 9 => x1 = 3, x2 = -3. Больший из корней равен 3.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_math_q10_001",
+      "task_number": 10,
+      "topic_id": "probability",
+      "context_block_id": null,
+      "statement": "В фирме такси в данный момент свободно 20 машин: 10 черных, 2 желтых и 8 белых. По вызову выехала одна из машин, случайно оказавшаяся ближе всего к заказчику. Найдите вероятность того, что к нему приедет желтое такси.",
+      "images": [],
+      "answer_type": "number",
+      "correct_answer": "0.1",
+      "acceptable_answers": [
+        "0.1",
+        "0,1"
+      ],
+      "solution_hint": "Вероятность P = (число желтых машин) / (общее число машин) = 2 / 20 = 1 / 10 = 0.1.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_math_q11_001",
+      "task_number": 11,
+      "topic_id": "algebra_functions_graphs",
+      "context_block_id": null,
+      "statement": "Установите соответствие между графиками функций и формулами, которые их задают.\nГрафики: А) Парабола ветвями вверх, Б) Прямая, В) Гипербола.\nФормулы: 1) $y = -\\frac{2}{x}$, 2) $y = x^2 - 2$, 3) $y = 2x + 1$.\nВ таблице под каждой буквой укажите соответствующий номер.",
+      "images": [
+        "/assets/tasks/q11_graphs.svg"
+      ],
+      "answer_type": "string",
+      "correct_answer": "231",
+      "acceptable_answers": [
+        "231"
+      ],
+      "solution_hint": "А — квадратичная функция (2), Б — линейная функция (3), В — обратная пропорциональность (1). Ответ: 231.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_math_q12_001",
+      "task_number": 12,
+      "topic_id": "algebra_formula_eval",
+      "context_block_id": null,
+      "statement": "Чтобы перевести значение температуры по шкале Цельсия в шкалу Фаренгейта, используют формулу $t_F = 1{,}8 t_C + 32$, где $t_C$ — температура в градусах Цельсия, $t_F$ — температура в градусах Фаренгейта. Какой температуре по шкале Фаренгейта соответствует $-10^\\circ\\text{C}$?",
+      "images": [],
+      "answer_type": "number",
+      "correct_answer": "14",
+      "acceptable_answers": [
+        "14"
+      ],
+      "solution_hint": "Подставим t_C = -10: t_F = 1.8 * (-10) + 32 = -18 + 32 = 14.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_math_q13_001",
+      "task_number": 13,
+      "topic_id": "algebra_inequalities",
+      "context_block_id": null,
+      "statement": "Укажите решение неравенства $5x - 3(x + 2) \\le 4$.\n1) $(-\\infty; 5]$\n2) $[5; +\\infty)$\n3) $(-\\infty; -1]$\n4) $[-1; +\\infty)$",
+      "images": [],
+      "answer_type": "number",
+      "correct_answer": "1",
+      "acceptable_answers": [
+        "1"
+      ],
+      "solution_hint": "Раскроем скобки: 5x - 3x - 6 <= 4 => 2x <= 10 => x <= 5. Это соответствует промежутку (-inf; 5], то есть варианту 1.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_math_q14_001",
+      "task_number": 14,
+      "topic_id": "algebra_progressions",
+      "context_block_id": null,
+      "statement": "Виктория сажает рассаду в ряды: в первом ряду 12 штук, а в каждом следующем на 3 штуки больше, чем в предыдущем. Сколько всего штук рассады посадит Виктория в 8 рядах?",
+      "images": [],
+      "answer_type": "number",
+      "correct_answer": "180",
+      "acceptable_answers": [
+        "180"
+      ],
+      "solution_hint": "Это арифметическая прогрессия с a1 = 12, d = 3, n = 8. Найдем a8 = 12 + 7*3 = 33. Сумма S8 = (12 + 33)/2 * 8 = 45 * 4 = 180.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_math_q15_001",
+      "task_number": 15,
+      "topic_id": "geometry_triangles",
+      "context_block_id": null,
+      "statement": "В треугольнике $ABC$ угол $C$ равен $90^\\circ$, $M$ — середина гипотенузы $AB$, $AB = 26$, $BC = 10$. Найдите длину медианы $CM$.",
+      "images": [],
+      "answer_type": "number",
+      "correct_answer": "13",
+      "acceptable_answers": [
+        "13"
+      ],
+      "solution_hint": "Медиана прямоугольного треугольника, проведенная к гипотенузе, равна половине гипотенузы: CM = AB / 2 = 26 / 2 = 13.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_math_q16_001",
+      "task_number": 16,
+      "topic_id": "geometry_circles",
+      "context_block_id": null,
+      "statement": "Четырехугольник $ABCD$ вписан в окружность. Угол $ABC$ равен $110^\\circ$, угол $CAD$ равен $30^\\circ$. Найдите угол $ABD$. Ответ дайте в градусах.",
+      "images": [],
+      "answer_type": "number",
+      "correct_answer": "80",
+      "acceptable_answers": [
+        "80"
+      ],
+      "solution_hint": "Угол CAD опирается на дугу CD, следовательно угол CBD = CAD = 30 град. Угол ABD = ABC - CBD = 110 - 30 = 80 град.",
+      "max_score": 1,
+      "difficulty": "medium"
+    },
+    {
+      "id": "oge_math_q17_001",
+      "task_number": 17,
+      "topic_id": "geometry_quadrilaterals",
+      "context_block_id": null,
+      "statement": "Периметр ромба равен 40, а один из углов равен $30^\\circ$. Найдите площадь этого ромба.",
+      "images": [],
+      "answer_type": "number",
+      "correct_answer": "50",
+      "acceptable_answers": [
+        "50"
+      ],
+      "solution_hint": "Сторона ромба a = 40 / 4 = 10. Площадь ромба S = a^2 * sin(30) = 100 * 0.5 = 50.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_math_q18_001",
+      "task_number": 18,
+      "topic_id": "geometry_grid",
+      "context_block_id": null,
+      "statement": "На клетчатой бумаге с размером клетки 1 см × 1 см изображена трапеция. Найдите длину её средней линии в сантиметрах.",
+      "images": [
+        "/assets/tasks/q18_trapezoid_grid.svg"
+      ],
+      "answer_type": "number",
+      "correct_answer": "5",
+      "acceptable_answers": [
+        "5"
+      ],
+      "solution_hint": "Основания трапеции по клеткам равны a = 3 см, b = 7 см. Длина средней линии L = (a + b) / 2 = (3 + 7) / 2 = 5 см.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_math_q19_001",
+      "task_number": 19,
+      "topic_id": "geometry_statements",
+      "context_block_id": null,
+      "statement": "Какое из следующих утверждений верно?\n1) Через любую точку, лежащую вне окружности, можно провести две касательные к этой окружности.\n2) Если диагонали параллелограмма равны, то этот параллелограмм является ромбом.\n3) Площадь трапеции равна произведению суммы её оснований на высоту.\nВ ответе запишите номер выбранного утверждения.",
+      "images": [],
+      "answer_type": "number",
+      "correct_answer": "1",
+      "acceptable_answers": [
+        "1"
+      ],
+      "solution_hint": "1) Верно. 2) Неверно (это прямоугольник). 3) Неверно (полусуммы оснований на высоту). Ответ: 1.",
+      "max_score": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "oge_math_q20_001",
+      "task_number": 20,
+      "topic_id": "algebra_part2_equations",
+      "context_block_id": null,
+      "statement": "Решите уравнение $x^4 = (2x - 3)^2$.",
+      "images": [],
+      "answer_type": "detailed",
+      "correct_answer": "-3; 1",
+      "acceptable_answers": [
+        "-3; 1",
+        "1; -3",
+        "x=-3, x=1"
+      ],
+      "solution_hint": "Перенесем в одну сторону: x^4 - (2x-3)^2 = 0. Разложим как разность квадратов: (x^2 - 2x + 3)(x^2 + 2x - 3) = 0.",
+      "max_score": 2,
+      "difficulty": "hard",
+      "solution": {
+        "text": "Перенесем выражение в левую часть и применим формулу разности квадратов:\n$$x^4 - (2x - 3)^2 = 0$$\n$$(x^2 - (2x - 3))(x^2 + (2x - 3)) = 0$$\n$$(x^2 - 2x + 3)(x^2 + 2x - 3) = 0$$\n\nУравнение распадается на два случай:\n1) $x^2 - 2x + 3 = 0$\n$D = (-2)^2 - 4 \\cdot 1 \\cdot 3 = 4 - 12 = -8 < 0$ (действительных корней нет).\n\n2) $x^2 + 2x - 3 = 0$\n$D = 2^2 - 4 \\cdot 1 \\cdot (-3) = 4 + 12 = 16 = 4^2$\n$$x_1 = \\frac{-2 - 4}{2} = -3, \\quad x_2 = \\frac{-2 + 4}{2} = 1$$\n\nОтвет: $-3; 1$.",
+        "criteria_rubric": [
+          {
+            "score": 2,
+            "description": "Обоснованно получен верный ответ."
+          },
+          {
+            "score": 1,
+            "description": "Допущена описка или вычислительная ошибка, не изменившая логики решения, и с её учетом решение доведено до конца."
+          },
+          {
+            "score": 0,
+            "description": "Решение не соответствует вышеуказанным критериям."
+          }
+        ]
+      }
+    },
+    {
+      "id": "oge_math_q21_001",
+      "task_number": 21,
+      "topic_id": "algebra_part2_word_problems",
+      "context_block_id": null,
+      "statement": "Первый рабочий за час делает на 3 детали больше, чем второй, и выполняет заказ, состоящий из 180 деталей, на 3 часа быстрее, чем второй рабочий, выполняющий такой же заказ. Сколько деталей в час делает второй рабочий?",
+      "images": [],
+      "answer_type": "detailed",
+      "correct_answer": "12",
+      "acceptable_answers": [
+        "12"
+      ],
+      "solution_hint": "Пусть x дет/час делает второй рабочий, тогда первый x + 3 дет/час. Составим уравнение: 180/x - 180/(x+3) = 3.",
+      "max_score": 2,
+      "difficulty": "hard",
+      "solution": {
+        "text": "Пусть $x$ деталей в час делает второй рабочий ($x > 0$). Тогда первый рабочий делает $x + 3$ деталей в час.\n\nВремя работы второго рабочего: $\\frac{180}{x}$ часов.\nВремя работы первого рабочего: $\\frac{180}{x+3}$ часов.\n\nСоставим уравнение по условию задачи:\n$$\\frac{180}{x} - \\frac{180}{x+3} = 3$$\nРазделим обе части на 3:\n$$\\frac{60}{x} - \\frac{60}{x+3} = 1$$\nПриведем к общему знаменателю:\n$$60(x + 3) - 60x = x(x + 3)$$\n$$180 = x^2 + 3x$$\n$$x^2 + 3x - 180 = 0$$\nПо теореме Виета или через дискриминант $D = 9 + 720 = 729 = 27^2$:\n$$x_1 = \\frac{-3 + 27}{2} = 12, \\quad x_2 = \\frac{-3 - 27}{2} = -15$$\nКорень $x = -15$ не подходит по смыслу задачи ($x > 0$).\n\nОтвет: 12.",
+        "criteria_rubric": [
+          {
+            "score": 2,
+            "description": "Ход решения верный, все шаги обоснованы, получен верный ответ."
+          },
+          {
+            "score": 1,
+            "description": "Ход решения верный, но допущена одна вычислительная ошибка, с её учетом получен неверный ответ."
+          },
+          {
+            "score": 0,
+            "description": "Решение не соответствует вышеуказанным критериям."
+          }
+        ]
+      }
+    },
+    {
+      "id": "oge_math_q22_001",
+      "task_number": 22,
+      "topic_id": "algebra_part2_function_plots",
+      "context_block_id": null,
+      "statement": "Постройте график функции $y = \\frac{(x^2 + 1)(x - 2)}{2 - x}$. Определите, при каких значениях $m$ прямая $y = m$ не имеет с графиком ни одной общей точки.",
+      "images": [],
+      "answer_type": "detailed",
+      "correct_answer": "m = -5",
+      "acceptable_answers": [
+        "m = -5",
+        "-5"
+      ],
+      "solution_hint": "Область определения x != 2. При x != 2 функция сокращается до y = -(x^2 + 1) = -x^2 - 1. Выколотая точка имеет координаты (2, -5).",
+      "max_score": 2,
+      "difficulty": "hard",
+      "solution": {
+        "text": "1) Найдем область определения функции: $2 - x \\neq 0 \\implies x \\neq 2$.\n\n2) Преобразуем формулу функции при $x \\neq 2$:\n$$y = \\frac{(x^2 + 1)(x - 2)}{-(x - 2)} = -(x^2 + 1) = -x^2 - 1$$\nГрафиком является парабола $y = -x^2 - 1$ с выколотой точкой при $x = 2$.\nНайдем координаты выколотой точки: при $x = 2 \\implies y = -(2^2 + 1) = -5$. Точка $(2; -5)$ выколота.\n\n3) Прямая $y = m$ — горизонтальная прямая.\nОна не имеет с графиком ни одной общей точки в двух случаях:\n- Прямая проходит выше вершины параболы $(0; -1)$, но вершина принадлежит графику, поэтому график лежит при $y \\le -1$.\n- Прямая проходит через выколотую точку $(2; -5)$, то есть при $m = -5$.\n\nОтвет: $m = -5$.",
+        "criteria_rubric": [
+          {
+            "score": 2,
+            "description": "График построен верно, верно найдены все значения m."
+          },
+          {
+            "score": 1,
+            "description": "График построен верно, но значение m найдено неверно или отсутствует."
+          },
+          {
+            "score": 0,
+            "description": "Решение не соответствует критериям."
+          }
+        ]
+      }
+    },
+    {
+      "id": "oge_math_q23_001",
+      "task_number": 23,
+      "topic_id": "geometry_part2_calc",
+      "context_block_id": null,
+      "statement": "В прямоугольном треугольнике $ABC$ с прямым углом $C$ проведена биссектриса $BK$. Найдите катет $AC$, если $AK = 5$, а $KC = 4$.",
+      "images": [],
+      "answer_type": "detailed",
+      "correct_answer": "9",
+      "acceptable_answers": [
+        "9"
+      ],
+      "solution_hint": "По свойству биссектрисы AB/BC = AK/KC = 5/4. Пусть BC = 4x, AB = 5x. По теореме Пифагора (5x)^2 - (4x)^2 = AC^2 = 9^2 => 9x^2 = 81 => x = 3.",
+      "max_score": 2,
+      "difficulty": "medium",
+      "figure_data": {
+        "has_condition_figure": false,
+        "has_solution_figure": true,
+        "figure_type": "svg_declarative",
+        "main_figure_url": "/assets/figures/part2/q23_001_main.svg",
+        "dark_mode_figure_url": "/assets/figures/part2/q23_001_main_dark.svg",
+        "svg_content": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 500 400\" width=\"100%\" height=\"100%\"><style>.line { stroke: #1E1E1E; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }.dashed { stroke: #4A90E2; stroke-width: 2.5; stroke-dasharray: 6,6; fill: none; }.text { font-family: 'STIX Two Math', 'Times New Roman', serif; font-size: 20px; font-style: italic; fill: #1E1E1E; }.angle { stroke: #E67E22; stroke-width: 2; fill: none; }</style><polygon points=\"80,320 400,320 80,80\" class=\"line\"/><line x1=\"400\" y1=\"320\" x2=\"80\" y2=\"213.33\" class=\"dashed\"/><rect x=\"80\" y=\"300\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"#1E1E1E\" stroke-width=\"2\"/><text x=\"55\" y=\"330\" class=\"text\">C</text><text x=\"55\" y=\"85\" class=\"text\">A</text><text x=\"415\" y=\"330\" class=\"text\">B</text><text x=\"55\" y=\"220\" class=\"text\">K</text><text x=\"60\" y=\"150\" class=\"text\" font-size=\"16px\">5</text><text x=\"60\" y=\"270\" class=\"text\" font-size=\"16px\">4</text></svg>",
+        "steps": [
+          {
+            "step_number": 1,
+            "description": "Строим прямоугольный треугольник ABC с прямым углом C.",
+            "highlight_elements": [
+              "node_A",
+              "node_B",
+              "node_C",
+              "segment_AC",
+              "segment_BC",
+              "segment_AB"
+            ]
+          },
+          {
+            "step_number": 2,
+            "description": "Проводим биссектрису BK к стороне AC. Точка K делит катет AC на отрезки AK=5 и KC=4.",
+            "highlight_elements": [
+              "segment_BK",
+              "node_K"
+            ]
+          }
+        ]
+      },
+      "solution": {
+        "text": "1) Катет $AC = AK + KC = 5 + 4 = 9$.\n\n2) По свойству биссектрисы угла треугольника отношение прилежащих сторон равно отношению отрезков противоположной стороны:\n$$\\frac{AB}{BC} = \\frac{AK}{KC} = \\frac{5}{4}$$\nПусть $BC = 4x$, а $AB = 5x$, где $x > 0$.\n\n3) В прямоугольном треугольнике $ABC$ зафиксируем теорему Пифагора:\n$$AB^2 = AC^2 + BC^2$$\n$$(5x)^2 = 9^2 + (4x)^2$$\n$$25x^2 = 81 + 16x^2$$\n$$9x^2 = 81 \\implies x^2 = 9 \\implies x = 3$$\n\n4) Длина катета $AC$ уже задана суммой отрезков $AC = 5 + 4 = 9$.\n\nОтвет: 9.",
+        "criteria_rubric": [
+          {
+            "score": 2,
+            "description": "Ход решения верный, получен верный ответ, чертеж соответствует условию."
+          },
+          {
+            "score": 1,
+            "description": "Ход решения верный, но допущена вычислительная ошибка, не изменившая логику."
+          },
+          {
+            "score": 0,
+            "description": "Решение не соответствует вышеуказанным критериям."
+          }
+        ]
+      }
+    },
+    {
+      "id": "oge_math_q24_001",
+      "task_number": 24,
+      "topic_id": "geometry_part2_proof",
+      "context_block_id": null,
+      "statement": "В параллелограмме $ABCD$ точка $E$ — середина стороны $AB$. Докажите, что площадь треугольника $CDE$ равна половине площади параллелограмма $ABCD$.",
+      "images": [],
+      "answer_type": "detailed",
+      "correct_answer": "Доказано",
+      "acceptable_answers": [
+        "Доказано"
+      ],
+      "solution_hint": "Проведем высоту h из вершины E на сторона CD. S_CDE = 1/2 * CD * h. Площадь параллелограмма S_ABCD = CD * h. Следовательно S_CDE = 1/2 S_ABCD.",
+      "max_score": 2,
+      "difficulty": "hard",
+      "figure_data": {
+        "has_condition_figure": false,
+        "has_solution_figure": true,
+        "figure_type": "svg_declarative",
+        "main_figure_url": "/assets/figures/part2/q24_001_main.svg",
+        "dark_mode_figure_url": "/assets/figures/part2/q24_001_main_dark.svg",
+        "svg_content": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 500 350\" width=\"100%\" height=\"100%\"><style>.line { stroke: #1E1E1E; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }.dashed { stroke: #E67E22; stroke-width: 2.5; stroke-dasharray: 6,6; fill: none; }.fill-poly { fill: #4A90E2; fill-opacity: 0.15; stroke: #1E1E1E; stroke-width: 3; }.text { font-family: 'STIX Two Math', 'Times New Roman', serif; font-size: 20px; font-style: italic; fill: #1E1E1E; }</style><polygon points=\"80,280 380,280 440,100 140,100\" class=\"line\"/><polygon points=\"140,100 380,280 110,190\" class=\"fill-poly\"/><circle cx=\"110\" cy=\"190\" r=\"5\" fill=\"#1E1E1E\"/><text x=\"60\" y=\"290\" class=\"text\">D</text><text x=\"390\" y=\"290\" class=\"text\">C</text><text x=\"450\" y=\"95\" class=\"text\">B</text><text x=\"135\" y=\"85\" class=\"text\">A</text><text x=\"85\" y=\"195\" class=\"text\">E</text></svg>",
+        "steps": [
+          {
+            "step_number": 1,
+            "description": "Строим параллелограмм ABCD и отмечаем середину стороны AB — точку E.",
+            "highlight_elements": [
+              "node_E",
+              "segment_AB"
+            ]
+          },
+          {
+            "step_number": 2,
+            "description": "Проводим отрезки EC и ED, образуя треугольник CDE.",
+            "highlight_elements": [
+              "segment_EC",
+              "segment_ED"
+            ]
+          }
+        ]
+      },
+      "solution": {
+        "text": "1) Пусть сторона $CD = a$, а высота параллелограмма, проведенная к стороне $CD$, равна $h$.\n\n2) Площадь параллелограмма $ABCD$ вычисляется по формуле:\n$$S_{ABCD} = a \\cdot h$$\n\n3) Высота треугольника $CDE$, опущенная из вершины $E$ на основание $CD$ (или его продолжение), равна высоте параллелограмма $h$, так как точка $E$ лежит на прямой $AB$, параллельной $CD$.\n\n4) Площадь треугольника $CDE$ равна:\n$$S_{CDE} = \\frac{1}{2} \\cdot CD \\cdot h = \\frac{1}{2} \\cdot a \\cdot h$$\n\n5) Сопоставляя выражения, получаем:\n$$S_{CDE} = \\frac{1}{2} S_{ABCD}$$\nЧто и требовалось доказать.",
+        "criteria_rubric": [
+          {
+            "score": 2,
+            "description": "Доказательство верное, все шаги логически обоснованы."
+          },
+          {
+            "score": 1,
+            "description": "Доказательство в целом верное, но содержит незначительные пробелы в обоснованиях."
+          },
+          {
+            "score": 0,
+            "description": "Решение не соответствует вышеуказанным критериям."
+          }
+        ]
+      }
+    },
+    {
+      "id": "oge_math_q25_001",
+      "task_number": 25,
+      "topic_id": "geometry_part2_hard",
+      "context_block_id": null,
+      "statement": "Основания трапеции равны 4 и 9, а диагонали равны 5 и 12. Найдите площадь трапеции.",
+      "images": [],
+      "answer_type": "detailed",
+      "correct_answer": "30",
+      "acceptable_answers": [
+        "30"
+      ],
+      "solution_hint": "Через вершину C проведем прямую, параллельную диагонали BD, до пересечения с продолжением AD в точке K. Треугольник ACK имеет стороны AC=5, CK=12, AK=4+9=13. Так как 5^2+12^2=13^2, он прямоугольный. Площадь равна 1/2 * 5 * 12 = 30.",
+      "max_score": 2,
+      "difficulty": "very_hard",
+      "figure_data": {
+        "has_condition_figure": false,
+        "has_solution_figure": true,
+        "figure_type": "svg_declarative",
+        "main_figure_url": "/assets/figures/part2/q25_001_main.svg",
+        "dark_mode_figure_url": "/assets/figures/part2/q25_001_main_dark.svg",
+        "svg_content": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 550 350\" width=\"100%\" height=\"100%\"><style>.line { stroke: #1E1E1E; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }.diag { stroke: #4A90E2; stroke-width: 2.5; stroke-dasharray: 4,4; fill: none; }.ext { stroke: #E67E22; stroke-width: 2.5; stroke-dasharray: 6,6; fill: none; }.text { font-family: 'STIX Two Math', 'Times New Roman', serif; font-size: 20px; font-style: italic; fill: #1E1E1E; }</style><polygon points=\"60,280 360,280 240,120 120,120\" class=\"line\"/><line x1=\"60\" y1=\"280\" x2=\"240\" y2=\"120\" class=\"diag\"/><line x1=\"120\" y1=\"120\" x2=\"360\" y2=\"280\" class=\"diag\"/><line x1=\"360\" y1=\"280\" x2=\"480\" y2=\"280\" class=\"ext\"/><line x1=\"240\" y1=\"120\" x2=\"480\" y2=\"280\" class=\"ext\"/><text x=\"40\" y=\"290\" class=\"text\">A</text><text x=\"370\" y=\"290\" class=\"text\">D</text><text x=\"490\" y=\"290\" class=\"text\">K</text><text x=\"245\" y=\"110\" class=\"text\">C</text><text x=\"105\" y=\"110\" class=\"text\">B</text></svg>",
+        "steps": [
+          {
+            "step_number": 1,
+            "description": "Изобразим трапецию ABCD с основаниями BC=4 и AD=9, диагоналями AC=5 и BD=12.",
+            "highlight_elements": [
+              "segment_AC",
+              "segment_BD"
+            ]
+          },
+          {
+            "step_number": 2,
+            "description": "Выполним дополнительное построение: через вершину C проведем CK || BD до пересечения с продолжением AD в точке K.",
+            "highlight_elements": [
+              "segment_CK",
+              "segment_DK"
+            ]
+          }
+        ]
+      },
+      "solution": {
+        "text": "1) Через вершину $C$ проведем прямую, параллельную диагонали $BD$, до пересечения с продолжением основания $AD$ в точке $K$.\n\n2) Четырехугольник $BCKD$ — параллелограмм по построению ($BC \\parallel DK$, $CK \\parallel BD$).\nСледовательно, $DK = BC = 4$, $CK = BD = 12$.\n\n3) Рассмотрим треугольник $ACK$:\n- $AC = 5$\n- $CK = 12$\n- $AK = AD + DK = 9 + 4 = 13$\n\n4) Проверим выполнение теоремы Пифагора для $\\triangle ACK$:\n$$AC^2 + CK^2 = 5^2 + 12^2 = 25 + 144 = 169 = 13^2 = AK^2$$\nСледовательно, треугольник $ACK$ — прямоугольный с прямым углом $\\angle ACK = 90^\\circ$.\n\n5) Площадь треугольника $ACK$ равна:\n$$S_{\\triangle ACK} = \\frac{1}{2} \\cdot AC \\cdot CK = \\frac{1}{2} \\cdot 5 \\cdot 12 = 30$$\n\n6) Высота треугольника $ACK$, опущенная из вершины $C$ на $AK$, совпадает с высотой трапеции $h$.\nПлощадь трапеции равна:\n$$S_{ABCD} = \\frac{AD + BC}{2} \\cdot h = \\frac{9 + 4}{2} \\cdot h = \\frac{13}{2} h$$\nПлощадь треугольника $ACK$ равна:\n$$S_{\\triangle ACK} = \\frac{1}{2} \\cdot AK \\cdot h = \\frac{1}{2} \\cdot 13 \\cdot h = \\frac{13}{2} h$$\nТаким образом, $S_{ABCD} = S_{\\triangle ACK} = 30$.\n\nОтвет: 30.",
+        "criteria_rubric": [
+          {
+            "score": 2,
+            "description": "Ход решения верный, выполнены необходимые дополнительные построения, получен верный ответ."
+          },
+          {
+            "score": 1,
+            "description": "Ход решения верный, но допущена одна арифметическая ошибка, с её учетом задача доведена до конца."
+          },
+          {
+            "score": 0,
+            "description": "Решение не соответствует вышеуказанным критериям."
+          }
+        ]
+      }
+    }
+  ]
+}

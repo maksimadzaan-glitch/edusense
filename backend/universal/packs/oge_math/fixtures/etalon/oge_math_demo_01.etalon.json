@@ -1,0 +1,458 @@
+{
+  "version": 1,
+  "etalon": true,
+  "kim_spec_id": "oge_math_2026",
+  "exam_code": "OGE",
+  "subject_code": "math",
+  "variant_code": "oge_math_demo_01",
+  "provenance": {
+    "source": "demo2026",
+    "year": 2026,
+    "variant_code": "oge_math_demo_01",
+    "kim_spec_id": "oge_math_2026",
+    "content_hash": "",
+    "imported_at": null
+  },
+  "context": {
+    "context_id": "etalon_oge_math_demo_01",
+    "title": "Эталон · ОГЭ математика · demo",
+    "description_text": "Демонстрационный эталонный вариант (слоты 1–25).",
+    "etalon": true
+  },
+  "tasks": [
+    {
+      "task_number": 1,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №1. Найдите значение. Ответ: 1.",
+      "payload": {
+        "image_urls": [
+          "assets/etalon/demo_01/q01.svg"
+        ],
+        "media": [
+          {
+            "kind": "image",
+            "path": "assets/etalon/demo_01/q01.svg",
+            "alt": "Рисунок к заданию 1"
+          }
+        ],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": "asset",
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_1",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 2,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №2. Найдите значение. Ответ: 2.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_2",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 3,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №3. Найдите значение. Ответ: 3.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_3",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 4,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №4. Найдите значение. Ответ: 4.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_4",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 5,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №5. Найдите значение. Ответ: 5.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_5",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 6,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №6. Найдите значение. Ответ: 6.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_6",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 7,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №7. Найдите значение. Ответ: 7.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_7",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 8,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №8. Найдите значение. Ответ: 8.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_8",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 9,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №9. Найдите значение. Ответ: 9.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_9",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 10,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №10. Найдите значение. Ответ: 10.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_10",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 11,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №11. Найдите значение. Ответ: 11.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_11",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 12,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №12. Найдите значение. Ответ: 12.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_12",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 13,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №13. Найдите значение. Ответ: 13.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_13",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 14,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №14. Найдите значение. Ответ: 14.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_14",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 15,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №15. Найдите значение. Ответ: 15.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_15",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 16,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №16. Найдите значение. Ответ: 16.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_16",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 17,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №17. Найдите значение. Ответ: 17.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_17",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 18,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №18. Найдите значение. Ответ: 18.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_18",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 19,
+      "part": 1,
+      "type": "SHORT_VALUE",
+      "statement": "Эталонное задание ОГЭ математика №19. Найдите значение. Ответ: 19.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 1,
+      "topic": "slot_19",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 20,
+      "part": 2,
+      "type": "EXTENDED",
+      "statement": "Эталонное задание ОГЭ математика №20 (часть 2). Решите задачу.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 2,
+      "topic": "slot_20",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 21,
+      "part": 2,
+      "type": "EXTENDED",
+      "statement": "Эталонное задание ОГЭ математика №21 (часть 2). Решите задачу.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 2,
+      "topic": "slot_21",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 22,
+      "part": 2,
+      "type": "EXTENDED",
+      "statement": "Эталонное задание ОГЭ математика №22 (часть 2). Решите задачу.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 2,
+      "topic": "slot_22",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 23,
+      "part": 2,
+      "type": "EXTENDED",
+      "statement": "Эталонное задание ОГЭ математика №23 (часть 2). Решите задачу.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 2,
+      "topic": "slot_23",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 24,
+      "part": 2,
+      "type": "EXTENDED",
+      "statement": "Эталонное задание ОГЭ математика №24 (часть 2). Решите задачу.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 2,
+      "topic": "slot_24",
+      "context_id": "etalon_oge_math_demo_01"
+    },
+    {
+      "task_number": 25,
+      "part": 2,
+      "type": "EXTENDED",
+      "statement": "Эталонное задание ОГЭ математика №25 (часть 2). Решите задачу.",
+      "payload": {
+        "image_urls": [],
+        "media": [],
+        "matching": null
+      },
+      "figure_svg": null,
+      "figure_kind": null,
+      "correct_answer": "",
+      "max_score": 2,
+      "topic": "slot_25",
+      "context_id": "etalon_oge_math_demo_01"
+    }
+  ],
+  "keys_file": "keys/oge_math_demo_01.keys.json"
+}

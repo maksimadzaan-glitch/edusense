@@ -1,0 +1,1192 @@
+/**
+ * ОГЭ русский — тёмный exam sheet в эстетике EduSense.
+ * Структура КИМ сохранена: нумерация, тексты, варианты 1) 2) 3).
+ */
+
+.oge-rus-exam {
+  --oge-bg: var(--bg, #070b12);
+  --oge-sheet: var(--bg-elev, #0c111b);
+  --oge-panel: var(--card, rgba(14, 20, 32, 0.84));
+  --oge-panel-strong: rgba(255, 255, 255, 0.06);
+  --oge-ink: var(--text, #f2f5f9);
+  --oge-muted: var(--muted, #8b97ab);
+  --oge-rule: var(--border, rgba(255, 255, 255, 0.08));
+  --oge-rule-strong: var(--border-strong, rgba(255, 255, 255, 0.14));
+  --oge-accent: var(--accent, #5eead4);
+  --oge-accent-soft: rgba(94, 234, 212, 0.14);
+  --oge-mark: var(--accent-2, #e8a87c);
+  --oge-input-bg: rgba(0, 0, 0, 0.28);
+  --oge-radius: var(--radius, 22px);
+  --oge-serif: "Source Serif 4", "PT Serif", "Times New Roman", Georgia, serif;
+  --oge-sans: var(--font, "Plus Jakarta Sans", Inter, system-ui, sans-serif);
+  margin-top: 12px;
+  color: var(--oge-ink);
+  font-family: var(--oge-sans);
+}
+
+.oge-rus-exam-sheet {
+  background:
+    radial-gradient(90% 55% at 12% 0%, rgba(94, 234, 212, 0.1), transparent 55%),
+    radial-gradient(70% 45% at 88% 8%, rgba(232, 168, 124, 0.07), transparent 50%),
+    linear-gradient(180deg, rgba(18, 24, 38, 0.98) 0%, var(--oge-sheet) 42%, #0a0f18 100%);
+  color: var(--oge-ink);
+  border: 1px solid var(--oge-rule);
+  border-radius: var(--oge-radius);
+  padding: 22px 20px 28px;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+}
+
+.oge-kim-live-banner {
+  display: none !important;
+}
+
+.oge-kim-live-banner strong {
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--oge-accent);
+}
+
+.oge-kim-live-banner span {
+  font-size: 0.86rem;
+  color: var(--oge-muted);
+  line-height: 1.4;
+}
+
+.oge-exam-banner {
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--oge-rule);
+  border-radius: calc(var(--oge-radius) - 8px);
+  background: rgba(255, 255, 255, 0.03);
+  font-family: var(--oge-sans);
+}
+
+.oge-exam-banner-kicker {
+  margin: 0 0 4px;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--oge-accent);
+}
+
+.oge-exam-banner h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--oge-ink);
+  letter-spacing: -0.01em;
+}
+
+.oge-exam-banner p {
+  margin: 6px 0 0;
+  font-size: 0.88rem;
+  color: var(--oge-muted);
+  line-height: 1.45;
+}
+
+/* —— Shared passages —— */
+.oge-rus-exam .oge-rus-shared,
+.oge-rus-exam aside.oge-rus-shared,
+.oge-rus-exam .oge-rus-essay-reading {
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border-radius: calc(var(--oge-radius) - 8px);
+  border: 1px solid var(--oge-rule);
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--oge-ink);
+}
+
+.oge-rus-exam .oge-rus-shared-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--oge-ink);
+  font-family: var(--oge-sans);
+}
+
+.oge-rus-shared-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.oge-rus-collapse-btn {
+  flex-shrink: 0;
+  border: 1px solid var(--oge-rule-strong);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--oge-accent);
+  font-family: var(--oge-sans);
+  font-size: 0.78rem;
+  padding: 5px 11px;
+  cursor: pointer;
+  border-radius: 999px;
+}
+
+.oge-rus-collapse-btn:hover {
+  background: var(--oge-accent-soft);
+}
+
+.oge-rus-exam .oge-rus-shared-body,
+.oge-rus-exam .oge-passage-body {
+  font-family: var(--oge-serif);
+  font-size: 1.05rem;
+  line-height: 1.72;
+  white-space: normal;
+  color: var(--oge-ink);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.oge-rus-exam .oge-passage-p,
+.oge-rus-exam .oge-fmt-p {
+  margin: 0 0 0.85em;
+}
+
+.oge-rus-exam .oge-passage-p:last-child,
+.oge-rus-exam .oge-fmt-p:last-child {
+  margin-bottom: 0;
+}
+
+.oge-rus-exam .oge-sent-line {
+  display: block;
+  margin: 0 0 0.35em;
+  text-indent: 0;
+}
+
+.oge-rus-exam .oge-sent-line:last-child {
+  margin-bottom: 0;
+}
+
+.oge-rus-exam .oge-passage-author {
+  margin: 0 0 10px;
+  font-family: var(--oge-serif);
+  font-style: italic;
+  font-size: 0.98rem;
+  color: var(--oge-muted);
+}
+
+.oge-rus-exam .oge-passage-note {
+  margin: 12px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--oge-rule);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--oge-muted);
+  font-family: var(--oge-sans);
+}
+
+.oge-rus-exam .oge-sent-num {
+  font-weight: 700;
+  color: var(--oge-mark);
+  font-variant-numeric: tabular-nums;
+}
+
+/* —— Task block —— */
+.oge-exam-task {
+  margin: 0 0 20px;
+  padding: 16px 16px 18px;
+  border: 1px solid var(--oge-rule);
+  background:
+    radial-gradient(90% 80% at 0% 0%, rgba(94, 234, 212, 0.06), transparent 52%),
+    rgba(255, 255, 255, 0.03);
+  border-radius: calc(var(--oge-radius) - 8px);
+  color: var(--oge-ink);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.oge-exam-task + .oge-exam-task {
+  margin-top: 0;
+}
+
+.oge-exam-head {
+  display: block;
+  margin: 0 0 6px;
+}
+
+.oge-exam-num {
+  display: inline;
+  font-family: var(--oge-sans);
+  font-weight: 700;
+  font-size: 1.08rem;
+  margin-right: 0.35em;
+  color: var(--oge-accent);
+}
+
+.oge-exam-instruction {
+  display: inline;
+  font-family: var(--oge-serif);
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: var(--oge-ink);
+}
+
+.oge-exam-stem {
+  margin: 10px 0 0;
+  font-family: var(--oge-serif);
+  font-size: 1.05rem;
+  line-height: 1.65;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.oge-exam-stem .oge-fmt-p {
+  margin: 0 0 0.7em;
+}
+
+.oge-exam-stem .oge-fmt-p:last-child {
+  margin-bottom: 0;
+}
+
+.oge-exam-stem .oge-digit-mark {
+  font-weight: 700;
+  color: var(--oge-mark);
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+  min-width: 1.4em;
+  text-align: center;
+  border-bottom: 1px dotted currentColor;
+  padding: 0 1px;
+}
+
+.oge-exam-options {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.oge-exam-opt {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 0 0 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-family: var(--oge-serif);
+  font-size: 1.02rem;
+  line-height: 1.5;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.oge-exam-opt:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.oge-exam-opt:has(input:checked) {
+  background: var(--oge-accent-soft);
+  border-color: rgba(94, 234, 212, 0.35);
+}
+
+.oge-exam-opt input {
+  margin-top: 4px;
+  flex-shrink: 0;
+  accent-color: var(--oge-accent);
+}
+
+.oge-exam-opt-id {
+  flex-shrink: 0;
+  min-width: 1.6em;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--oge-accent);
+}
+
+.oge-exam-opt-text {
+  flex: 1;
+  min-width: 0;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.oge-exam-options .oge-exam-opt {
+  display: flex;
+  width: 100%;
+}
+
+/* —— Matching (тип 4) —— */
+.oge-exam-match {
+  margin: 14px 0 8px;
+}
+
+.oge-exam-match-table,
+.oge-rus-exam .oge-rus-match-cols {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 0;
+  border: 1px solid var(--oge-rule-strong);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.oge-exam-match-col {
+  padding: 0;
+  min-width: 0;
+}
+
+.oge-exam-match-col + .oge-exam-match-col {
+  border-left: 1px solid var(--oge-rule);
+}
+
+.oge-exam-match-head {
+  margin: 0;
+  padding: 8px 10px;
+  font-family: var(--oge-sans);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+  background: rgba(94, 234, 212, 0.08);
+  border-bottom: 1px solid var(--oge-rule);
+  color: var(--oge-muted);
+}
+
+.oge-exam-match-item,
+.oge-rus-exam .oge-rus-match-row {
+  display: grid !important;
+  grid-template-columns: 2rem minmax(0, 1fr) 2.6rem;
+  gap: 8px;
+  align-items: start;
+  padding: 10px;
+  margin: 0 !important;
+  border-bottom: 1px solid var(--oge-rule);
+  font-family: var(--oge-serif);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.oge-exam-match-item.oge-rus-match-right,
+.oge-rus-exam .oge-exam-match-col--right .oge-exam-match-item {
+  grid-template-columns: 1.6rem minmax(0, 1fr);
+}
+
+.oge-exam-match-item:last-child {
+  border-bottom: 0;
+}
+
+.oge-exam-match-letter,
+.oge-exam-match-right-id {
+  flex: none;
+  display: inline-block;
+  font-weight: 700;
+  min-width: 1.4em;
+  color: var(--oge-accent);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.45;
+}
+
+.oge-exam-match-text,
+.oge-rus-exam .oge-rus-match-left {
+  min-width: 0;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.oge-exam-match-text .oge-fmt-p,
+.oge-rus-match-left .oge-fmt-p {
+  margin: 0;
+}
+
+.oge-exam-match-input,
+.oge-rus-exam .oge-rus-match-input {
+  width: 36px !important;
+  min-width: 36px;
+  max-width: 36px;
+  justify-self: end;
+  flex: none !important;
+  text-align: center;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none !important;
+  border-bottom: 2px solid var(--oge-rule-strong) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--oge-ink);
+  padding: 2px 4px !important;
+  outline: none;
+}
+
+.oge-exam-match-input:focus,
+.oge-rus-exam .oge-rus-match-input:focus {
+  border-bottom-color: var(--oge-accent) !important;
+  box-shadow: none;
+}
+
+@media (max-width: 720px) {
+  .oge-exam-match-table,
+  .oge-rus-exam .oge-rus-match-cols {
+    grid-template-columns: 1fr !important;
+  }
+  .oge-exam-match-col + .oge-exam-match-col {
+    border-left: 0;
+    border-top: 1px solid var(--oge-rule);
+  }
+}
+
+/* —— Digit markers (5, 7) —— */
+.oge-exam-digits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 0;
+}
+
+.oge-exam-digit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--oge-rule);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--oge-ink);
+}
+
+.oge-exam-digit:has(input:checked) {
+  border-color: rgba(94, 234, 212, 0.45);
+  background: var(--oge-accent-soft);
+}
+
+.oge-exam-digit input {
+  accent-color: var(--oge-accent);
+}
+
+/* —— Short blank (8, 9, 12) —— */
+.oge-exam-blank-wrap {
+  margin: 14px 0 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.oge-exam-blank-label {
+  font-family: var(--oge-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--oge-muted);
+}
+
+.oge-exam-blank {
+  flex: 1;
+  min-width: 160px;
+  max-width: 420px;
+  border: none;
+  border-bottom: 2px solid var(--oge-rule-strong);
+  border-radius: 0;
+  background: transparent;
+  color: var(--oge-ink);
+  font-family: var(--oge-serif);
+  font-size: 1.08rem;
+  padding: 4px 2px;
+  outline: none;
+}
+
+.oge-exam-blank:focus {
+  border-bottom-color: var(--oge-accent);
+  box-shadow: none;
+}
+
+.oge-exam-answer-line {
+  margin: 14px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.oge-exam-answer-line label {
+  font-family: var(--oge-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--oge-muted);
+}
+
+.oge-exam-answer-input {
+  width: 140px;
+  border: none;
+  border-bottom: 2px solid var(--oge-rule-strong);
+  border-radius: 0;
+  background: transparent;
+  color: var(--oge-ink);
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 4px 2px;
+  outline: none;
+}
+
+.oge-exam-answer-input:focus {
+  border-bottom-color: var(--oge-accent);
+  box-shadow: none;
+}
+
+.oge-exam-answer-hint {
+  font-size: 0.78rem;
+  color: var(--oge-muted);
+  font-family: var(--oge-sans);
+}
+
+/* —— Open tasks 1 / 13 —— */
+.oge-exam-task.is-open {
+  margin-bottom: 20px;
+  padding: 16px;
+  border: 1px solid rgba(94, 234, 212, 0.22);
+  background: linear-gradient(180deg, rgba(94, 234, 212, 0.06), var(--oge-panel));
+}
+
+.oge-rus-exam .oge-rus-listen {
+  margin: 12px 0;
+  padding: 14px 14px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--oge-rule);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--oge-ink);
+}
+
+.oge-rus-exam .oge-rus-listen-hint {
+  margin: 0 0 10px;
+  color: var(--oge-muted);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.oge-rus-exam .oge-rus-rubric-hint {
+  margin: 0 0 10px;
+  color: var(--oge-muted);
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
+.oge-rus-exam .oge-rus-audio-player {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.oge-rus-exam .oge-rus-audio-bar {
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--oge-rule);
+}
+
+.oge-rus-exam .oge-rus-audio {
+  width: 100%;
+  max-width: 560px;
+  display: block;
+  height: 40px;
+}
+
+.oge-rus-exam .oge-rus-audio-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.oge-rus-exam .oge-rus-play-twice {
+  border: 1px solid rgba(94, 234, 212, 0.4);
+  background: var(--oge-accent-soft);
+  color: var(--oge-ink);
+  font-family: var(--oge-sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.oge-rus-exam .oge-rus-play-twice:hover {
+  background: rgba(94, 234, 212, 0.22);
+}
+
+.oge-rus-exam .oge-rus-play-twice:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.oge-rus-exam .oge-rus-tts-status {
+  color: var(--oge-muted);
+  font-size: 0.84rem;
+}
+
+.oge-rus-exam .oge-rus-tts-link {
+  align-self: flex-start;
+  margin-top: 4px;
+  border: 0;
+  background: transparent;
+  color: var(--oge-muted);
+  font-family: var(--oge-sans);
+  font-size: 0.78rem;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.oge-rus-exam .oge-rus-tts-link:hover {
+  color: var(--oge-accent);
+}
+
+.oge-rus-exam .oge-rus-audio-note {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--oge-muted);
+  line-height: 1.4;
+}
+
+.oge-rus-exam .oge-rus-listen-fallback {
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(240, 171, 138, 0.35);
+  border-radius: 10px;
+  background: rgba(240, 171, 138, 0.08);
+  color: var(--oge-ink);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.oge-rus-exam .oge-rus-transcript {
+  margin-top: 12px;
+}
+
+.oge-rus-exam .oge-rus-transcript summary {
+  cursor: pointer;
+  color: var(--oge-accent);
+  font-size: 0.85rem;
+  font-family: var(--oge-sans);
+}
+
+.oge-rus-exam .oge-rus-transcript-body {
+  margin-top: 8px;
+  color: var(--oge-ink);
+  font-family: var(--oge-serif);
+  white-space: normal;
+  line-height: 1.65;
+}
+
+.oge-rus-exam .oge-rus-transcript-body .oge-fmt-p {
+  margin: 0 0 0.75em;
+}
+
+.oge-rus-exam .oge-rus-match-left,
+.oge-rus-exam .oge-rus-match-right .oge-exam-match-text {
+  min-width: 0;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.oge-rus-exam .oge-rus-author {
+  color: var(--oge-muted);
+}
+
+/* —— Essay 13 —— */
+.oge-rus-exam .oge-rus-essay {
+  margin-top: 8px;
+}
+
+.oge-rus-exam .oge-rus-essay-opt {
+  display: block;
+  margin: 0 0 10px;
+  padding: 14px 14px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--oge-rule);
+  background: rgba(0, 0, 0, 0.16);
+  color: var(--oge-ink);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.oge-rus-exam .oge-rus-essay-opt:hover {
+  border-color: var(--oge-rule-strong);
+}
+
+.oge-rus-exam .oge-rus-essay-opt:has(input:checked) {
+  border-color: rgba(94, 234, 212, 0.45);
+  background: var(--oge-accent-soft);
+}
+
+.oge-rus-exam .oge-rus-essay-opt-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.oge-rus-exam .oge-rus-essay-opt input {
+  margin: 0;
+  accent-color: var(--oge-accent);
+}
+
+.oge-rus-exam .oge-rus-essay-opt-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3.1em;
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: rgba(94, 234, 212, 0.16);
+  color: var(--oge-accent);
+  font-family: var(--oge-sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.oge-rus-exam .oge-rus-essay-opt-label {
+  font-family: var(--oge-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--oge-ink);
+}
+
+.oge-rus-exam .oge-rus-essay-stmt {
+  margin: 10px 0 0 1.7em;
+  font-family: var(--oge-serif);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--oge-ink);
+}
+
+.oge-rus-exam .oge-rus-essay-hint,
+.oge-rus-exam .oge-rus-essay-intro,
+.oge-rus-exam .oge-rus-essay-reading-hint,
+.oge-rus-exam .oge-rus-essay-field-label,
+.oge-rus-exam .oge-rus-essay-meta {
+  color: var(--oge-muted);
+  font-family: var(--oge-sans);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  margin: 0 0 10px;
+}
+
+.oge-rus-exam .oge-rus-essay-intro {
+  color: var(--oge-ink);
+  font-family: var(--oge-serif);
+  font-size: 1rem;
+  line-height: 1.55;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--oge-rule);
+}
+
+.oge-rus-exam .oge-rus-essay-reading-body {
+  margin-top: 4px;
+  max-height: 320px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.oge-rus-exam .oge-essay-textarea {
+  min-height: 280px !important;
+}
+
+.oge-rus-exam .oge-rus-essay-field-label {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--oge-accent);
+}
+
+.oge-rus-exam .oge-rus-essay-meta {
+  margin: 8px 0 0;
+  font-size: 0.78rem;
+}
+
+.oge-rus-exam .oge-open-answer {
+  margin-top: 12px;
+}
+
+.oge-rus-exam .oge-open-answer textarea,
+.oge-rus-exam .oge-essay-textarea {
+  width: 100%;
+  min-height: 140px;
+  border: 1px solid var(--oge-rule-strong);
+  border-radius: 12px;
+  background: var(--oge-input-bg);
+  color: var(--oge-ink);
+  font-family: var(--oge-serif);
+  font-size: 1.02rem;
+  line-height: 1.6;
+  padding: 12px 14px;
+  outline: none;
+  resize: vertical;
+}
+
+.oge-rus-exam .oge-open-answer textarea:focus,
+.oge-rus-exam .oge-essay-textarea:focus {
+  border-color: rgba(94, 234, 212, 0.45);
+  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.12);
+}
+
+.oge-rus-exam .oge-open-answer .answer-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.oge-rus-exam .oge-open-answer .answer-tabs button {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--oge-muted);
+  border: 1px solid var(--oge-rule);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-family: var(--oge-sans);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.oge-rus-exam .oge-open-answer .answer-tabs button.is-active {
+  background: var(--oge-accent-soft);
+  color: var(--oge-ink);
+  border-color: rgba(94, 234, 212, 0.4);
+}
+
+.oge-rus-exam .photo-box {
+  border-color: var(--oge-rule);
+  background: rgba(0, 0, 0, 0.18);
+  color: var(--oge-muted);
+  border-radius: 12px;
+}
+
+/* Hide generic card chrome when inside exam sheet */
+.oge-rus-exam .task-head,
+.oge-rus-exam .task > h3 {
+  display: none;
+}
+
+.oge-section-label {
+  margin: 20px 0 12px;
+  padding: 6px 0;
+  font-family: var(--oge-sans);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--oge-muted);
+  border-bottom: 1px solid var(--oge-rule);
+}
+
+/* Teacher preview: exam sheet spans grid */
+#oge-rus-task-list .oge-rus-exam-sheet,
+.task-grid .oge-rus-exam-sheet {
+  grid-column: 1 / -1;
+}
+
+#oge-rus-task-list .oge-exam-task .task-card-actions {
+  margin-top: 8px;
+}
+
+#oge-rus-task-list .task-card,
+#oge-rus-task-list .task-card.glass {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  padding: 0 0 14px;
+  color: var(--oge-ink);
+  border-radius: 0;
+}
+
+#oge-rus-task-list .task-card.glass::before {
+  display: none;
+}
+
+#oge-rus-task-list .task-card-head,
+#oge-rus-task-list .task-card > h4,
+#oge-rus-task-list .task-card > .task-text {
+  display: none;
+}
+
+/* Shared grammar/reading must span teacher grid */
+#oge-rus-task-list .oge-rus-shared,
+#oge-rus-task-list .oge-section-label,
+#oge-rus-task-list .oge-exam-banner,
+#oge-rus-task-list .oge-kim-live-banner {
+  grid-column: 1 / -1;
+}
+
+/* Статический сплит 1) 2) 3) */
+.oge-prose-stem {
+  margin: 0 0 0.55em;
+  font-family: var(--oge-serif);
+  line-height: 1.55;
+  color: var(--oge-ink);
+}
+
+.oge-prose-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0.35em 0 0;
+}
+
+.oge-prose-opt {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-family: var(--oge-serif);
+  font-size: 1.02rem;
+  line-height: 1.5;
+  color: var(--oge-ink);
+}
+
+.oge-prose-opt-id {
+  flex-shrink: 0;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  min-width: 1.5em;
+  color: var(--oge-accent);
+}
+
+.oge-prose-opt-text {
+  flex: 1;
+  min-width: 0;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.export-preview .ep-body .oge-prose-opt,
+.export-preview .body .oge-prose-opt {
+  display: flex;
+  width: 100%;
+}
+
+#oge-rus-task-list .task-card-actions .btn-ghost {
+  color: var(--oge-muted);
+  border-color: var(--oge-rule-strong);
+}
+
+.oge-teacher-key {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px dashed var(--oge-rule-strong, rgba(94, 234, 212, 0.35));
+  border-radius: 10px;
+  background: rgba(94, 234, 212, 0.08);
+}
+
+.oge-teacher-key-label {
+  display: block;
+  font-family: var(--oge-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--oge-accent);
+  margin-bottom: 4px;
+}
+
+.oge-teacher-key-ans {
+  margin: 0;
+  font-family: var(--oge-sans);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+}
+
+.oge-teacher-key-hint,
+.oge-teacher-key p {
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--oge-muted, #93a0b5);
+}
+
+#oge-rus-task-list .oge-teacher-key {
+  color: var(--oge-ink);
+}
+
+.export-preview .oge-rus-exam-sheet,
+.export-preview .oge-rus-exam {
+  color: var(--oge-ink);
+}
+
+/* Paper / Light / PDF — ФИПИ-лист, без тёмного UI */
+.oge-rus-exam.is-paper {
+  --oge-bg: #fff;
+  --oge-sheet: #fff;
+  --oge-panel: #fff;
+  --oge-panel-strong: #f8fafc;
+  --oge-ink: #0f172a;
+  --oge-muted: #475569;
+  --oge-rule: #e2e8f0;
+  --oge-rule-strong: #cbd5e1;
+  --oge-accent: #0f172a;
+  --oge-accent-soft: #f8fafc;
+  --oge-mark: #1e293b;
+  --oge-input-bg: #fff;
+  --oge-radius: 0px;
+  margin-top: 0;
+  color: #0f172a;
+}
+
+.oge-rus-exam.is-paper .oge-rus-exam-sheet {
+  background: #fff !important;
+  color: #0f172a !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.oge-rus-exam.is-paper .oge-exam-banner {
+  margin: 0 0 16px;
+  padding: 0 0 12px;
+  border: 0;
+  border-bottom: 1px solid #cbd5e1;
+  border-radius: 0;
+  background: transparent;
+}
+
+.oge-rus-exam.is-paper .oge-exam-banner-kicker {
+  color: #64748b;
+  letter-spacing: 0.12em;
+}
+
+.oge-rus-exam.is-paper .oge-exam-banner h2 {
+  font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #0f172a;
+}
+
+.oge-rus-exam.is-paper .oge-exam-banner p {
+  color: #475569;
+}
+
+.oge-rus-exam.is-paper .oge-exam-task,
+.oge-rus-exam.is-paper .ep-task {
+  margin: 0;
+  padding: 14px 0;
+  border: 0;
+  border-bottom: 1px solid #e2e8f0;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #0f172a !important;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.oge-rus-exam.is-paper .oge-exam-num,
+.oge-rus-exam.is-paper .oge-exam-match-letter,
+.oge-rus-exam.is-paper .oge-exam-match-right-id,
+.oge-rus-exam.is-paper .oge-sent-num {
+  color: #0f172a;
+}
+
+.oge-rus-exam.is-paper .oge-rus-shared,
+.oge-rus-exam.is-paper aside.oge-rus-shared,
+.oge-rus-exam.is-paper .oge-rus-essay-reading {
+  background: #fff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 4px;
+  box-shadow: none !important;
+  padding: 12px 14px;
+}
+
+.oge-rus-exam.is-paper .oge-rus-shared-title,
+.oge-rus-exam.is-paper .oge-section-label {
+  color: #334155;
+  font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+}
+
+.oge-rus-exam.is-paper .oge-rus-collapse-btn,
+.oge-rus-exam.is-paper .oge-rus-audio-player,
+.oge-rus-exam.is-paper .oge-rus-audio,
+.oge-rus-exam.is-paper .oge-rus-audio-actions,
+.oge-rus-exam.is-paper .oge-rus-play-twice,
+.oge-rus-exam.is-paper .oge-rus-tts,
+.oge-rus-exam.is-paper .oge-rus-tts-link,
+.oge-rus-exam.is-paper .oge-rus-tts-status,
+.oge-rus-exam.is-paper .oge-rus-listen-fallback,
+.oge-rus-exam.is-paper .oge-rus-audio-note,
+.oge-rus-exam.is-paper .oge-open-answer,
+.oge-rus-exam.is-paper .oge-essay-textarea,
+.oge-rus-exam.is-paper .answer-tabs,
+.oge-rus-exam.is-paper .photo-box,
+.oge-rus-exam.is-paper audio {
+  display: none !important;
+}
+
+.oge-rus-exam.is-paper .oge-rus-shared-body,
+.oge-rus-exam.is-paper .oge-passage-body,
+.oge-rus-exam.is-paper .oge-exam-instruction,
+.oge-rus-exam.is-paper .oge-exam-stem,
+.oge-rus-exam.is-paper .oge-fmt-p,
+.oge-rus-exam.is-paper .oge-passage-p {
+  color: #0f172a;
+  font-family: "PT Serif", "Source Serif 4", "Times New Roman", Georgia, serif;
+}
+
+.oge-rus-exam.is-paper .oge-exam-match-table,
+.oge-rus-exam.is-paper .oge-rus-match-cols {
+  background: #fff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.oge-rus-exam.is-paper .oge-exam-match-head {
+  background: #f8fafc;
+  color: #475569;
+}
+
+.oge-rus-exam.is-paper .oge-rus-essay-opt {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  cursor: default;
+}
+
+.oge-rus-exam.is-paper .oge-rus-essay-opt:hover,
+.oge-rus-exam.is-paper .oge-rus-essay-opt:has(input:checked) {
+  background: #fff;
+  border-color: #cbd5e1;
+}
+
+.oge-rus-exam.is-paper .oge-rus-essay-opt-badge {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.oge-rus-exam.is-paper .oge-rus-match-input,
+.oge-rus-exam.is-paper .oge-exam-answer-line input,
+.oge-rus-exam.is-paper input[type="text"] {
+  background: #fff !important;
+  color: #0f172a !important;
+  border: 1px solid #94a3b8 !important;
+  box-shadow: none !important;
+}
+
+.oge-rus-exam.is-paper .oge-exam-opt {
+  background: transparent;
+  color: #0f172a;
+}
+
+.oge-rus-exam.is-paper .oge-teacher-key {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+}

@@ -1,0 +1,33 @@
+{
+  "subject_code": "history",
+  "subject_name": "История",
+  "exam_code": "EGE",
+  "exam_name": "ЕГЭ",
+  "notes": "Заглушка: несколько прототипов. Добавьте полный JSON по образцу social_ege.json.",
+  "prototypes": [
+    {
+      "task_number": 1,
+      "part": 1,
+      "prototype_title": "Древняя Русь",
+      "prompt_instruction": "Составь ЕГЭ история №1: Древняя Русь IX–XII вв. Краткий ответ."
+    },
+    {
+      "task_number": 2,
+      "part": 1,
+      "prototype_title": "Московское государство",
+      "prompt_instruction": "Составь ЕГЭ история №2: XIV–XVI вв. Краткий ответ."
+    },
+    {
+      "task_number": 3,
+      "part": 1,
+      "prototype_title": "XIX век",
+      "prompt_instruction": "Составь ЕГЭ история №3: Российская империя в XIX в. Краткий ответ."
+    },
+    {
+      "task_number": 4,
+      "part": 2,
+      "prototype_title": "Историческое сочинение-ориентир",
+      "prompt_instruction": "Составь ЕГЭ история №4 (часть 2): развёрнутый ответ по периоду с аргументами. solution обязателен."
+    }
+  ]
+}

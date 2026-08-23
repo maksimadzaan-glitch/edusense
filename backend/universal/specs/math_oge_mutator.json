@@ -1,0 +1,1589 @@
+{
+  "subject_code": "math",
+  "subject_name": "Математика",
+  "exam_code": "OGE",
+  "exam_name": "ОГЭ",
+  "note": "Шаблоны Math Mutator Core (слоты 6–19). Числа генерируются при сборке варианта и при персонализации ученика. Часть 2 не трогаем.",
+  "prototypes": [
+    {
+      "task_number": 6,
+      "part": 1,
+      "prototype_title": "6m: Вычисления и дроби · сложение обыкновенных дробей",
+      "prompt_instruction": "Тип КИМ №6: вычисления с обыкновенными дробями. Числа генерируются; ответ целый.",
+      "template_text": "Найдите значение выражения: ([[1|{a}]] + [[1|{b}]]) · {prod}.",
+      "template_answer": "7",
+      "template_solution": "[[1|{a}]] + [[1|{b}]] = [[{b}+{a}|{prod}]]. Умножение на {prod} даёт {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "subtype_code": "math_oge_q06_frac_add",
+        "title": "Сложение обыкновенных дробей",
+        "tags": [
+          "дроби",
+          "вычисления",
+          "базовая_алгебра"
+        ],
+        "difficulty": "easy",
+        "mutator_logic": {
+          "variables": {
+            "a": "random_choice([2, 3, 4, 5, 6])",
+            "b": "random_choice([2, 3, 4, 5, 6], exclude=[a])"
+          },
+          "computed": {
+            "prod": "a * b",
+            "answer": "a + b"
+          }
+        },
+        "explanation_template": "[[1|{a}]] + [[1|{b}]] = [[{b}+{a}|{prod}]]. Умножение на {prod} даёт {answer}."
+      }
+    },
+    {
+      "task_number": 6,
+      "part": 1,
+      "prototype_title": "6m2: Вычисления · десятичные дроби",
+      "prompt_instruction": "Тип КИМ №6: вычисления с десятичными дробями. Ответ — число.",
+      "template_text": "Найдите значение выражения: {a},{b} · {c} − {d}.",
+      "template_answer": "5",
+      "template_solution": "{a},{b} · {c} = {prod}. Затем {prod} − {d} = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "subtype_code": "math_oge_q06_decimals",
+        "title": "Вычисления с десятичными дробями",
+        "tags": ["дроби", "вычисления"],
+        "difficulty": "easy",
+        "mutator_logic": {
+          "variables": {
+            "a": "random_choice([1, 2, 3])",
+            "b": "random_choice([2, 4, 5])",
+            "c": "random_choice([2, 4, 5])"
+          },
+          "computed": {
+            "prod": "(a + b / 10) * c",
+            "d": "1",
+            "answer": "(a + b / 10) * c - 1"
+          }
+        },
+        "explanation_template": "{a},{b} · {c} = {prod}; {prod} − 1 = {answer}."
+      }
+    },
+    {
+      "task_number": 7,
+      "part": 1,
+      "prototype_title": "7m: Числовая прямая · координата точки",
+      "prompt_instruction": "Тип КИМ №7: числовая прямая. Ответ — десятичная дробь.",
+      "template_text": "На координатной прямой отмечена точка A. Она лежит между числами {left} и {right} на расстоянии {dist} от числа {left}. Найдите координату точки A.",
+      "template_answer": "3.7",
+      "template_solution": "Координата A = {left} + {dist} = {answer}.",
+      "figure_kind": "numberline",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "left": "random_int(-4, 8)",
+            "tenths": "random_choice([2, 3, 7, 8])"
+          },
+          "computed": {
+            "right": "left + 1",
+            "dist": "tenths / 10",
+            "x": "left + tenths / 10",
+            "answer": "left + tenths / 10"
+          },
+          "figure": {
+            "kind": "numberline",
+            "min": "{left}",
+            "max": "{right}",
+            "points": [
+              {
+                "x": "{x}",
+                "label": "A"
+              }
+            ],
+            "label": "точка A"
+          }
+        },
+        "explanation_template": "Координата A = {left} + {dist} = {answer}.",
+        "subtype_code": "math_oge_q07_numberline_point",
+        "title": "Координата точки на прямой",
+        "tags": [
+          "числовая_прямая",
+          "неравенства"
+        ],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 8,
+      "part": 1,
+      "prototype_title": "8m: Степени и корни · произведение степеней",
+      "prompt_instruction": "Тип КИМ №8: свойства степеней. Ответ — целое число.",
+      "template_text": "Найдите значение выражения: {a}^{m} · {a}^{n}.",
+      "template_answer": "32",
+      "template_solution": "Основания одинаковые: {a}^{m} · {a}^{n} = {a}^{m+n} = {a}^{exp} = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "a": "random_choice([2, 3, 4, 5])",
+            "m": "random_int(1, 3)",
+            "n": "random_int(1, 3)"
+          },
+          "computed": {
+            "exp": "m + n",
+            "answer": "pow(a, m + n)"
+          }
+        },
+        "explanation_template": "Основания одинаковые: {a}^{m} · {a}^{n} = {a}^{exp} = {answer}.",
+        "subtype_code": "math_oge_q08_powers_product",
+        "title": "Произведение степеней",
+        "tags": [
+          "степени",
+          "корни"
+        ],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 8,
+      "part": 1,
+      "prototype_title": "8m2: Степени · частное степеней",
+      "prompt_instruction": "Тип КИМ №8: свойства степеней. Частное с одинаковым основанием.",
+      "template_text": "Найдите значение выражения: {a}^{m} : {a}^{n}.",
+      "template_answer": "8",
+      "template_solution": "Основания одинаковые: {a}^{m} : {a}^{n} = {a}^{m-n} = {a}^{exp} = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "a": "random_choice([2, 3])",
+            "n": "random_int(1, 2)",
+            "k": "random_int(2, 4)"
+          },
+          "computed": {
+            "m": "n + k",
+            "exp": "k",
+            "answer": "pow(a, k)"
+          }
+        },
+        "explanation_template": "{a}^{m} : {a}^{n} = {a}^{exp} = {answer}.",
+        "subtype_code": "math_oge_q08_powers_quotient",
+        "title": "Частное степеней",
+        "tags": ["степени"],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 9,
+      "part": 1,
+      "prototype_title": "9m: Уравнения · квадратное уравнение",
+      "prompt_instruction": "Тип КИМ №9: квадратное уравнение. Корни целые; в ответ — больший корень.",
+      "template_text": "Найдите больший корень уравнения: x² + {b}x + {c} = 0.",
+      "template_answer": "3",
+      "template_solution": "Дискриминант D = {b}² − 4·{c}. Корни уравнения: {x1} и {x2}. Больший корень = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "x1": "random_int(-9, 9, exclude=[0])",
+            "x2": "random_int(-9, 9, exclude=[x1, 0])"
+          },
+          "computed": {
+            "b": "-(x1 + x2)",
+            "c": "x1 * x2",
+            "answer": "max(x1, x2)"
+          }
+        },
+        "explanation_template": "По теореме Виета корни {x1} и {x2}. Коэффициенты: b = −({x1} + {x2}) = {b}, c = {x1}·{x2} = {c}. Больший корень = {answer}.",
+        "subtype_code": "math_oge_q09_quadratic",
+        "title": "Квадратное уравнение",
+        "tags": [
+          "уравнения",
+          "дискриминант"
+        ],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 9,
+      "part": 1,
+      "prototype_title": "9m2: Уравнения · линейное уравнение",
+      "prompt_instruction": "Тип КИМ №9: линейное уравнение. Ответ — число.",
+      "template_text": "Решите уравнение: {a}x − {b} = {c}.",
+      "template_answer": "5",
+      "template_solution": "{a}x = {c} + {b} = {sum}. x = {sum}/{a} = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "a": "random_choice([2, 3, 4, 5])",
+            "x": "random_int(2, 9)",
+            "b": "random_int(1, 12)"
+          },
+          "computed": {
+            "c": "a * x - b",
+            "sum": "a * x",
+            "answer": "x"
+          }
+        },
+        "explanation_template": "{a}x = {c} + {b} = {sum}. x = {answer}.",
+        "subtype_code": "math_oge_q09_linear",
+        "title": "Линейное уравнение",
+        "tags": ["уравнения"],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 10,
+      "part": 1,
+      "prototype_title": "10m: Теория вероятностей · классическая вероятность",
+      "prompt_instruction": "Тип КИМ №10: вероятность. Допустимы десятичная дробь и обыкновенная.",
+      "template_text": "В коробке {red} красных и {blue} синих карандашей. Наугад достают один карандаш. Какова вероятность того, что он синий?",
+      "template_answer": "0.375",
+      "template_solution": "Всего карандашей {total}. Благоприятных исходов {blue}. Вероятность {blue}/{total} = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "red": "random_int(3, 8)",
+            "blue": "random_int(2, 6)"
+          },
+          "computed": {
+            "total": "red + blue",
+            "g": "gcd(blue, red + blue)",
+            "num": "blue // gcd(blue, red + blue)",
+            "den": "(red + blue) // gcd(blue, red + blue)",
+            "answer": "blue / (red + blue)"
+          }
+        },
+        "explanation_template": "Всего {total} карандашей, синих {blue}. P = {blue}/{total} = {num}/{den}.",
+        "subtype_code": "math_oge_q10_classic_prob",
+        "title": "Классическая вероятность",
+        "tags": [
+          "вероятность"
+        ],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 11,
+      "part": 1,
+      "prototype_title": "11m: Графики функций · соответствие график и формула",
+      "prompt_instruction": "Тип КИМ №11 (тип 1): три графика — парабола, гипербола, прямая. Ответ — три цифры (А, Б, В).",
+      "template_text": "На рисунке изображены графики функций. Установите соответствие между графиками и формулами, которые их задают.\n\nА) y = −x + {b}\nБ) y = {ax2}\nВ) y = [[{k}|x]]\n\nВ таблицу под буквами А, Б, В запишите номера соответствующих графиков.\n\nА | Б | В\n  |   |\n\nВ ответе запишите последовательность трёх цифр.",
+      "template_answer": "312",
+      "template_solution": "А — прямая y = −x + {b} → график {ans_a}. Б — парабола y = {ax2} → график {ans_b}. В — гипербола y = {k}/x → график {ans_c}. Ответ: {answer}.",
+      "figure_kind": "graph_match",
+      "figure_params": {
+        "graphs": ["parabola", "hyperbola", "line_down"],
+        "mutator_logic": {
+          "variables": {
+            "a": "random_choice([1, 2])",
+            "b": "random_choice([1, 2, 3])",
+            "k": "random_choice([1, 2, 3])",
+            "perm": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "ax2": "pick(['x²', '2x²'], a - 1)",
+            "g1": "pick(['parabola', 'parabola', 'hyperbola', 'hyperbola', 'line_down', 'line_down'], perm)",
+            "g2": "pick(['hyperbola', 'line_down', 'parabola', 'line_down', 'parabola', 'hyperbola'], perm)",
+            "g3": "pick(['line_down', 'hyperbola', 'line_down', 'parabola', 'hyperbola', 'parabola'], perm)",
+            "ans_a": "pick([3, 2, 3, 2, 1, 1], perm)",
+            "ans_b": "pick([1, 1, 2, 3, 2, 3], perm)",
+            "ans_c": "pick([2, 3, 1, 1, 3, 2], perm)",
+            "answer": "pick(['312', '213', '321', '231', '123', '132'], perm)"
+          },
+          "figure": {
+            "kind": "graph_match",
+            "graphs": ["{g1}", "{g2}", "{g3}"],
+            "a": "{a}",
+            "b": "{b}",
+            "k": "{k}"
+          }
+        },
+        "explanation_template": "А — прямая y = −x + {b} → график {ans_a}. Б — парабола y = {ax2} → график {ans_b}. В — гипербола y = {k}/x → график {ans_c}. Ответ: {answer}.",
+        "subtype_code": "math_oge_q11_graph_match",
+        "title": "Соответствие графиков и формул",
+        "tags": [
+          "графики",
+          "функции"
+        ],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 12,
+      "part": 1,
+      "prototype_title": "12m: Расчёты по формулам · закон Ома",
+      "prompt_instruction": "Тип КИМ №12: расчёт по формуле. Ответ — целое число.",
+      "template_text": "Сила тока вычисляется по формуле I = [[U|R]], где U — напряжение (В), R — сопротивление (Ом). Найдите силу тока (в амперах), если U = {U}, R = {R}.",
+      "template_answer": "5",
+      "template_solution": "I = U/R = {U}/{R} = {answer} А.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "k": "random_choice([2, 4, 5, 10])",
+            "R": "random_choice([11, 22, 44])"
+          },
+          "computed": {
+            "U": "k * R",
+            "answer": "k"
+          }
+        },
+        "explanation_template": "I = {U}/{R} = {answer}.",
+        "subtype_code": "math_oge_q12_formula_ohm",
+        "title": "Подстановка в формулу",
+        "tags": [
+          "формулы",
+          "физика"
+        ],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 13,
+      "part": 1,
+      "prototype_title": "13m: Неравенства · линейное неравенство",
+      "prompt_instruction": "Тип КИМ №13: неравенство. Ответ — наименьшее целое решение.",
+      "template_text": "Решите неравенство: x + {a} > {b}. В ответ запишите наименьшее целое число, которое является решением неравенства.",
+      "template_answer": "4",
+      "template_solution": "x > {b} − {a}, то есть x > {bound}. Наименьшее целое решение: {answer}.",
+      "figure_kind": "numberline",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "a": "random_int(2, 9)",
+            "b": "random_int(3, 18)"
+          },
+          "computed": {
+            "bound": "b - a",
+            "answer": "(b - a) + 1"
+          },
+          "figure": {
+            "kind": "numberline",
+            "min": "{bound}",
+            "max": "{answer}",
+            "points": [
+              {
+                "x": "{answer}",
+                "label": "x"
+              }
+            ],
+            "label": "наименьшее целое"
+          }
+        },
+        "explanation_template": "x > {bound}. Наименьшее целое: {answer}.",
+        "subtype_code": "math_oge_q13_linear_ineq",
+        "title": "Линейное неравенство",
+        "tags": [
+          "неравенства"
+        ],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 14,
+      "part": 1,
+      "prototype_title": "14m: Прогрессии · n-й член арифметической прогрессии",
+      "prompt_instruction": "Тип КИМ №14: арифметическая прогрессия. Ответ — целое число.",
+      "template_text": "Дана арифметическая прогрессия, у которой первый член равен {a1}, а разность равна {d}. Найдите {n}-й член прогрессии.",
+      "template_answer": "23",
+      "template_solution": "a_n = a1 + (n − 1)·d = {a1} + ({n} − 1)·{d} = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "a1": "random_choice([2, 3, 4, 5, 7])",
+            "d": "random_choice([2, 3, 4, 5])",
+            "n": "random_choice([6, 7, 8, 9, 10])"
+          },
+          "computed": {
+            "answer": "a1 + (n - 1) * d"
+          }
+        },
+        "explanation_template": "a_{n} = {a1} + ({n} − 1)·{d} = {answer}.",
+        "subtype_code": "math_oge_q14_arith_nth",
+        "title": "Арифметическая прогрессия",
+        "tags": [
+          "прогрессии"
+        ],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 15,
+      "part": 1,
+      "prototype_title": "15m: Треугольники · внешний угол",
+      "prompt_instruction": "Тип КИМ №15: треугольник. Ответ в градусах.",
+      "template_text": "В треугольнике ABC известно, что AC = BC, угол C равен {c} градусам. Найдите внешний угол при вершине B. Ответ дайте в градусах.",
+      "template_answer": "116",
+      "template_solution": "Углы при основании равны: (180 − {c}) / 2. Внешний угол при B равен 180 − угол B = (180 + {c}) / 2 = {answer}.",
+      "figure_kind": "triangle",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "c": "random_choice([40, 50, 52, 60, 70, 80])"
+          },
+          "computed": {
+            "answer": "(180 + c) / 2"
+          },
+          "figure": {
+            "kind": "triangle",
+            "angle": "{c}"
+          }
+        },
+        "explanation_template": "Внешний угол при B: (180 + {c}) / 2 = {answer}.",
+        "subtype_code": "math_oge_q15_ext_angle",
+        "title": "Внешний угол треугольника",
+        "tags": [
+          "геометрия",
+          "треугольники"
+        ],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 16,
+      "part": 1,
+      "prototype_title": "16m: Окружность · вписанный угол",
+      "prompt_instruction": "Тип КИМ №16: окружность. Вписанный угол равен половине центрального.",
+      "template_text": "Центральный угол AOB равен {central} градусам и опирается на ту же дугу AB, что и вписанный угол ACB. Найдите угол ACB. Ответ дайте в градусах.",
+      "template_answer": "35",
+      "template_solution": "Вписанный угол равен половине центрального, опирающегося на ту же дугу: {central} / 2 = {answer}.",
+      "figure_kind": "circle",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "central": "random_choice([40, 50, 60, 70, 80, 100, 120])"
+          },
+          "computed": {
+            "answer": "central / 2"
+          },
+          "figure": {
+            "kind": "circle",
+            "theme": "inscribed_angle"
+          }
+        },
+        "explanation_template": "∠ACB = {central} / 2 = {answer}.",
+        "subtype_code": "math_oge_q16_inscribed_angle",
+        "title": "Вписанный угол",
+        "tags": [
+          "геометрия",
+          "окружность"
+        ],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 17,
+      "part": 1,
+      "prototype_title": "17m: Четырёхугольники · площадь трапеции",
+      "prompt_instruction": "Тип КИМ №17: площадь. Ответ — целое число.",
+      "template_text": "Основания трапеции равны {a} и {b}, а высота равна {h}. Найдите площадь трапеции.",
+      "template_answer": "60",
+      "template_solution": "S = (a + b) / 2 · h = ({a} + {b}) / 2 · {h} = {answer}.",
+      "figure_kind": "rect",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "a": "random_choice([6, 7, 8, 9, 10])",
+            "b": "random_choice([12, 14, 16, 18])",
+            "h": "random_choice([4, 6, 8])"
+          },
+          "computed": {
+            "answer": "(a + b) * h / 2"
+          },
+          "figure": {
+            "kind": "rect",
+            "shape": "trapezoid",
+            "a": "{a}",
+            "b": "{b}",
+            "h": "{h}"
+          }
+        },
+        "explanation_template": "S = ({a} + {b}) / 2 · {h} = {answer}.",
+        "subtype_code": "math_oge_q17_trapezoid_area",
+        "title": "Площадь трапеции",
+        "tags": [
+          "геометрия",
+          "площади"
+        ],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 18,
+      "part": 1,
+      "prototype_title": "18m: Клетчатая бумага · число клеток",
+      "prompt_instruction": "Тип КИМ №18: клетчатая сетка. Ответ — число клеток прямоугольника.",
+      "template_text": "На клетчатой бумаге отмечен прямоугольник шириной {w} клетки и высотой {h} клетки. Сколько клеток содержит этот прямоугольник?",
+      "template_answer": "24",
+      "template_solution": "Число клеток: {w} · {h} = {answer}.",
+      "figure_kind": "grid",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "w": "random_choice([3, 4, 5, 6])",
+            "h": "random_choice([3, 4, 5, 6])"
+          },
+          "computed": {
+            "answer": "w * h"
+          },
+          "figure": {
+            "kind": "grid",
+            "cols": "{w}",
+            "rows": "{h}"
+          }
+        },
+        "explanation_template": "{w} · {h} = {answer}.",
+        "subtype_code": "math_oge_q18_grid_cells",
+        "title": "Фигуры на клетчатой бумаге",
+        "tags": [
+          "геометрия",
+          "сетка"
+        ],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 19,
+      "part": 1,
+      "prototype_title": "19m: Геометрические утверждения · выбор верных",
+      "prompt_instruction": "Тип КИМ №19: анализ геометрических утверждений. Запишите номера верных без пробелов.",
+      "template_text": "Какие из следующих утверждений верны?\n1) {s1}\n2) {s2}\n3) {s3}\nЗапишите номера верных утверждений без пробелов и запятых.",
+      "template_answer": "12",
+      "template_solution": "Верны утверждения с номерами {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "idx": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "s1": "pick(['Сумма углов треугольника равна 180°.', 'Вертикальные углы равны.', 'Диагонали ромба всегда равны.', 'Средняя линия треугольника параллельна третьей стороне.', 'Внешний угол треугольника равен сумме двух внутренних, не смежных с ним.', 'Центр описанной около прямоугольного треугольника окружности — середина гипотенузы.'], idx)",
+            "s2": "pick(['Диагонали прямоугольника равны.', 'Смежные углы в сумме всегда равны 90°.', 'Сумма углов выпуклого четырёхугольника равна 360°.', 'Площадь параллелограмма равна произведению его сторон.', 'Диагонали прямоугольника равны.', 'Площадь ромба равна половине произведения диагоналей.'], idx)",
+            "s3": "pick(['Любой ромб является квадратом.', 'Через две различные точки проходит ровно одна прямая.', 'Вписанный угол, опирающийся на диаметр, равен 90°.', 'Касательная перпендикулярна радиусу, проведённому в точку касания.', 'Любая трапеция имеет равные боковые стороны.', 'Все углы параллелограмма равны.'], idx)",
+            "answer": "pick(['12', '13', '23', '13', '12', '12'], idx)"
+          }
+        },
+        "explanation_template": "Верны утверждения с номерами {answer}.",
+        "subtype_code": "math_oge_q19_statements",
+        "title": "Верные геометрические утверждения",
+        "tags": [
+          "геометрия",
+          "утверждения"
+        ],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 19,
+      "part": 1,
+      "prototype_title": "19m2: Геометрические утверждения · неверное",
+      "prompt_instruction": "Тип КИМ №19: какое утверждение неверно. Ответ — номер.",
+      "template_text": "Какое из следующих утверждений неверно?\n1) {s1}\n2) {s2}\n3) {s3}\nВ ответ запишите номер неверного утверждения.",
+      "template_answer": "3",
+      "template_solution": "Неверно утверждение {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "idx": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "s1": "pick(['Диагонали ромба всегда равны.', 'Вертикальные углы равны.', 'Касательная перпендикулярна радиусу в точке касания.', 'Любой прямоугольник является квадратом.', 'Сумма углов треугольника равна 180°.', 'Диагонали прямоугольника равны.'], idx)",
+            "s2": "pick(['Сумма углов треугольника равна 180°.', 'Вписанный угол, опирающийся на диаметр, всегда острый.', 'Диагонали прямоугольника равны.', 'Через две различные точки проходит ровно одна прямая.', 'Любая трапеция является параллелограммом.', 'Сумма углов выпуклого четырёхугольника равна 360°.'], idx)",
+            "s3": "pick(['Через две различные точки проходит ровно одна прямая.', 'Сумма углов выпуклого четырёхугольника равна 360°.', 'Любой ромб является квадратом.', 'Касательная перпендикулярна радиусу в точке касания.', 'Вертикальные углы равны.', 'Все стороны прямоугольника равны.'], idx)",
+            "answer": "pick(['1', '2', '3', '1', '2', '3'], idx)"
+          }
+        },
+        "explanation_template": "Неверно утверждение {answer}.",
+        "subtype_code": "math_oge_q19_false_statement",
+        "title": "Неверное геометрическое утверждение",
+        "tags": [
+          "геометрия",
+          "утверждения"
+        ],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 7,
+      "part": 1,
+      "prototype_title": "7m2: Числовая прямая · корень на прямой",
+      "prompt_instruction": "Тип КИМ №7: точки A–D на прямой, какая соответствует √n. Ответ — буква.",
+      "template_text": "На координатной прямой отмечены точки A, B, C и D. Какой из них соответствует число √{n}? В ответ запишите букву A, B, C или D.",
+      "template_answer": "B",
+      "template_solution": "√{n} ≈ {x}. Это точка {answer}.",
+      "figure_kind": "numberline",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "k": "random_choice([5, 6, 7])",
+            "t": "random_choice([0, 1, 2, 3])"
+          },
+          "computed": {
+            "n1": "k * k + 1",
+            "n2": "k * k + 5",
+            "n3": "(k + 1) * (k + 1) + 3",
+            "n4": "(k + 1) * (k + 1) + 8",
+            "x1": "sqrt(k * k + 1)",
+            "x2": "sqrt(k * k + 5)",
+            "x3": "sqrt((k + 1) * (k + 1) + 3)",
+            "x4": "sqrt((k + 1) * (k + 1) + 8)",
+            "n": "pick([k * k + 1, k * k + 5, (k + 1) * (k + 1) + 3, (k + 1) * (k + 1) + 8], t)",
+            "x": "sqrt(pick([k * k + 1, k * k + 5, (k + 1) * (k + 1) + 3, (k + 1) * (k + 1) + 8], t))",
+            "answer": "pick(['A', 'B', 'C', 'D'], t)",
+            "k2": "k + 2",
+            "acceptable": "[pick(['a', 'b', 'c', 'd'], t)]"
+          },
+          "figure": {
+            "kind": "numberline",
+            "min": "{k}",
+            "max": "{k2}",
+            "pad": 0.4,
+            "points": [
+              {"x": "{x1}", "label": "A"},
+              {"x": "{x2}", "label": "B"},
+              {"x": "{x3}", "label": "C"},
+              {"x": "{x4}", "label": "D"}
+            ]
+          }
+        },
+        "explanation_template": "√{n} ≈ {x}, это точка {answer}.",
+        "subtype_code": "math_oge_q07_sqrt_point",
+        "title": "Корень на числовой прямой",
+        "tags": ["числовая_прямая", "корни"],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 8,
+      "part": 1,
+      "prototype_title": "8m3: Корни · произведение под корнем",
+      "prompt_instruction": "Тип КИМ №8: √(a·b). Ответ — целое число.",
+      "template_text": "Найдите значение выражения: √({a} · {b}).",
+      "template_answer": "12",
+      "template_solution": "√({a} · {b}) = √{prod} = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "m": "random_choice([2, 3, 4])",
+            "n": "random_choice([2, 3, 4], exclude=[m])"
+          },
+          "computed": {
+            "a": "2 * m * m",
+            "b": "2 * n * n",
+            "prod": "4 * m * m * n * n",
+            "answer": "2 * m * n"
+          }
+        },
+        "explanation_template": "√({a}·{b}) = 2·{m}·{n} = {answer}.",
+        "subtype_code": "math_oge_q08_radical_product",
+        "title": "Корень из произведения",
+        "tags": ["корни"],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 12,
+      "part": 1,
+      "prototype_title": "12m2: Расчёты по формулам · центростремительное ускорение",
+      "prompt_instruction": "Тип КИМ №12: подстановка в a = ω²R. Ответ — число.",
+      "template_text": "Центростремительное ускорение вычисляется по формуле a = ω²R, где ω — угловая скорость (рад/с), R — радиус (м). Найдите R, если a = {a} и ω = {omega}.",
+      "template_answer": "4",
+      "template_solution": "R = a / ω² = {a} / {omega}² = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "omega": "random_choice([2, 4, 5])",
+            "R": "random_choice([4, 5, 8, 10])"
+          },
+          "computed": {
+            "a": "omega * omega * R",
+            "answer": "R"
+          }
+        },
+        "explanation_template": "R = {a} / {omega}² = {answer}.",
+        "subtype_code": "math_oge_q12_formula_centrip",
+        "title": "Подстановка в формулу ускорения",
+        "tags": ["формулы", "физика"],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 13,
+      "part": 1,
+      "prototype_title": "13m2: Неравенства · квадратное неравенство",
+      "prompt_instruction": "Тип КИМ №13: x² − n ≤ 0. Ответ — наибольшее целое решение.",
+      "template_text": "Решите неравенство: x² − {n} ≤ 0. В ответ запишите наибольшее целое число, которое является решением неравенства.",
+      "template_answer": "4",
+      "template_solution": "x² ≤ {n}, |x| ≤ {k}. Наибольшее целое решение: {answer}.",
+      "figure_kind": "numberline",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "k": "random_choice([3, 4, 5, 6])"
+          },
+          "computed": {
+            "n": "k * k",
+            "k_neg": "-k",
+            "answer": "k"
+          },
+          "figure": {
+            "kind": "numberline",
+            "min": "{k_neg}",
+            "max": "{k}",
+            "intervals": [
+              {"a": "{k_neg}", "b": "{k}", "left_open": false, "right_open": false}
+            ]
+          }
+        },
+        "explanation_template": "|x| ≤ {k}. Наибольшее целое: {answer}.",
+        "subtype_code": "math_oge_q13_quadratic_ineq",
+        "title": "Квадратное неравенство",
+        "tags": ["неравенства"],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 15,
+      "part": 1,
+      "prototype_title": "15m2: Треугольники · синус острого угла",
+      "prompt_instruction": "Тип КИМ №15: прямоугольный треугольник, sin острого угла. Ответ — десятичная дробь.",
+      "template_text": "В треугольнике ABC угол C равен 90°, катет BC = {a}, катет AC = {b}. Найдите sin ∠ABC.",
+      "template_answer": "0.6",
+      "template_solution": "Гипотенуза AB = {c}. sin ∠ABC = AC/AB = {b}/{c} = {answer}.",
+      "figure_kind": "triangle",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "s": "random_choice([1, 2, 3])"
+          },
+          "computed": {
+            "a": "4 * s",
+            "b": "3 * s",
+            "c": "5 * s",
+            "answer": "0.6"
+          },
+          "figure": {
+            "kind": "triangle"
+          }
+        },
+        "explanation_template": "sin ∠ABC = {b}/{c} = 0,6.",
+        "subtype_code": "math_oge_q15_right_trig",
+        "title": "Синус в прямоугольном треугольнике",
+        "tags": ["геометрия", "треугольники"],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 18,
+      "part": 1,
+      "prototype_title": "18m2: Клетчатая бумага · площадь трапеции",
+      "prompt_instruction": "Тип КИМ №18: трапеция на сетке. Ответ — площадь в клетках.",
+      "template_text": "На клетчатой бумаге с размером клетки 1×1 изображена трапеция. Её основания равны {a} и {b} клеткам, высота равна {h} клеткам. Найдите площадь трапеции.",
+      "template_answer": "6",
+      "template_solution": "S = ({a} + {b}) / 2 · {h} = {answer}.",
+      "figure_kind": "grid",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "h": "random_choice([2, 3])",
+            "a": "random_choice([2, 3])"
+          },
+          "computed": {
+            "b": "a + 2",
+            "x_b": "1 + a + 2",
+            "x_tl": "2",
+            "x_tr": "2 + a",
+            "yh": "1 + h",
+            "cols": "a + 5",
+            "rows": "h + 3",
+            "answer": "(a + a + 2) * h / 2"
+          },
+          "figure": {
+            "kind": "grid",
+            "cols": "{cols}",
+            "rows": "{rows}",
+            "polygons": [
+              [[1, 1], ["{x_b}", 1], ["{x_tr}", "{yh}"], ["{x_tl}", "{yh}"]]
+            ]
+          }
+        },
+        "explanation_template": "S = ({a} + {b})/2 · {h} = {answer}.",
+        "subtype_code": "math_oge_q18_grid_trapezoid",
+        "title": "Трапеция на клетчатой бумаге",
+        "tags": ["геометрия", "сетка"],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 10,
+      "part": 1,
+      "prototype_title": "10m2: Теория вероятностей · исправный объект",
+      "prompt_instruction": "Тип КИМ №10: вероятность, что случайно выбранный предмет исправен. Ответ — десятичная дробь.",
+      "template_text": "В среднем из {total} насосов, поступивших в продажу, {bad} подтекают. Найдите вероятность того, что один случайно выбранный для контроля насос не подтекает.",
+      "template_answer": "0.96",
+      "template_solution": "Исправных насосов {good} из {total}. P = {good}/{total} = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "idx": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "total": "pick([100, 100, 50, 200, 100, 50], idx)",
+            "bad": "pick([4, 5, 5, 4, 8, 4], idx)",
+            "good": "total - bad",
+            "answer": "(total - bad) / total"
+          }
+        },
+        "explanation_template": "Исправных {good} из {total}. P = {good}/{total} = {answer}.",
+        "subtype_code": "math_oge_q10_working_item",
+        "title": "Вероятность исправного объекта",
+        "tags": ["вероятность"],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 10,
+      "part": 1,
+      "prototype_title": "10m3: Теория вероятностей · жребий / очередь",
+      "prompt_instruction": "Тип КИМ №10: вероятность, что первым выступит спортсмен из данной группы.",
+      "template_text": "В соревновании участвуют {total} спортсменов, из них {rus} из России. Порядок выступлений определяется жребием. Найдите вероятность того, что первым будет выступать спортсмен из России.",
+      "template_answer": "0.2",
+      "template_solution": "Благоприятных исходов {rus} из {total}. P = {rus}/{total} = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "idx": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "total": "pick([20, 20, 25, 40, 30, 40], idx)",
+            "rus": "pick([4, 5, 5, 10, 9, 8], idx)",
+            "answer": "rus / total"
+          }
+        },
+        "explanation_template": "P = {rus}/{total} = {answer}.",
+        "subtype_code": "math_oge_q10_queue",
+        "title": "Вероятность по жребию",
+        "tags": ["вероятность", "жребий"],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 14,
+      "part": 1,
+      "prototype_title": "14m2: Прогрессии · сумма арифметической прогрессии",
+      "prompt_instruction": "Тип КИМ №14: сумма n членов арифметической прогрессии. Ответ — целое число.",
+      "template_text": "В амфитеатре {n} рядов. В первом ряду {a1} мест, а в каждом следующем на {d} места больше, чем в предыдущем. Сколько всего мест в амфитеатре?",
+      "template_answer": "290",
+      "template_solution": "S_n = n/2 · (2·a1 + (n − 1)·d) = {n}/2 · (2·{a1} + ({n} − 1)·{d}) = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "n": "random_choice([8, 10, 12, 16])",
+            "a1": "random_choice([10, 12, 15, 20])",
+            "d": "random_choice([2, 3, 4])"
+          },
+          "computed": {
+            "answer": "n * (2 * a1 + (n - 1) * d) / 2"
+          }
+        },
+        "explanation_template": "S = {n}/2 · (2·{a1} + ({n} − 1)·{d}) = {answer}.",
+        "subtype_code": "math_oge_q14_arith_sum",
+        "title": "Сумма арифметической прогрессии",
+        "tags": ["прогрессии", "сумма"],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 14,
+      "part": 1,
+      "prototype_title": "14m3: Прогрессии · геометрическая прогрессия",
+      "prompt_instruction": "Тип КИМ №14: удвоение за равные промежутки. Ответ — целое число.",
+      "template_text": "В чашке Петри в полдень была 1 бактерия. Каждую минуту количество бактерий удваивается. Сколько бактерий будет через {n} минут?",
+      "template_answer": "128",
+      "template_solution": "Это геометрическая прогрессия с b1 = 1 и q = 2. Через {n} минут: 2^{n} = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "n": "random_choice([5, 6, 7, 8])"
+          },
+          "computed": {
+            "answer": "pow(2, n)"
+          }
+        },
+        "explanation_template": "2^{n} = {answer}.",
+        "subtype_code": "math_oge_q14_geom_nth",
+        "title": "Геометрическая прогрессия",
+        "tags": ["прогрессии", "геометрическая"],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 16,
+      "part": 1,
+      "prototype_title": "16m2: Окружность · две касательные",
+      "prompt_instruction": "Тип КИМ №16: касательные из одной точки равны, треугольник равнобедренный.",
+      "template_text": "Касательные в точках A и B к окружности пересекаются в точке P. Угол APB равен {p} градусам. Найдите угол PAB. Ответ дайте в градусах.",
+      "template_answer": "54",
+      "template_solution": "Отрезки касательных PA и PB равны, треугольник PAB равнобедренный. Углы при основании: (180 − {p}) / 2 = {answer}.",
+      "figure_kind": "circle",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "p": "random_choice([40, 50, 60, 70, 80])"
+          },
+          "computed": {
+            "answer": "(180 - p) / 2"
+          },
+          "figure": {
+            "kind": "circle",
+            "theme": "two_tangents"
+          }
+        },
+        "explanation_template": "∠PAB = (180 − {p}) / 2 = {answer}.",
+        "subtype_code": "math_oge_q16_two_tangents",
+        "title": "Две касательные к окружности",
+        "tags": ["геометрия", "окружность", "касательная"],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 16,
+      "part": 1,
+      "prototype_title": "16m3: Окружность · вписанный четырёхугольник",
+      "prompt_instruction": "Тип КИМ №16: сумма противоположных углов вписанного четырёхугольника равна 180°.",
+      "template_text": "Четырёхугольник ABCD вписан в окружность. Угол ABC равен {abc} градусам. Найдите угол ADC. Ответ дайте в градусах.",
+      "template_answer": "50",
+      "template_solution": "Сумма противоположных углов вписанного четырёхугольника равна 180°. ∠ADC = 180 − {abc} = {answer}.",
+      "figure_kind": "circle",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "abc": "random_choice([100, 110, 120, 130, 140])"
+          },
+          "computed": {
+            "answer": "180 - abc"
+          },
+          "figure": {
+            "kind": "circle",
+            "theme": "cyclic_quad"
+          }
+        },
+        "explanation_template": "∠ADC = 180 − {abc} = {answer}.",
+        "subtype_code": "math_oge_q16_cyclic_quad",
+        "title": "Вписанный четырёхугольник",
+        "tags": ["геометрия", "окружность"],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 17,
+      "part": 1,
+      "prototype_title": "17m2: Площади · ромб с углом 30°",
+      "prompt_instruction": "Тип КИМ №17: площадь ромба S = a² · sin α. Ответ — целое число.",
+      "template_text": "Периметр ромба равен {perim}, а один из углов равен 30°. Найдите площадь ромба.",
+      "template_answer": "50",
+      "template_solution": "Сторона ромба {side}. S = a² · sin 30° = {side}² · 1/2 = {answer}.",
+      "figure_kind": "rect",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "side": "random_choice([6, 8, 10, 12])"
+          },
+          "computed": {
+            "perim": "4 * side",
+            "answer": "side * side / 2"
+          },
+          "figure": {
+            "kind": "rect",
+            "shape": "rhombus",
+            "side": "{side}"
+          }
+        },
+        "explanation_template": "a = {side}, S = {side}² / 2 = {answer}.",
+        "subtype_code": "math_oge_q17_rhombus_area",
+        "title": "Площадь ромба",
+        "tags": ["геометрия", "площади"],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 17,
+      "part": 1,
+      "prototype_title": "17m3: Площади · треугольник по стороне и высоте",
+      "prompt_instruction": "Тип КИМ №17: S = a · h / 2. Ответ — целое число.",
+      "template_text": "Одна из сторон треугольника равна {a}, а высота, проведённая к этой стороне, равна {h}. Найдите площадь треугольника.",
+      "template_answer": "35",
+      "template_solution": "S = a · h / 2 = {a} · {h} / 2 = {answer}.",
+      "figure_kind": "triangle",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "a": "random_choice([8, 10, 12, 14, 16])",
+            "h": "random_choice([5, 6, 8])"
+          },
+          "computed": {
+            "answer": "a * h / 2"
+          }
+        },
+        "explanation_template": "S = {a} · {h} / 2 = {answer}.",
+        "subtype_code": "math_oge_q17_triangle_area",
+        "title": "Площадь треугольника",
+        "tags": ["геометрия", "площади"],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 6,
+      "part": 1,
+      "prototype_title": "6m3: Вычисления · смешанное выражение с обратными",
+      "prompt_instruction": "Тип КИМ №6: 1 : (1/a + 1/b). Ответ — целое число.",
+      "template_text": "Найдите значение выражения: 1 : ([[1|{a}]] + [[1|{b}]]).",
+      "template_answer": "20",
+      "template_solution": "1/a + 1/b = (a + b)/(ab). Тогда 1 : ((a + b)/(ab)) = ab/(a + b) = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "idx": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "a": "pick([12, 16, 20, 25, 30, 32], idx)",
+            "b": "pick([12, 48, 60, 100, 60, 96], idx)",
+            "answer": "pick([6, 12, 15, 20, 20, 24], idx)"
+          }
+        },
+        "explanation_template": "ab/(a + b) = {a}·{b}/({a}+{b}) = {answer}.",
+        "subtype_code": "math_oge_q06_mixed_frac",
+        "title": "Обратные величины",
+        "tags": ["дроби", "вычисления"],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 7,
+      "part": 1,
+      "prototype_title": "7m3: Числовая прямая · дробь на промежутке",
+      "prompt_instruction": "Тип КИМ №7: обыкновенная дробь принадлежит одному из промежутков. Ответ — номер 1–4.",
+      "template_text": "Какому из указанных промежутков принадлежит число [[{num}|{den}]]?\n1) [0,2; 0,3]\n2) [0,3; 0,4]\n3) [0,4; 0,5]\n4) [0,5; 0,6]\nВ ответ запишите номер верного промежутка.",
+      "template_answer": "2",
+      "template_solution": "{num}/{den} ≈ {x}. Это промежуток {answer}.",
+      "figure_kind": "numberline",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "idx": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "num": "pick([5, 2, 5, 7, 3, 4], idx)",
+            "den": "pick([13, 7, 11, 12, 8, 9], idx)",
+            "x": "pick([5, 2, 5, 7, 3, 4], idx) / pick([13, 7, 11, 12, 8, 9], idx)",
+            "answer": "pick([2, 1, 3, 4, 2, 3], idx)"
+          },
+          "figure": {
+            "kind": "numberline",
+            "min": 0,
+            "max": 1,
+            "points": [
+              {
+                "x": "{x}",
+                "label": "A"
+              }
+            ]
+          }
+        },
+        "explanation_template": "{num}/{den} ≈ {x} — промежуток {answer}.",
+        "subtype_code": "math_oge_q07_frac_interval",
+        "title": "Дробь на промежутке",
+        "tags": ["числовая_прямая", "дроби"],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 7,
+      "part": 1,
+      "prototype_title": "7m4: Числовая прямая · знаки a и b",
+      "prompt_instruction": "Тип КИМ №7: точки a и b на прямой, верное неравенство. Ответ — номер 1–4.",
+      "template_text": "На координатной прямой отмечены точки a и b, причём a < 0 < b и |a| > |b|. Какое из утверждений верно?\n1) {o1}\n2) {o2}\n3) {o3}\n4) {o4}\nВ ответ запишите номер верного утверждения.",
+      "template_answer": "3",
+      "template_solution": "a отрицательно, b положительно, поэтому a·b < 0. Верно утверждение {answer}.",
+      "figure_kind": "numberline",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "idx": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "a": "pick([-5, -6, -7, -8, -4, -9], idx)",
+            "b": "pick([3, 2, 4, 3, 1, 5], idx)",
+            "o1": "pick(['a + b > 0', 'a · b < 0', 'a + b > 0', 'a − b > 0', 'a + b > 0', 'a · b < 0'], idx)",
+            "o2": "pick(['a − b > 0', 'a + b > 0', 'a · b < 0', 'b − a < 0', 'a − b > 0', 'a + b > 0'], idx)",
+            "o3": "pick(['a · b < 0', 'a − b > 0', 'a − b > 0', 'a + b > 0', 'a · b < 0', 'a − b > 0'], idx)",
+            "o4": "pick(['b − a < 0', 'b − a < 0', 'b − a < 0', 'a · b < 0', 'b − a < 0', 'b − a < 0'], idx)",
+            "answer": "pick([3, 1, 2, 4, 3, 1], idx)"
+          },
+          "figure": {
+            "kind": "numberline",
+            "min": "{a}",
+            "max": "{b}",
+            "pad": 2,
+            "points": [
+              {"x": "{a}", "label": "a"},
+              {"x": "{b}", "label": "b"}
+            ]
+          }
+        },
+        "explanation_template": "a < 0 < b, поэтому a·b < 0. Номер {answer}.",
+        "subtype_code": "math_oge_q07_signs",
+        "title": "Знаки чисел на прямой",
+        "tags": ["числовая_прямая", "знаки"],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 8,
+      "part": 1,
+      "prototype_title": "8m4: Формулы сокращённого умножения · разность квадратов корней",
+      "prompt_instruction": "Тип КИМ №8: (√n − k)(√n + k) = n − k². Ответ — целое число.",
+      "template_text": "Найдите значение выражения: (√{n} − {k})(√{n} + {k}).",
+      "template_answer": "12",
+      "template_solution": "(√n − k)(√n + k) = n − k² = {n} − {k}² = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "idx": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "n": "pick([21, 13, 29, 17, 26, 45], idx)",
+            "k": "pick([3, 2, 2, 1, 1, 3], idx)",
+            "answer": "pick([12, 9, 25, 16, 25, 36], idx)"
+          }
+        },
+        "explanation_template": "{n} − {k}² = {answer}.",
+        "subtype_code": "math_oge_q08_fsu_roots",
+        "title": "Разность квадратов",
+        "tags": ["степени", "корни", "ФСУ"],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 9,
+      "part": 1,
+      "prototype_title": "9m3: Уравнения · рациональное с неизвестным в числителе",
+      "prompt_instruction": "Тип КИМ №9: x/a + x/b = c. Ответ — целое число.",
+      "template_text": "Решите уравнение: [[x|{a}]] + [[x|{b}]] = {c}.",
+      "template_answer": "9",
+      "template_solution": "x({a}+{b})/({a}·{b}) = {c}, откуда x = {c}·{a}·{b}/({a}+{b}) = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "idx": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "a": "pick([3, 4, 2, 3, 5, 4], idx)",
+            "b": "pick([6, 12, 8, 12, 20, 6], idx)",
+            "c": "pick([2, 2, 5, 5, 3, 5], idx)",
+            "answer": "pick([4, 6, 8, 12, 12, 12], idx)"
+          }
+        },
+        "explanation_template": "x = {c}·{a}·{b}/({a}+{b}) = {answer}.",
+        "subtype_code": "math_oge_q09_rational",
+        "title": "Рациональное уравнение",
+        "tags": ["уравнения", "дроби"],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 12,
+      "part": 1,
+      "prototype_title": "12m3: Расчёты по формулам · шкала Фаренгейта",
+      "prompt_instruction": "Тип КИМ №12: t_F = 1,8 t_C + 32. Ответ — целое число.",
+      "template_text": "Температура по шкале Фаренгейта вычисляется по формуле t_F = 1,8·t_C + 32, где t_C — температура в градусах Цельсия. Найдите t_F, если t_C = {t}.",
+      "template_answer": "50",
+      "template_solution": "t_F = 1,8·{t} + 32 = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "idx": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "t": "pick([-20, -10, 0, 10, 20, 25], idx)",
+            "answer": "pick([-4, 14, 32, 50, 68, 77], idx)"
+          }
+        },
+        "explanation_template": "1,8·{t} + 32 = {answer}.",
+        "subtype_code": "math_oge_q12_fahrenheit",
+        "title": "Формула Фаренгейта",
+        "tags": ["формулы"],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 12,
+      "part": 1,
+      "prototype_title": "12m4: Расчёты по формулам · выразить неизвестное",
+      "prompt_instruction": "Тип КИМ №12: из S = (d1·d2·sin α)/2 найти d2. Ответ — целое число.",
+      "template_text": "Площадь треугольника вычисляется по формуле S = [[d1 · d2 · sin α|2]]. Найдите d2, если S = {S}, d1 = {d1} и sin α = [[1|{k}]].",
+      "template_answer": "12",
+      "template_solution": "d2 = 2S / (d1 · sin α) = 2·{S} / ({d1} · 1/{k}) = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "idx": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "S": "pick([18, 20, 24, 15, 30, 12], idx)",
+            "d1": "pick([6, 5, 8, 6, 10, 4], idx)",
+            "k": "pick([2, 2, 3, 2, 3, 2], idx)",
+            "answer": "pick([12, 16, 18, 10, 18, 12], idx)"
+          }
+        },
+        "explanation_template": "d2 = 2·{S}·{k}/{d1} = {answer}.",
+        "subtype_code": "math_oge_q12_formula_diag",
+        "title": "Выразить неизвестное из формулы",
+        "tags": ["формулы", "геометрия"],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 13,
+      "part": 1,
+      "prototype_title": "13m3: Неравенства · система линейных неравенств",
+      "prompt_instruction": "Тип КИМ №13: система неравенств. Ответ — наименьшее целое решение пересечения.",
+      "template_text": "Решите систему неравенств:\nx > {a}\nx ≤ {b}\nВ ответ запишите наименьшее целое число, которое является решением системы.",
+      "template_answer": "4",
+      "template_solution": "x > {a} и x ≤ {b}. Наименьшее целое: {answer}.",
+      "figure_kind": "numberline",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "a": "random_int(1, 8)",
+            "span": "random_choice([4, 5, 6, 7, 8])"
+          },
+          "computed": {
+            "b": "a + span",
+            "answer": "a + 1"
+          },
+          "figure": {
+            "kind": "numberline",
+            "min": "{a}",
+            "max": "{b}",
+            "points": [
+              {"x": "{answer}", "label": "x"}
+            ]
+          }
+        },
+        "explanation_template": "x > {a} и x ≤ {b}. Наименьшее целое: {answer}.",
+        "subtype_code": "math_oge_q13_system_ineq",
+        "title": "Система линейных неравенств",
+        "tags": ["неравенства", "система"],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 14,
+      "part": 1,
+      "prototype_title": "14m4: Прогрессии · возрастание до максимума и убывание",
+      "prompt_instruction": "Тип КИМ №14: ломаная прогрессия (рост–спад). Ответ — целое число.",
+      "template_text": "В первый день больному дали {a} капель лекарства. Каждый следующий день дозу увеличивали на {d} капель, пока она не стала равна {m} каплям. Затем дозу ежедневно уменьшали на {d} капель, пока она снова не стала равна {a} каплям. Сколько всего капель получил больной?",
+      "template_answer": "320",
+      "template_solution": "Дней до максимума включительно: {n}. Сумма симметричной последовательности равна {n}·{m} = {answer}.",
+      "figure_kind": null,
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "idx": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "a": "pick([5, 4, 6, 10, 8, 3], idx)",
+            "d": "pick([5, 4, 3, 5, 4, 3], idx)",
+            "m": "pick([40, 20, 18, 30, 24, 15], idx)",
+            "n": "pick([8, 5, 5, 5, 5, 5], idx)",
+            "answer": "pick([320, 100, 90, 150, 120, 75], idx)"
+          }
+        },
+        "explanation_template": "n = ({m} − {a})/{d} + 1 = {n}. Всего капель {n}·{m} = {answer}.",
+        "subtype_code": "math_oge_q14_drops",
+        "title": "Доза лекарства",
+        "tags": ["прогрессии"],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 15,
+      "part": 1,
+      "prototype_title": "15m3: Треугольники · медиана к гипотенузе",
+      "prompt_instruction": "Тип КИМ №15: в прямоугольном треугольнике медиана к гипотенузе равна её половине.",
+      "template_text": "В прямоугольном треугольнике ABC угол C прямой, катеты AC = {leg_a} и BC = {leg_b}. Найдите медиану, проведённую к гипотенузе.",
+      "template_answer": "5",
+      "template_solution": "Гипотенуза AB = {c}. Медиана к гипотенузе равна половине гипотенузы: {c}/2 = {answer}.",
+      "figure_kind": "triangle",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "idx": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "leg_a": "pick([6, 12, 18, 16, 24, 8], idx)",
+            "leg_b": "pick([8, 16, 24, 30, 32, 6], idx)",
+            "c": "pick([10, 20, 30, 34, 40, 10], idx)",
+            "answer": "pick([5, 10, 15, 17, 20, 5], idx)"
+          },
+          "figure": {
+            "kind": "triangle"
+          }
+        },
+        "explanation_template": "AB = {c}, медиана = {c}/2 = {answer}.",
+        "subtype_code": "math_oge_q15_median",
+        "title": "Медиана к гипотенузе",
+        "tags": ["геометрия", "треугольники"],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 18,
+      "part": 1,
+      "prototype_title": "18m3: Клетчатая бумага · тангенс угла",
+      "prompt_instruction": "Тип КИМ №18: тангенс угла по клеткам. Ответ — десятичная дробь.",
+      "template_text": "На клетчатой бумаге с размером клетки 1×1 изображён угол. Найдите tg α.",
+      "template_answer": "0.75",
+      "template_solution": "Противолежащий катет {opp}, прилежащий {adj}. tg α = {opp}/{adj} = {answer}.",
+      "figure_kind": "grid",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "idx": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "opp": "pick([3, 2, 4, 1, 3, 2], idx)",
+            "adj": "pick([4, 5, 5, 2, 5, 4], idx)",
+            "y1": "pick([4, 3, 5, 2, 4, 3], idx)",
+            "x2": "pick([5, 6, 6, 3, 6, 5], idx)",
+            "cols": "pick([8, 8, 9, 6, 8, 8], idx)",
+            "rows": "pick([7, 6, 8, 5, 7, 6], idx)",
+            "answer": "pick([0.75, 0.4, 0.8, 0.5, 0.6, 0.5], idx)"
+          },
+          "figure": {
+            "kind": "grid",
+            "cols": "{cols}",
+            "rows": "{rows}",
+            "angle": {
+              "vertex": [1, 1],
+              "p1": [1, "{y1}"],
+              "p2": ["{x2}", 1]
+            }
+          }
+        },
+        "explanation_template": "tg α = {opp}/{adj} = {answer}.",
+        "subtype_code": "math_oge_q18_grid_tan",
+        "title": "Тангенс на клетчатой бумаге",
+        "tags": ["геометрия", "сетка", "тригонометрия"],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 18,
+      "part": 1,
+      "prototype_title": "18m4: Клетчатая бумага · средняя линия",
+      "prompt_instruction": "Тип КИМ №18: средняя линия трапеции на сетке. Ответ — число клеток.",
+      "template_text": "На клетчатой бумаге с размером клетки 1×1 изображена трапеция с основаниями {a} и {b} клеток. Найдите длину средней линии трапеции.",
+      "template_answer": "6",
+      "template_solution": "Средняя линия равна полусумме оснований: ({a} + {b})/2 = {answer}.",
+      "figure_kind": "grid",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "idx": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "a": "pick([4, 2, 4, 2, 6, 4], idx)",
+            "b": "pick([8, 6, 6, 8, 10, 10], idx)",
+            "h": "pick([4, 4, 4, 4, 2, 4], idx)",
+            "x_tl": "pick([3, 3, 2, 4, 3, 4], idx)",
+            "x_tr": "pick([7, 5, 6, 6, 9, 8], idx)",
+            "x_br": "pick([9, 7, 7, 9, 11, 11], idx)",
+            "yh": "pick([5, 5, 5, 5, 3, 5], idx)",
+            "mid_y": "pick([3, 3, 3, 3, 2, 3], idx)",
+            "mid_x1": "pick([2, 2, 1.5, 2.5, 2, 2.5], idx)",
+            "mid_x2": "pick([8, 6, 6.5, 7.5, 10, 9.5], idx)",
+            "cols": 14,
+            "rows": 8,
+            "answer": "pick([6, 4, 5, 5, 8, 7], idx)"
+          },
+          "figure": {
+            "kind": "grid",
+            "cols": "{cols}",
+            "rows": "{rows}",
+            "polygons": [
+              [[1, 1], ["{x_br}", 1], ["{x_tr}", "{yh}"], ["{x_tl}", "{yh}"]]
+            ],
+            "lines": [
+              [["{mid_x1}", "{mid_y}"], ["{mid_x2}", "{mid_y}"]]
+            ]
+          }
+        },
+        "explanation_template": "({a} + {b})/2 = {answer}.",
+        "subtype_code": "math_oge_q18_grid_midline",
+        "title": "Средняя линия на сетке",
+        "tags": ["геометрия", "сетка"],
+        "difficulty": "medium"
+      }
+    },
+    {
+      "task_number": 18,
+      "part": 1,
+      "prototype_title": "18m5: Клетчатая бумага · расстояние от точки до прямой",
+      "prompt_instruction": "Тип КИМ №18: расстояние от точки до прямой по клеткам. Ответ — целое число.",
+      "template_text": "На клетчатой бумаге с размером клетки 1×1 изображены прямая и точка A. Найдите расстояние от точки A до прямой.",
+      "template_answer": "3",
+      "template_solution": "Перпендикуляр из A на прямую равен {answer} клеткам.",
+      "figure_kind": "grid",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "idx": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "dist": "pick([3, 4, 2, 5, 3, 4], idx)",
+            "py": "pick([5, 6, 4, 7, 5, 6], idx)",
+            "answer": "pick([3, 4, 2, 5, 3, 4], idx)"
+          },
+          "figure": {
+            "kind": "grid",
+            "cols": 8,
+            "rows": 8,
+            "lines": [[[1, 2], [7, 2]]],
+            "points": [
+              {"x": 4, "y": "{py}", "label": "A"}
+            ]
+          }
+        },
+        "explanation_template": "Расстояние {answer} клетки.",
+        "subtype_code": "math_oge_q18_grid_distance",
+        "title": "Расстояние до прямой",
+        "tags": ["геометрия", "сетка"],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 11,
+      "part": 1,
+      "prototype_title": "11m2: Графики · три параболы",
+      "prompt_instruction": "Тип КИМ №11: соответствие трёх парабол и формул. Ответ — три цифры.",
+      "template_text": "На рисунке изображены графики функций. Установите соответствие между графиками и формулами.\n\nА) y = x²\nБ) y = −x²\nВ) y = (x − 1)²\n\nВ таблицу под буквами А, Б, В запишите номера соответствующих графиков.\n\nА | Б | В\n  |   |\n\nВ ответе запишите последовательность трёх цифр.",
+      "template_answer": "123",
+      "template_solution": "А — парабола ветвями вверх через начало → график {ans_a}. Б — ветвями вниз → график {ans_b}. В — сдвинута вправо → график {ans_c}. Ответ: {answer}.",
+      "figure_kind": "graph_match",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "perm": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "g1": "pick(['parabola', 'parabola', 'parabola_down', 'parabola_down', 'parabola_shift', 'parabola_shift'], perm)",
+            "g2": "pick(['parabola_down', 'parabola_shift', 'parabola', 'parabola_shift', 'parabola', 'parabola_down'], perm)",
+            "g3": "pick(['parabola_shift', 'parabola_down', 'parabola_shift', 'parabola', 'parabola_down', 'parabola'], perm)",
+            "ans_a": "pick([1, 1, 2, 3, 2, 3], perm)",
+            "ans_b": "pick([2, 3, 1, 1, 3, 2], perm)",
+            "ans_c": "pick([3, 2, 3, 2, 1, 1], perm)",
+            "answer": "pick(['123', '132', '213', '312', '231', '321'], perm)"
+          },
+          "figure": {
+            "kind": "graph_match",
+            "graphs": ["{g1}", "{g2}", "{g3}"]
+          }
+        },
+        "explanation_template": "А → {ans_a}, Б → {ans_b}, В → {ans_c}. Ответ: {answer}.",
+        "subtype_code": "math_oge_q11_parabolas",
+        "title": "Три параболы",
+        "tags": ["графики", "парабола"],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 11,
+      "part": 1,
+      "prototype_title": "11m3: Графики · три прямые",
+      "prompt_instruction": "Тип КИМ №11: соответствие трёх прямых и формул. Ответ — три цифры.",
+      "template_text": "На рисунке изображены графики функций. Установите соответствие между графиками и формулами.\n\nА) y = x + {b}\nБ) y = −x + {b}\nВ) y = {c}\n\nВ таблицу под буквами А, Б, В запишите номера соответствующих графиков.\n\nА | Б | В\n  |   |\n\nВ ответе запишите последовательность трёх цифр.",
+      "template_answer": "123",
+      "template_solution": "А — возрастающая прямая → график {ans_a}. Б — убывающая → график {ans_b}. В — горизонтальная y = {c} → график {ans_c}. Ответ: {answer}.",
+      "figure_kind": "graph_match",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "b": "random_choice([1, 2, 3])",
+            "c": "random_choice([1, 2])",
+            "perm": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "g1": "pick(['line_up', 'line_up', 'line_down', 'line_down', 'line_horiz', 'line_horiz'], perm)",
+            "g2": "pick(['line_down', 'line_horiz', 'line_up', 'line_horiz', 'line_up', 'line_down'], perm)",
+            "g3": "pick(['line_horiz', 'line_down', 'line_horiz', 'line_up', 'line_down', 'line_up'], perm)",
+            "ans_a": "pick([1, 1, 2, 3, 2, 3], perm)",
+            "ans_b": "pick([2, 3, 1, 1, 3, 2], perm)",
+            "ans_c": "pick([3, 2, 3, 2, 1, 1], perm)",
+            "answer": "pick(['123', '132', '213', '312', '231', '321'], perm)"
+          },
+          "figure": {
+            "kind": "graph_match",
+            "graphs": ["{g1}", "{g2}", "{g3}"],
+            "b": "{b}"
+          }
+        },
+        "explanation_template": "А → {ans_a}, Б → {ans_b}, В → {ans_c}. Ответ: {answer}.",
+        "subtype_code": "math_oge_q11_lines",
+        "title": "Три прямые",
+        "tags": ["графики", "прямая"],
+        "difficulty": "easy"
+      }
+    },
+    {
+      "task_number": 11,
+      "part": 1,
+      "prototype_title": "11m4: Графики · гиперболы",
+      "prompt_instruction": "Тип КИМ №11: соответствие гипербол и формул. Ответ — три цифры.",
+      "template_text": "На рисунке изображены графики функций. Установите соответствие между графиками и формулами.\n\nА) y = {k}/x\nБ) y = −{k}/x\nВ) y = (x − 1)²\n\nВ таблицу под буквами А, Б, В запишите номера соответствующих графиков.\n\nА | Б | В\n  |   |\n\nВ ответе запишите последовательность трёх цифр.",
+      "template_answer": "123",
+      "template_solution": "А — гипербола y = {k}/x → график {ans_a}. Б — гипербола y = −{k}/x → график {ans_b}. В — парабола со сдвигом → график {ans_c}. Ответ: {answer}.",
+      "figure_kind": "graph_match",
+      "figure_params": {
+        "mutator_logic": {
+          "variables": {
+            "k": "random_choice([1, 2, 3])",
+            "perm": "random_choice([0, 1, 2, 3, 4, 5])"
+          },
+          "computed": {
+            "g1": "pick(['hyperbola', 'hyperbola', 'hyperbola_neg', 'hyperbola_neg', 'parabola_shift', 'parabola_shift'], perm)",
+            "g2": "pick(['hyperbola_neg', 'parabola_shift', 'hyperbola', 'parabola_shift', 'hyperbola', 'hyperbola_neg'], perm)",
+            "g3": "pick(['parabola_shift', 'hyperbola_neg', 'parabola_shift', 'hyperbola', 'hyperbola_neg', 'hyperbola'], perm)",
+            "ans_a": "pick([1, 1, 2, 3, 2, 3], perm)",
+            "ans_b": "pick([2, 3, 1, 1, 3, 2], perm)",
+            "ans_c": "pick([3, 2, 3, 2, 1, 1], perm)",
+            "answer": "pick(['123', '132', '213', '312', '231', '321'], perm)"
+          },
+          "figure": {
+            "kind": "graph_match",
+            "graphs": ["{g1}", "{g2}", "{g3}"],
+            "k": "{k}"
+          }
+        },
+        "explanation_template": "А → {ans_a}, Б → {ans_b}, В → {ans_c}. Ответ: {answer}.",
+        "subtype_code": "math_oge_q11_hyperbolas",
+        "title": "Гиперболы и сдвинутая парабола",
+        "tags": ["графики", "гипербола"],
+        "difficulty": "easy"
+      }
+    }
+  ]
+}

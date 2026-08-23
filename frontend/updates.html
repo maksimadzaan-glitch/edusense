@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>EduSense — Что нового</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css?v=163" />
+  <link rel="stylesheet" href="/css/announce.css?v=157" />
+  <link rel="stylesheet" href="/css/chrome.css?v=17" />
+  <link rel="stylesheet" href="/css/updates.css?v=1" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/assets/favicon.ico" sizes="any" />
+  <link rel="icon" href="/assets/edusense-mark-192.png?v=8" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/edusense-mark-180.png?v=8" />
+  <meta name="theme-color" content="#0e1420" />
+</head>
+<body class="updates-page">
+  <div class="fx" aria-hidden="true">
+    <div class="fx-glow fx-glow-tl"></div>
+    <div class="fx-glow fx-glow-tr"></div>
+    <div class="fx-horizon"></div>
+    <div class="fx-grain"></div>
+    <div class="fx-vignette"></div>
+  </div>
+
+  <div id="announce-root"></div>
+
+  <header class="nav">
+    <a class="nav-brand" href="/">
+      <img class="nav-mark" src="/assets/edusense-mark-192.png" alt="" width="42" height="42" />
+      <span class="nav-word">EduSense</span>
+      <span class="beta-badge" title="Open beta">Beta</span>
+    </a>
+    <span class="nav-meta">Обновления</span>
+    <a class="updates-back" href="javascript:history.back()">← Назад</a>
+  </header>
+
+  <main class="updates" id="updates">
+    <p class="updates-kicker">Открытая бета · ОГЭ 2026</p>
+    <h1>Что нового</h1>
+    <p class="updates-lede">Коротко: что вышло, кому это нужно — учителю или ученику.</p>
+
+    <div class="updates-who" role="tablist" aria-label="Кому обновление">
+      <button type="button" class="updates-chip is-on" data-who="all">Все</button>
+      <button type="button" class="updates-chip" data-who="teacher">Учителю</button>
+      <button type="button" class="updates-chip" data-who="student">Ученику</button>
+    </div>
+
+    <section class="updates-block">
+      <p class="updates-when">Август 2026</p>
+
+      <article class="updates-card" data-who="teacher">
+        <div class="updates-card-head">
+          <span class="updates-tag is-teacher">Учитель</span>
+          <h2>ИИ-проверка Части 2</h2>
+        </div>
+        <p>Сочинение, изложение и развёрнутые ответы — черновик баллов по критериям. Учитель подтверждает или правит в один клик.</p>
+      </article>
+
+      <article class="updates-card" data-who="both">
+        <div class="updates-card-head">
+          <span class="updates-tag is-teacher">Учитель</span>
+          <span class="updates-tag is-student">Ученик</span>
+          <h2>Live-урок</h2>
+        </div>
+        <p>Живой доступ класса: код и ссылка на главной. Ученики подключаются, учитель видит, кто уже в сети.</p>
+      </article>
+
+      <article class="updates-card" data-who="teacher">
+        <div class="updates-card-head">
+          <span class="updates-tag is-teacher">Учитель</span>
+          <h2>Печать А4 и PDF</h2>
+        </div>
+        <p>Лист как на бумаге ФИПИ: светлая тема, знак EduSense, без кнопок интерфейса. Отдельно — ключи для учителя.</p>
+      </article>
+
+      <article class="updates-card" data-who="student">
+        <div class="updates-card-head">
+          <span class="updates-tag is-student">Ученик</span>
+          <h2>Фото тетради</h2>
+        </div>
+        <p>Часть 2 можно сдать текстом или снимком тетради. После сдачи — баллы и разбор в «Результатах».</p>
+      </article>
+    </section>
+
+    <section class="updates-block">
+      <p class="updates-when">Июль 2026</p>
+
+      <article class="updates-card" data-who="teacher">
+        <div class="updates-card-head">
+          <span class="updates-tag is-teacher">Учитель</span>
+          <h2>Сборка КИМ</h2>
+        </div>
+        <p>Полный вариант, тренажёр или короткий срез из банка. Мутатор части 1 даёт каждому ученику свои числа и свой ключ.</p>
+      </article>
+
+      <article class="updates-card" data-who="teacher">
+        <div class="updates-card-head">
+          <span class="updates-tag is-teacher">Учитель</span>
+          <h2>Выдача классу</h2>
+        </div>
+        <p>Одна кнопка — работа у учеников. Можно ограничить время, перемешать задания, скрыть ответы.</p>
+      </article>
+
+      <article class="updates-card" data-who="student">
+        <div class="updates-card-head">
+          <span class="updates-tag is-student">Ученик</span>
+          <h2>Кабинет по коду</h2>
+        </div>
+        <p>Вход по коду учителя: задания, таймер, автопроверка части 1, результаты после сдачи.</p>
+      </article>
+
+      <article class="updates-card" data-who="both">
+        <div class="updates-card-head">
+          <span class="updates-tag is-teacher">Учитель</span>
+          <span class="updates-tag is-student">Ученик</span>
+          <h2>Приложение на телефон и компьютер</h2>
+        </div>
+        <p>Не APK: Яндекс или Chrome ставят EduSense как программу — отдельное окно и значок. Инструкция на странице установки.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <a href="/">На главную</a>
+    <span class="foot-dot" aria-hidden="true"></span>
+    <a href="/install">Установить</a>
+    <span class="foot-dot" aria-hidden="true"></span>
+    <span>Открытая бета</span>
+  </footer>
+
+  <script src="/js/announce.js?v=130"></script>
+  <script>
+    (function () {
+      var chips = document.querySelectorAll(".updates-chip");
+      var cards = document.querySelectorAll(".updates-card");
+      chips.forEach(function (chip) {
+        chip.addEventListener("click", function () {
+          var who = chip.getAttribute("data-who") || "all";
+          chips.forEach(function (c) { c.classList.toggle("is-on", c === chip); });
+          cards.forEach(function (card) {
+            var tag = card.getAttribute("data-who") || "both";
+            var show = who === "all" || tag === "both" || tag === who;
+            card.hidden = !show;
+          });
+          document.querySelectorAll(".updates-block").forEach(function (block) {
+            var any = Array.prototype.some.call(block.querySelectorAll(".updates-card"), function (c) {
+              return !c.hidden;
+            });
+            block.hidden = !any;
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+CONVERT_OK oge_rus_var_kim n=13 nums=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+listening=True grammar=True matching=True
+reading=True essay=3
+TEXT_SEPARATION_OK
+IMPORT_OK {"schema": "single_var_a", "import_json": "C:\\Users\\rusti\\OneDrive\\Рабочий стол\\ege_tracker\\backend\\universal\\packs\\oge_rus\\imports\\oge_rus_var_kim.json", "context_files": ["C:\\Users\\rusti\\OneDrive\\Рабочий стол\\ege_tracker\\backend\\universal\\packs\\oge_rus\\context_blocks\\oge_rus_var_kim.json"], "variants": [{"variant_id": "oge_rus_var_kim", "prototypes": 13, "task_numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], "parts": [1, 2]}], "skipped": [], "prototypes": 13, "task_numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], "seed": {"context_inserted": 1, "context_updated": 0, "prototypes_inserted": 13, "prototypes_updated": 0, "stale_deleted": 0, "context_ids": ["oge_rus_var_kim"]}}
+SMOKE_OK ctx=oge_rus_var_kim kim_nums=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+ALL_OK

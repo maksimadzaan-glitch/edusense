@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>EduSense — Task Player Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin />
+  <link rel="stylesheet" href="/css/student.css?v=8" />
+  <link rel="stylesheet" href="/css/task_renderer.css?v=3" />
+  <style>
+    .demo-bar { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 18px; align-items: end; }
+    .demo-bar label { display: grid; gap: 4px; font-size: .82rem; color: var(--muted); }
+    .demo-bar select, .demo-bar input {
+      min-width: 140px; padding: 8px 10px; border-radius: 10px;
+      border: 1px solid var(--line); background: rgba(2,6,23,.55); color: var(--text); font: inherit;
+    }
+    .demo-bar .btn {
+      width: auto;
+      margin-top: 0;
+      flex: 0 0 auto;
+    }
+    .demo-result {
+      margin-top: 14px; padding: 12px 14px; border-radius: 12px;
+      border: 1px solid var(--line); background: rgba(15,23,42,.5); font-size: .92rem;
+    }
+    .demo-result.is-ok { border-color: rgba(52,211,153,.45); color: var(--ok); }
+    .demo-result.is-bad { border-color: rgba(248,113,113,.45); color: var(--danger); }
+    .demo-result.is-pending { color: var(--muted); }
+    #task-host { margin-top: 8px; min-height: 2.5rem; }
+    .demo-loading { color: var(--muted); margin: 8px 0; }
+    .demo-error { margin: 8px 0; }
+  </style>
+</head>
+<body>
+  <div class="atmosphere" aria-hidden="true">
+    <div class="atm-grid"></div>
+    <div class="atm-aurora"></div>
+  </div>
+  <div id="app">
+    <div class="brand">EduSense</div>
+    <div class="card">
+      <p class="kicker">Universal Task Player</p>
+      <h1>Демо механик</h1>
+      <p class="sub">Загрузка из <code>/api/tasks</code>. Пустая БД сидится из
+        <code>tasks_template.json</code> автоматически.
+      </p>
+      <div class="demo-bar">
+        <label>
+          <span>Subject</span>
+          <select id="flt-subject">
+            <option value="">все</option>
+            <option>RUSSIAN</option>
+            <option>MATH</option>
+            <option>SOCIAL</option>
+            <option>PHYSICS</option>
+            <option>BIOLOGY</option>
+          </select>
+        </label>
+        <label>
+          <span>Exam</span>
+          <select id="flt-exam">
+            <option value="">все</option>
+            <option>OGE</option>
+            <option>EGE</option>
+          </select>
+        </label>
+        <button class="btn btn-secondary" id="btn-load" type="button">Загрузить список</button>
+        <label>
+          <span>Задание</span>
+          <select id="sel-task"></select>
+        </label>
+        <button class="btn btn-primary" id="btn-check" type="button">Проверить</button>
+      </div>
+      <div id="task-host"><p class="demo-loading">Загрузка заданий...</p></div>
+      <div id="demo-result" class="demo-result is-pending">Загрузка заданий...</div>
+    </div>
+  </div>
+  <!-- KaTeX + math helpers as classic scripts (globals). Demo boots as ES module
+       and imports the renderer — no global player race / hard refresh needed. -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin></script>
+  <script defer src="/js/math.js?v=31"></script>
+  <script type="module" src="/js/task_demo.js?v=3"></script>
+</body>
+</html>

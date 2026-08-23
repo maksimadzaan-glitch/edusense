@@ -1,0 +1,33 @@
+{
+  "subject_code": "math",
+  "subject_name": "Математика",
+  "exam_code": "VPR_8",
+  "exam_name": "ВПР 8 класс",
+  "notes": "Пример exam_code VPR_8 — короткий тренировочный блок.",
+  "prototypes": [
+    {
+      "task_number": 1,
+      "part": 1,
+      "prototype_title": "Вычисления",
+      "prompt_instruction": "Составь задание ВПР-8 математика №1: вычисления. Краткий ответ."
+    },
+    {
+      "task_number": 2,
+      "part": 1,
+      "prototype_title": "Уравнение",
+      "prompt_instruction": "Составь задание ВПР-8 математика №2: уравнение. Краткий ответ."
+    },
+    {
+      "task_number": 3,
+      "part": 1,
+      "prototype_title": "Геометрия",
+      "prompt_instruction": "Составь задание ВПР-8 математика №3: площадь/периметр. Краткий ответ."
+    },
+    {
+      "task_number": 4,
+      "part": 1,
+      "prototype_title": "Текст / проценты",
+      "prompt_instruction": "Составь задание ВПР-8 математика №4: текстовая задача. Краткий ответ."
+    }
+  ]
+}

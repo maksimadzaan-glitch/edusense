@@ -1,0 +1,241 @@
+/* EduSense announcement bar + beta mark. Load LAST so it wins over page CSS. */
+
+#announce-root {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.announce-banner {
+  position: relative;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 6px 44px 6px 16px;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.9);
+  border-bottom: 1px solid #1e293b;
+  color: #cbd5e1;
+  font-family: var(--font, "Plus Jakarta Sans", Inter, system-ui, sans-serif);
+  font-size: 0.75rem;
+}
+
+.announce-banner.is-out {
+  animation: announceOut 0.22s ease forwards;
+}
+
+@keyframes announceOut {
+  to { opacity: 0; transform: translateY(-100%); }
+}
+
+.announce-banner[hidden],
+#announce-root[hidden] {
+  display: none !important;
+}
+
+.announce-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.announce-new {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.28);
+}
+
+.announce-text {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.announce-more {
+  border: 0;
+  background: transparent;
+  color: #94a3b8;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.announce-more:hover {
+  color: #e2e8f0;
+}
+
+.announce-close {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1;
+  font-family: inherit;
+}
+
+.announce-close:hover {
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+body.is-telegram-miniapp .announce-banner {
+  min-height: calc(36px + env(safe-area-inset-top, 0px));
+  padding-top: calc(6px + env(safe-area-inset-top, 0px));
+}
+
+body.has-announce #toast-root {
+  top: 48px;
+}
+
+body:has(#app.is-work) #announce-root,
+body:has(.work-focus) #announce-root {
+  display: none !important;
+}
+
+body:has(#app.is-work) #toast-root,
+body:has(.work-focus) #toast-root {
+  top: 18px;
+}
+
+.atmosphere,
+.noise,
+.atm-grid,
+.atm-aurora,
+.atm-beam,
+.atm-orb,
+.tab-watermark {
+  display: none !important;
+}
+
+/* ---------- Beta: clean white label (no frame) ---------- */
+.beta-badge,
+.brand-title .beta-badge,
+.welcome-brand .beta-badge,
+.sidebar-brand .beta-badge,
+.work-focus-brand .beta-badge,
+.ep-brand .beta-badge,
+.brand .beta-badge {
+  position: relative;
+  display: inline;
+  width: auto;
+  height: auto;
+  margin-left: 6px;
+  padding: 0;
+  border-radius: 0;
+  font-family: inherit;
+  font-size: 0.58em;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1;
+  vertical-align: middle;
+  top: -0.06em;
+  color: rgba(255, 255, 255, 0.55);
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.55);
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+.beta-badge::before,
+.brand-title .beta-badge::before,
+.welcome-brand .beta-badge::before,
+.sidebar-brand .beta-badge::before,
+.work-focus-brand .beta-badge::before,
+.ep-brand .beta-badge::before,
+.brand .beta-badge::before {
+  content: none;
+  animation: none;
+  background: none;
+  mask: none;
+  -webkit-mask: none;
+}
+
+.work-focus-brand .beta-badge {
+  font-size: 0.52em;
+  margin-left: 5px;
+}
+
+/* Landing wordmark: Beta in the same cut as EduSense */
+.nav-brand .beta-badge {
+  height: auto;
+  margin-left: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  font-family: inherit;
+  font-style: normal;
+  font-size: 1.22rem;
+  font-weight: 650;
+  letter-spacing: -0.055em;
+  text-transform: none;
+  line-height: 1;
+  vertical-align: baseline;
+  background-image: linear-gradient(180deg, #ffffff 18%, #d4d4d4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+#work-timer,
+.work-timer,
+.timer-readout {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 640px) {
+  .announce-banner {
+    min-height: 0;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  .announce-inner {
+    justify-content: flex-start;
+    padding-right: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .announce-banner,
+  .announce-banner.is-out {
+    animation: none !important;
+    transform: none;
+  }
+}

@@ -1,0 +1,69 @@
+АНКЕТА_ОГЭ_РУС ===START===
+variant_id: oge_rus_var_
+tema:
+avtor: neuro
+
+izl_start:
+izl_1:
+izl_2:
+izl_3:
+
+gr_1:
+gr_2:
+gr_3:
+gr_4:
+gr_5:
+
+read_author: Учебный текст
+read_text:
+
+essay_131:
+essay_132:
+essay_133:
+
+tasks_filled: да
+
+t2_text:
+t2_answer:
+
+t3_text:
+t3_answer:
+
+t4_A:
+t4_B:
+t4_V:
+t4_1:
+t4_2:
+t4_3:
+t4_4:
+t4_5:
+t4_answer:
+
+t5_text:
+t5_answer:
+
+t6_text:
+t6_answer:
+
+t7_letter:
+t7_text:
+t7_answer:
+
+t8_word:
+t8_sentence:
+t8_answer:
+
+t9_from:
+t9_answer:
+
+t10_text:
+t10_answer:
+
+t11_trop:
+t11_text:
+t11_answer:
+
+t12_range:
+t12_meaning:
+t12_answer:
+АНКЕТА_ОГЭ_РУС ===END===

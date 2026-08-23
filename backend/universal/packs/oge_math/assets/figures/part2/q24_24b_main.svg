@@ -1,0 +1,22 @@
+<svg class="geo-fig fipi-fig" viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg" aria-label="Heights and orthocenter">
+  <rect x="0" y="0" width="300" height="260" fill="#ffffff"/>
+  <g fill="none" stroke="#111111" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="50,220 260,220 180,40"/>
+    <line x1="180" y1="40" x2="180" y2="220"/>
+    <line x1="50" y1="220" x2="210" y2="100"/>
+    <rect x="172" y="200" width="16" height="16"/>
+  </g>
+  <g fill="#111111" stroke="none">
+    <circle cx="180" cy="145" r="2.2"/>
+    <circle cx="180" cy="220" r="2.2"/>
+    <circle cx="210" cy="100" r="2.2"/>
+  </g>
+  <g fill="#111111" stroke="none" font-family="Times New Roman, Liberation Serif, serif" font-size="14">
+    <text x="180" y="30" text-anchor="middle">A</text>
+    <text x="272" y="228" text-anchor="middle">B</text>
+    <text x="38" y="236" text-anchor="middle">C</text>
+    <text x="190" y="236" text-anchor="middle">A1</text>
+    <text x="222" y="96" text-anchor="start">B1</text>
+    <text x="168" y="142" text-anchor="end">H</text>
+  </g>
+</svg>

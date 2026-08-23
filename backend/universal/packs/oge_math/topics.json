@@ -1,0 +1,104 @@
+{
+  "exam_code": "OGE",
+  "subject_code": "math",
+  "kim_year": 2026,
+  "topics": [
+    {
+      "topic_id": "real_math_plan",
+      "title": "Практико-ориентированные · схема/план",
+      "task_numbers": [1],
+      "part": 1
+    },
+    {
+      "topic_id": "real_math_area",
+      "title": "Практико-ориентированные · площадь/количество",
+      "task_numbers": [2],
+      "part": 1
+    },
+    {
+      "topic_id": "real_math_pythagoras",
+      "title": "Практико-ориентированные · расстояния / Пифагор",
+      "task_numbers": [3],
+      "part": 1
+    },
+    {
+      "topic_id": "real_math_percent",
+      "title": "Практико-ориентированные · проценты / выгода",
+      "task_numbers": [4],
+      "part": 1
+    },
+    {
+      "topic_id": "real_math_choice",
+      "title": "Практико-ориентированные · оптимальный выбор",
+      "task_numbers": [5],
+      "part": 1
+    },
+    {
+      "topic_id": "numbers_fractions",
+      "title": "Числа и вычисления (дроби)",
+      "task_numbers": [6],
+      "part": 1
+    },
+    {
+      "topic_id": "numberline",
+      "title": "Координатная прямая",
+      "task_numbers": [7],
+      "part": 1
+    },
+    {
+      "topic_id": "algebra_expressions",
+      "title": "Алгебраические выражения",
+      "task_numbers": [8, 9],
+      "part": 1
+    },
+    {
+      "topic_id": "equations_inequalities",
+      "title": "Уравнения и неравенства",
+      "task_numbers": [10, 13],
+      "part": 1
+    },
+    {
+      "topic_id": "graphs",
+      "title": "Графики функций",
+      "task_numbers": [11],
+      "part": 1
+    },
+    {
+      "topic_id": "sequences",
+      "title": "Последовательности / прогрессии",
+      "task_numbers": [12],
+      "part": 1
+    },
+    {
+      "topic_id": "probability_stats",
+      "title": "Вероятность и статистика",
+      "task_numbers": [14],
+      "part": 1
+    },
+    {
+      "topic_id": "geometry_planimetry",
+      "title": "Геометрия (планиметрия)",
+      "task_numbers": [15, 16, 17, 18],
+      "part": 1
+    },
+    {
+      "topic_id": "geometry_choice",
+      "title": "Геометрия (выбор верного утверждения)",
+      "task_numbers": [19],
+      "part": 1
+    },
+    {
+      "topic_id": "part2_algebra",
+      "title": "Часть 2 · алгебра",
+      "task_numbers": [20, 21, 22],
+      "part": 2
+    },
+    {
+      "topic_id": "part2_geometry",
+      "title": "Часть 2 · геометрия",
+      "task_numbers": [23, 24, 25],
+      "part": 2
+    }
+  ],
+  "context_topics": ["real_math_plan", "real_math_area", "real_math_pythagoras", "real_math_percent", "real_math_choice"]
+}

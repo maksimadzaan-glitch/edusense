@@ -1,0 +1,234 @@
+{
+  "kim_spec_id": "oge_math_2026",
+  "exam_code": "OGE",
+  "subject_code": "math",
+  "year": 2026,
+  "slot_count": 25,
+  "slots": [
+    {
+      "task_number": 1,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": true,
+      "matching": false
+    },
+    {
+      "task_number": 2,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": true,
+      "matching": false
+    },
+    {
+      "task_number": 3,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": true,
+      "matching": false
+    },
+    {
+      "task_number": 4,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": true,
+      "matching": false
+    },
+    {
+      "task_number": 5,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": true,
+      "matching": false
+    },
+    {
+      "task_number": 6,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 7,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 8,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 9,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 10,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 11,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 12,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 13,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 14,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 15,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 16,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 17,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 18,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 19,
+      "part": 1,
+      "answer_type": "SHORT_VALUE",
+      "max_score": 1,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 20,
+      "part": 2,
+      "answer_type": "EXTENDED",
+      "max_score": 2,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 21,
+      "part": 2,
+      "answer_type": "EXTENDED",
+      "max_score": 2,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 22,
+      "part": 2,
+      "answer_type": "EXTENDED",
+      "max_score": 2,
+      "needs_passage": false,
+      "needs_media": false,
+      "matching": false
+    },
+    {
+      "task_number": 23,
+      "part": 2,
+      "answer_type": "EXTENDED",
+      "max_score": 2,
+      "needs_passage": false,
+      "needs_media": true,
+      "matching": false
+    },
+    {
+      "task_number": 24,
+      "part": 2,
+      "answer_type": "EXTENDED",
+      "max_score": 2,
+      "needs_passage": false,
+      "needs_media": true,
+      "matching": false
+    },
+    {
+      "task_number": 25,
+      "part": 2,
+      "answer_type": "EXTENDED",
+      "max_score": 2,
+      "needs_passage": false,
+      "needs_media": true,
+      "matching": false
+    }
+  ]
+}

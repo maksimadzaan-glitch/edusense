@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+<title>ЕГЭ Трекер</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --bg0: #07111f;
+    --bg1: #0d1b2a;
+    --accent: #1d9bf0;
+    --accent2: #00c2a8;
+    --danger: #ef4444;
+    --ok: #22c55e;
+  }
+  html, body {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 12% 8%, rgba(29, 155, 240, 0.22) 0%, transparent 42%),
+      radial-gradient(circle at 88% 0%, rgba(0, 194, 168, 0.16) 0%, transparent 40%),
+      linear-gradient(165deg, var(--bg0) 0%, var(--bg1) 55%, #102a43 100%);
+    background-attachment: fixed;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+  }
+  * { box-sizing: border-box; }
+  ::-webkit-scrollbar { width: 0; height: 0; }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+  .fade-in { animation: fadeIn .28s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .panel {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.28);
+  }
+  .field {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.14);
+    color: #e8eef7;
+  }
+  .field:focus { outline: none; border-color: rgba(29,155,240,0.85); }
+  select.field option { background: #0d1b2a; color: #e8eef7; }
+
+  .btn {
+    background: linear-gradient(135deg, #1d9bf0, #00a3c4);
+    box-shadow: 0 8px 22px rgba(29,155,240,0.35);
+    transition: transform .12s ease, opacity .12s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled { opacity: .5; box-shadow: none; }
+  .btn-ghost {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.14);
+  }
+
+  .role-card, .auth-tab {
+    border: 1.5px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    transition: .15s ease;
+  }
+  .role-card.selected, .auth-tab.active {
+    border-color: rgba(29,155,240,0.85);
+    background: rgba(29,155,240,0.16);
+  }
+
+  .status-online { color: #4ade80; }
+  .status-away { color: #94a3b8; }
+
+  .heat-cell {
+    border-radius: 10px;
+    padding: 10px 8px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+  }
+
+  .timer-chip {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.06em;
+    background: rgba(0,194,168,0.12);
+    border: 1px solid rgba(0,194,168,0.35);
+    color: #7ef0df;
+  }
+
+  .diag-ok { background: rgba(34,197,94,0.14); border: 1px solid rgba(34,197,94,0.35); }
+  .diag-bad { background: rgba(239,68,68,0.14); border: 1px solid rgba(239,68,68,0.35); }
+
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  #toast-container {
+    position: fixed; top: env(safe-area-inset-top, 12px); left: 0; right: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 12px; z-index: 100; pointer-events: none;
+  }
+  .toast {
+    pointer-events: auto; max-width: 92%; padding: 10px 16px; border-radius: 12px;
+    font-size: .875rem; font-weight: 500; backdrop-filter: blur(12px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.35); animation: fadeIn .2s ease-out;
+  }
+  .toast.success { background: rgba(16,185,129,.92); color: #fff; }
+  .toast.error { background: rgba(239,68,68,.92); color: #fff; }
+  .toast.info { background: rgba(29,155,240,.92); color: #fff; }
+
+  .photo-thumb {
+    width: 64px; height: 64px; object-fit: cover; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+</style>
+</head>
+<body class="min-h-screen text-slate-100 pb-10" style="font-family: 'Segoe UI', system-ui, sans-serif;">
+
+<div id="toast-container"></div>
+
+<div class="max-w-md mx-auto px-4 pt-5">
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-2.5">
+      <div class="w-10 h-10 rounded-2xl panel flex items-center justify-center text-lg">📐</div>
+      <div>
+        <h1 class="text-base font-bold leading-tight" style="color:#7dd3fc;">ЕГЭ Трекер</h1>
+        <p id="header-subtitle" class="text-xs text-slate-400">Комнаты · онлайн-сдача · диагностика</p>
+      </div>
+    </div>
+    <button id="logout-btn" onclick="handleLogout(event)"
+      class="hidden text-[11px] text-slate-300 px-3 py-1.5 rounded-full panel">Выйти</button>
+  </div>
+
+  <!-- AUTH -->
+  <section id="screen-auth" class="screen active fade-in">
+    <div class="panel rounded-2xl p-5">
+      <h2 class="text-lg font-bold mb-1">Добро пожаловать</h2>
+      <p class="text-sm text-slate-400 mb-5">Войдите или зарегистрируйтесь.</p>
+
+      <div class="flex gap-1 mb-5 bg-white/5 rounded-xl p-1">
+        <button type="button" id="tab-login-btn" onclick="switchAuthTab(event,'login')"
+          class="auth-tab active flex-1 py-2 rounded-lg text-sm font-semibold">Вход</button>
+        <button type="button" id="tab-register-btn" onclick="switchAuthTab(event,'register')"
+          class="auth-tab flex-1 py-2 rounded-lg text-sm font-semibold">Регистрация</button>
+      </div>
+
+      <div id="login-form" class="space-y-4">
+        <div>
+          <label class="text-xs text-slate-400 font-medium mb-1.5 block">ФИО</label>
+          <input id="login-name" type="text" placeholder="Иванов Иван Иванович" class="field w-full rounded-xl px-4 py-3 text-sm" />
+        </div>
+        <div>
+          <label class="text-xs text-slate-400 font-medium mb-1.5 block">Пароль</label>
+          <input id="login-password" type="password" placeholder="••••••••" class="field w-full rounded-xl px-4 py-3 text-sm" />
+        </div>
+        <button id="login-btn" onclick="handleLogin(event)" class="btn w-full text-white font-semibold py-3 rounded-xl">Войти</button>
+      </div>
+
+      <div id="register-form" class="hidden space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <button type="button" id="role-student" onclick="selectRole(event,'student')" class="role-card rounded-xl p-3 text-center">
+            <div class="text-2xl mb-1">🎓</div><div class="text-xs font-semibold">Ученик</div>
+          </button>
+          <button type="button" id="role-teacher" onclick="selectRole(event,'teacher')" class="role-card rounded-xl p-3 text-center">
+            <div class="text-2xl mb-1">👨‍🏫</div><div class="text-xs font-semibold">Учитель</div>
+          </button>
+        </div>
+        <div>
+          <label class="text-xs text-slate-400 font-medium mb-1.5 block">ФИО</label>
+          <input id="register-name" type="text" placeholder="Иванов Иван Иванович" class="field w-full rounded-xl px-4 py-3 text-sm" />
+        </div>
+        <div>
+          <label class="text-xs text-slate-400 font-medium mb-1.5 block">Пароль</label>
+          <input id="register-password" type="password" placeholder="Минимум 4 символа" class="field w-full rounded-xl px-4 py-3 text-sm" />
+        </div>
+        <button id="register-btn" onclick="handleRegister(event)" class="btn w-full text-white font-semibold py-3 rounded-xl">Зарегистрироваться</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEACHER -->
+  <section id="screen-teacher" class="screen fade-in space-y-4">
+    <div id="teacher-create-room" class="panel rounded-2xl p-5 space-y-4">
+      <h2 class="text-lg font-bold">Создать комнату</h2>
+      <p class="text-sm text-slate-400">Название + предмет. Ученики войдут по 6-значному коду.</p>
+      <div>
+        <label class="text-xs text-slate-400 mb-1.5 block">Название комнаты</label>
+        <input id="room-name-input" type="text" placeholder="11-А Математика" class="field w-full rounded-xl px-4 py-3 text-sm" />
+      </div>
+      <div>
+        <label class="text-xs text-slate-400 mb-1.5 block">Предмет</label>
+        <select id="room-subject-select" class="field w-full rounded-xl px-4 py-3 text-sm">
+          <option value="Математика (профиль)">Математика (профиль)</option>
+          <option value="Информатика">Информатика</option>
+          <option value="Русский язык">Русский язык</option>
+        </select>
+      </div>
+      <button id="create-room-btn" onclick="handleCreateRoom(event)" class="btn w-full text-white font-semibold py-3 rounded-xl">Создать</button>
+    </div>
+
+    <div id="teacher-rooms-list" class="panel rounded-2xl p-5 hidden">
+      <h3 class="text-sm font-bold mb-3">Ваши комнаты</h3>
+      <div id="teacher-rooms" class="space-y-2"></div>
+    </div>
+
+    <div id="teacher-dashboard" class="hidden space-y-4">
+      <div class="panel rounded-2xl p-5 text-center">
+        <p class="text-xs text-slate-400">Комната</p>
+        <h2 id="dash-room-name" class="text-xl font-bold mt-1">—</h2>
+        <p id="dash-room-subject" class="text-sm text-cyan-300 mt-1">—</p>
+        <p class="text-xs text-slate-400 mt-4 mb-1">Код комнаты</p>
+        <div class="flex items-center justify-center gap-2">
+          <span id="dash-room-code" class="text-3xl font-extrabold tracking-[0.28em]">------</span>
+          <button onclick="copyRoomCode(event)" class="w-9 h-9 rounded-lg panel text-sm">📋</button>
+        </div>
+        <button onclick="backToTeacherRooms(event)" class="text-xs text-slate-400 underline mt-4">К списку комнат</button>
+      </div>
+
+      <div class="panel rounded-2xl p-5">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-base font-bold">Ученики</h3>
+          <button onclick="refreshDashboard(event)" class="text-xs text-cyan-300">↻ Обновить</button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="text-xs text-slate-400">
+              <tr>
+                <th class="pb-2 font-medium">Имя</th>
+                <th class="pb-2 font-medium">Статус</th>
+                <th class="pb-2 font-medium text-right">Время</th>
+              </tr>
+            </thead>
+            <tbody id="students-table-body"></tbody>
+          </table>
+        </div>
+        <p id="students-empty" class="hidden text-sm text-slate-400 text-center py-4">Пока нет учеников.</p>
+      </div>
+
+      <div class="panel rounded-2xl p-5">
+        <h3 class="text-base font-bold mb-1">Тепловая карта проблем</h3>
+        <p class="text-xs text-slate-400 mb-3">% ошибок по номерам Части 1 среди всех сдач</p>
+        <div id="heatmap-grid" class="grid grid-cols-4 gap-2"></div>
+        <p id="heatmap-empty" class="hidden text-sm text-slate-400 text-center py-4">Нет сданных работ.</p>
+      </div>
+
+      <div class="panel rounded-2xl p-5 space-y-3">
+        <h3 class="text-base font-bold">Назначить вариант</h3>
+        <p class="text-xs text-slate-400">Достаточно названия, ссылки ФИПИ и числа заданий. Ключи — по желанию.</p>
+        <input id="assignment-title" type="text" placeholder="Вариант №1 — Май" class="field w-full rounded-xl px-4 py-3 text-sm" />
+        <div>
+          <label class="text-xs text-slate-400 mb-1.5 block">Ссылка на вариант ФИПИ</label>
+          <input id="assignment-fipi-url" type="url" placeholder="https://ege.fipi.ru/bank/..."
+            class="field w-full rounded-xl px-4 py-3 text-sm" />
+        </div>
+        <div>
+          <label class="text-xs text-slate-400 mb-1.5 block">Сколько заданий в Части 1</label>
+          <input id="assignment-task-count" type="number" min="1" max="50" value="12"
+            onchange="rebuildKeysFromCount()"
+            class="field w-full rounded-xl px-4 py-3 text-sm" />
+        </div>
+
+        <details class="rounded-xl border border-white/10 bg-white/5 p-3">
+          <summary class="text-xs text-slate-300 cursor-pointer select-none">Автопроверка (необязательно) — вставить ключи</summary>
+          <div class="mt-3 space-y-2">
+            <p class="text-[11px] text-slate-400">
+              Без ключей работа всё равно принимается. С ключами ученик сразу увидит ✓/✕ и баллы.
+              Можно вставить одной строкой: <span class="text-cyan-200">14, -5, 0, 3</span>
+            </p>
+            <textarea id="keys-bulk-input" rows="3" placeholder="необязательно: 14, -5, 0, ..."
+              class="field w-full rounded-xl px-3 py-2 text-sm font-mono"></textarea>
+            <button type="button" onclick="applyBulkKeys(event)"
+              class="btn-ghost w-full rounded-xl py-2 text-sm font-semibold">Подставить ключи</button>
+            <p id="keys-bulk-hint" class="text-[11px] text-slate-500 hidden"></p>
+            <div id="fipi-keys-grid" class="grid grid-cols-2 gap-2"></div>
+          </div>
+        </details>
+
+        <button id="publish-assignment-btn" onclick="handlePublishAssignment(event)"
+          class="btn w-full text-white font-semibold py-3 rounded-xl">Опубликовать вариант</button>
+      </div>
+
+      <div class="panel rounded-2xl p-5">
+        <h3 class="text-base font-bold mb-3">Назначенные варианты</h3>
+        <div id="assignments-list" class="space-y-2"></div>
+        <p id="assignments-empty" class="hidden text-sm text-slate-400 text-center py-3">Вариантов пока нет.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STUDENT -->
+  <section id="screen-student" class="screen fade-in space-y-4">
+    <div id="student-join" class="panel rounded-2xl p-5 space-y-4">
+      <h2 class="text-lg font-bold">Вход в класс</h2>
+      <p class="text-sm text-slate-400">Введите 6-значный код комнаты.</p>
+      <input id="join-code-input" type="text" maxlength="6" placeholder="MATH77"
+        class="field w-full rounded-xl px-4 py-3 text-sm uppercase text-center tracking-[0.35em] font-bold" />
+      <button id="join-room-btn" onclick="handleJoinRoom(event)" class="btn w-full text-white font-semibold py-3 rounded-xl">Войти</button>
+    </div>
+
+    <div id="student-rooms-list" class="panel rounded-2xl p-5 hidden">
+      <h3 class="text-sm font-bold mb-3">Ваши комнаты</h3>
+      <div id="student-rooms" class="space-y-2"></div>
+    </div>
+
+    <div id="student-room-view" class="hidden space-y-4">
+      <div class="panel rounded-2xl p-4 flex items-center justify-between">
+        <div>
+          <p class="text-xs text-slate-400">Комната</p>
+          <p id="student-room-name" class="text-sm font-bold">—</p>
+          <p id="student-room-subject" class="text-xs text-cyan-300 mt-0.5">Предмет подтянут из комнаты</p>
+        </div>
+        <button onclick="backToStudentRooms(event)" class="text-xs text-slate-400 underline">Другая</button>
+      </div>
+
+      <div class="panel rounded-2xl p-5">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-base font-bold">Варианты от учителя</h3>
+          <button onclick="loadStudentAssignments(event)" class="text-xs text-cyan-300">↻</button>
+        </div>
+        <div id="student-assignments" class="space-y-2"></div>
+        <p id="student-assignments-empty" class="hidden text-sm text-slate-400 text-center py-3">Вариантов пока нет.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLVE -->
+  <section id="screen-solve" class="screen fade-in space-y-4">
+    <div class="panel rounded-2xl p-4 flex items-center justify-between gap-3">
+      <div>
+        <p class="text-xs text-slate-400">Решение в мини-аппе</p>
+        <p id="solve-title" class="text-sm font-bold">—</p>
+        <p id="solve-subject" class="text-xs text-cyan-300">—</p>
+      </div>
+      <div id="timer-display" class="timer-chip rounded-xl px-3 py-2 text-sm font-bold">00:00</div>
+    </div>
+
+    <div id="fipi-open-panel" class="panel rounded-2xl p-4 space-y-3 hidden">
+      <p class="text-sm font-semibold">Задания на ФИПИ</p>
+      <p class="text-xs text-slate-400">Откройте вариант — ответы вводите здесь. Мини-апп не закрывается.</p>
+      <button type="button" id="open-fipi-btn" onclick="openFipiLink(event)"
+        class="btn w-full text-white font-semibold py-3 rounded-xl">🔗 Открыть вариант ФИПИ</button>
+      <a id="fipi-fallback-link" href="#" target="_blank" rel="noopener"
+        class="block text-center text-xs text-cyan-300 underline">Или открыть в браузере</a>
+    </div>
+
+    <div class="panel rounded-2xl p-5 space-y-3">
+      <h3 class="text-base font-bold">Часть 1 — ответы</h3>
+      <p class="text-xs text-slate-400">Смотрите условие на ФИПИ и пишите ответ в поле</p>
+      <div id="solve-answers-grid" class="space-y-2"></div>
+    </div>
+
+    <div class="panel rounded-2xl p-5 space-y-3">
+      <h3 class="text-base font-bold">Часть 2</h3>
+      <p class="text-xs text-slate-400">Прикрепите фото черновика / решения</p>
+      <input id="photo-input" type="file" accept="image/*" multiple class="hidden" onchange="handlePhotosSelected(event)" />
+      <button type="button" onclick="document.getElementById('photo-input').click()"
+        class="btn-ghost w-full rounded-xl py-3 text-sm font-semibold">📷 Прикрепить фото</button>
+      <div id="photo-preview" class="flex flex-wrap gap-2"></div>
+    </div>
+
+    <div class="flex gap-2">
+      <button onclick="cancelSolve(event)" class="btn-ghost flex-1 rounded-xl py-3 text-sm font-semibold">Назад</button>
+      <button id="submit-work-btn" onclick="handleSubmitWork(event)" class="btn flex-[2] text-white font-semibold py-3 rounded-xl">Сдать работу</button>
+    </div>
+  </section>
+
+  <!-- DIAGNOSTIC -->
+  <section id="screen-diagnostic" class="screen fade-in space-y-4">
+    <div class="panel rounded-2xl p-5 text-center">
+      <p class="text-xs text-slate-400">Мгновенная диагностика</p>
+      <h2 id="diag-title" class="text-lg font-bold mt-1">—</h2>
+      <p id="diag-score" class="text-3xl font-extrabold mt-4 text-cyan-300">0 / 0</p>
+      <p class="text-xs text-slate-400 mt-1">перв. / втор.</p>
+      <p id="diag-time" class="text-sm text-slate-300 mt-4">Время: —</p>
+    </div>
+
+    <div class="panel rounded-2xl p-5">
+      <h3 class="text-base font-bold mb-3">Разбор заданий</h3>
+      <div id="diag-list" class="space-y-2"></div>
+    </div>
+
+    <button onclick="backFromDiagnostic(event)" class="btn w-full text-white font-semibold py-3 rounded-xl">К вариантам</button>
+  </section>
+</div>
+
+<script>
+"use strict";
+
+const API_BASE = "http://127.0.0.1:8000";
+const USER_KEY = "ege_tracker_user_v4";
+const PART1_COUNT = 12;
+
+const tg = window.Telegram?.WebApp || null;
+
+let state = {
+  user: null,
+  teacherRooms: [],
+  studentRooms: [],
+  currentRoom: null,
+  dashboard: null,
+  solveAssignment: null,
+  timerSeconds: 0,
+  timerId: null,
+  photos: [], // data URLs
+  lastDiagnostic: null,
+  pingId: null,
+};
+
+let selectedRole = null;
+
+/* ---------- utils ---------- */
+function haptic(style = "light") {
+  try { tg?.HapticFeedback?.impactOccurred?.(style); } catch (_) {}
+}
+
+function showToast(message, type = "info") {
+  const box = document.getElementById("toast-container");
+  const el = document.createElement("div");
+  el.className = `toast ${type}`;
+  el.textContent = message;
+  box.appendChild(el);
+  setTimeout(() => {
+    el.style.opacity = "0";
+    el.style.transition = "opacity .25s";
+    setTimeout(() => el.remove(), 250);
+  }, 3200);
+}
+
+function escapeHtml(str) {
+  const d = document.createElement("div");
+  d.textContent = str ?? "";
+  return d.innerHTML;
+}
+
+function toInt(v) {
+  const n = Number(v);
+  return Number.isFinite(n) ? Math.trunc(n) : 0;
+}
+
+function formatTime(totalSeconds) {
+  const s = Math.max(0, toInt(totalSeconds));
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  return `${String(m).padStart(2, "0")}:${String(r).padStart(2, "0")}`;
+}
+
+function formatTimeHuman(totalSeconds) {
+  const s = Math.max(0, toInt(totalSeconds));
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  if (m <= 0) return `${r} сек`;
+  return `${m} мин ${r} сек`;
+}
+
+function setButtonLoading(btn, loading, label) {
+  if (!btn) return;
+  if (loading) {
+    btn.dataset.originalHtml = btn.innerHTML;
+    btn.innerHTML = `<span class="spinner inline-block align-middle"></span> Подождите…`;
+    btn.disabled = true;
+  } else {
+    btn.innerHTML = btn.dataset.originalHtml || label || "OK";
+    btn.disabled = false;
+  }
+}
+
+async function api(path, method = "GET", body = null) {
+  const options = { method, headers: {} };
+  if (body !== null) {
+    options.headers["Content-Type"] = "application/json";
+    options.body = JSON.stringify(body);
+  }
+  let response;
+  try {
+    response = await fetch(`${API_BASE}${path}`, options);
+  } catch (_) {
+    throw new Error("Не удалось подключиться к серверу. Проверьте, что бэкенд запущен.");
+  }
+  let data = null;
+  try { data = await response.json(); } catch (_) {}
+  if (!response.ok) {
+    const detail = data?.detail ?? `Ошибка (${response.status})`;
+    throw new Error(typeof detail === "string" ? detail : JSON.stringify(detail));
+  }
+  return data;
+}
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function saveUser(user) {
+  state.user = user;
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
+  updateHeader();
+}
+
+function loadUser() {
+  try { return JSON.parse(localStorage.getItem(USER_KEY) || "null"); }
+  catch (_) { return null; }
+}
+
+function updateHeader() {
+  const btn = document.getElementById("logout-btn");
+  const sub = document.getElementById("header-subtitle");
+  if (state.user) {
+    btn.classList.remove("hidden");
+    sub.textContent = `${state.user.full_name} · ${state.user.role === "teacher" ? "Учитель" : "Ученик"}`;
+  } else {
+    btn.classList.add("hidden");
+    sub.textContent = "Комнаты · онлайн-сдача · диагностика";
+  }
+}
+
+function startPing() {
+  stopPing();
+  if (!state.user) return;
+  state.pingId = setInterval(async () => {
+    try {
+      const u = await api(`/api/ping/${state.user.id}`, "POST");
+      state.user = u;
+      localStorage.setItem(USER_KEY, JSON.stringify(u));
+    } catch (_) {}
+  }, 60000);
+}
+
+function stopPing() {
+  if (state.pingId) clearInterval(state.pingId);
+  state.pingId = null;
+}
+
+/* ---------- auth ---------- */
+function switchAuthTab(e, tab) {
+  e?.preventDefault();
+  const login = tab === "login";
+  document.getElementById("tab-login-btn").classList.toggle("active", login);
+  document.getElementById("tab-register-btn").classList.toggle("active", !login);
+  document.getElementById("login-form").classList.toggle("hidden", !login);
+  document.getElementById("register-form").classList.toggle("hidden", login);
+}
+
+function selectRole(e, role) {
+  e?.preventDefault();
+  haptic();
+  selectedRole = role;
+  document.getElementById("role-student").classList.toggle("selected", role === "student");
+  document.getElementById("role-teacher").classList.toggle("selected", role === "teacher");
+}
+
+async function handleRegister(e) {
+  e.preventDefault();
+  const full_name = document.getElementById("register-name").value.trim();
+  const password = document.getElementById("register-password").value;
+  const btn = document.getElementById("register-btn");
+  if (full_name.length < 2) return showToast("Введите ФИО", "error");
+  if (password.length < 4) return showToast("Пароль ≥ 4 символов", "error");
+  if (!selectedRole) return showToast("Выберите роль", "error");
+
+  setButtonLoading(btn, true);
+  try {
+    const user = await api("/api/register", "POST", { full_name, password, role: selectedRole });
+    saveUser(user);
+    showToast("Аккаунт создан", "success");
+    await enterApp(user);
+  } catch (err) {
+    showToast(err.message, "error");
+  } finally {
+    setButtonLoading(btn, false, "Зарегистрироваться");
+  }
+}
+
+async function handleLogin(e) {
+  e.preventDefault();
+  const full_name = document.getElementById("login-name").value.trim();
+  const password = document.getElementById("login-password").value;
+  const btn = document.getElementById("login-btn");
+  if (!full_name || !password) return showToast("Введите ФИО и пароль", "error");
+
+  setButtonLoading(btn, true);
+  try {
+    const user = await api("/api/login", "POST", { full_name, password });
+    saveUser(user);
+    showToast("С возвращением!", "success");
+    await enterApp(user);
+  } catch (err) {
+    showToast(err.message, "error");
+  } finally {
+    setButtonLoading(btn, false, "Войти");
+  }
+}
+
+async function enterApp(user) {
+  startPing();
+  if (user.role === "teacher") {
+    showScreen("screen-teacher");
+    document.getElementById("teacher-dashboard").classList.add("hidden");
+    document.getElementById("teacher-create-room").classList.remove("hidden");
+    buildFipiKeysGrid();
+    await loadTeacherRooms();
+  } else {
+    showScreen("screen-student");
+    document.getElementById("student-room-view").classList.add("hidden");
+    document.getElementById("student-join").classList.remove("hidden");
+    await loadStudentRooms();
+  }
+}
+
+function handleLogout(e) {
+  e?.preventDefault();
+  stopPing();
+  stopTimer();
+  localStorage.removeItem(USER_KEY);
+  state = {
+    user: null, teacherRooms: [], studentRooms: [], currentRoom: null,
+    dashboard: null, solveAssignment: null, timerSeconds: 0, timerId: null,
+    photos: [], lastDiagnostic: null, pingId: null,
+  };
+  selectedRole = null;
+  updateHeader();
+  switchAuthTab(null, "login");
+  showScreen("screen-auth");
+  showToast("Вы вышли", "info");
+}
+
+/* ---------- teacher ---------- */
+function currentPart1Count() {
+  const el = document.getElementById("assignment-task-count");
+  const n = toInt(el?.value);
+  return Math.min(50, Math.max(1, n || PART1_COUNT));
+}
+
+function buildFipiKeysGrid(count = null) {
+  const total = count == null ? currentPart1Count() : toInt(count);
+  const grid = document.getElementById("fipi-keys-grid");
+  if (!grid) return;
+  const prev = {};
+  grid.querySelectorAll(".fipi-key").forEach(inp => {
+    prev[String(inp.dataset.task)] = inp.value;
+  });
+  grid.innerHTML = "";
+  for (let i = 1; i <= total; i++) {
+    const wrap = document.createElement("div");
+    const label = document.createElement("label");
+    label.className = "text-[10px] text-slate-400 mb-1 block";
+    label.textContent = `Задание ${i}`;
+    const input = document.createElement("input");
+    input.type = "text";
+    input.dataset.task = String(i);
+    input.placeholder = "ключ";
+    input.className = "field fipi-key w-full rounded-lg px-3 py-2 text-sm";
+    input.value = prev[String(i)] || "";
+    wrap.appendChild(label);
+    wrap.appendChild(input);
+    grid.appendChild(wrap);
+  }
+}
+
+function rebuildKeysFromCount() {
+  buildFipiKeysGrid(currentPart1Count());
+}
+
+/**
+ * Парсит ключи из текста:
+ * - "14 -5 0 3" / "14,-5,0,3" → по порядку с №1
+ * - "1:14\n2:-5" / "1=14" → по номерам
+ */
+function parseBulkKeys(raw) {
+  const text = String(raw || "").trim();
+  if (!text) return {};
+
+  const numbered = {};
+  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  let numberedHits = 0;
+
+  for (const line of lines) {
+    const m = line.match(/^(\d+)\s*[:=]\s*(.+)$/);
+    if (m) {
+      numbered[String(toInt(m[1]))] = m[2].trim();
+      numberedHits += 1;
+    }
+  }
+  if (numberedHits > 0 && numberedHits === lines.length) {
+    return numbered;
+  }
+
+  // Плоский список: пробелы / запятые / ; / |
+  const tokens = text
+    .split(/[\s,;|]+/)
+    .map(t => t.trim())
+    .filter(Boolean)
+    // отбрасываем куски вида "1:" если вдруг смешали форматы
+    .filter(t => !/^\d+[:=]$/.test(t));
+
+  // Если были и номера, и значения в одной строке "1:14 2:-5"
+  const inlineNumbered = {};
+  let inlineHits = 0;
+  for (const t of tokens) {
+    const m = t.match(/^(\d+)[:=](.+)$/);
+    if (m) {
+      inlineNumbered[String(toInt(m[1]))] = m[2].trim();
+      inlineHits += 1;
+    }
+  }
+  if (inlineHits > 0 && inlineHits === tokens.length) {
+    return inlineNumbered;
+  }
+
+  const seq = {};
+  tokens.forEach((val, idx) => {
+    // если токен "12:5" в смешанном списке — берём значение после :
+    const m = val.match(/^\d+[:=](.+)$/);
+    seq[String(idx + 1)] = m ? m[1].trim() : val;
+  });
+  return seq;
+}
+
+function applyBulkKeys(e) {
+  e?.preventDefault();
+  haptic("light");
+  const raw = document.getElementById("keys-bulk-input").value;
+  const parsed = parseBulkKeys(raw);
+  const keys = Object.keys(parsed);
+  if (!keys.length) {
+    showToast("Нечего подставлять — вставьте ключи", "error");
+    return;
+  }
+
+  // Если ключей больше текущего count — расширяем сетку
+  const maxNum = Math.max(...keys.map(k => toInt(k)));
+  const countEl = document.getElementById("assignment-task-count");
+  if (maxNum > currentPart1Count()) {
+    countEl.value = String(Math.min(50, maxNum));
+  }
+  buildFipiKeysGrid(currentPart1Count());
+
+  let filled = 0;
+  document.querySelectorAll(".fipi-key").forEach(inp => {
+    const v = parsed[String(inp.dataset.task)];
+    if (v != null && String(v).length) {
+      inp.value = String(v);
+      filled += 1;
+    }
+  });
+
+  const hint = document.getElementById("keys-bulk-hint");
+  hint.textContent = `Подставлено ключей: ${filled}. Можно поправить в списке ниже.`;
+  hint.className = "text-[11px] text-emerald-300";
+  showToast(`Готово: ${filled} ключ(ей)`, "success");
+}
+
+async function loadTeacherRooms() {
+  try {
+    const rooms = await api(`/rooms/teacher/${state.user.id}`);
+    state.teacherRooms = rooms || [];
+    renderTeacherRooms();
+  } catch (err) {
+    showToast(err.message, "error");
+  }
+}
+
+function renderTeacherRooms() {
+  const box = document.getElementById("teacher-rooms-list");
+  const list = document.getElementById("teacher-rooms");
+  list.innerHTML = "";
+  if (!state.teacherRooms.length) {
+    box.classList.add("hidden");
+    return;
+  }
+  box.classList.remove("hidden");
+  state.teacherRooms.forEach(r => {
+    const row = document.createElement("button");
+    row.type = "button";
+    row.className = "w-full text-left panel rounded-xl px-4 py-3";
+    row.innerHTML = `
+      <p class="text-sm font-semibold">${escapeHtml(r.name)}</p>
+      <p class="text-xs text-slate-400">${escapeHtml(r.subject)} · код ${escapeHtml(r.code)}</p>
+    `;
+    row.onclick = () => openTeacherRoom(r);
+    list.appendChild(row);
+  });
+}
+
+async function handleCreateRoom(e) {
+  e.preventDefault();
+  const name = document.getElementById("room-name-input").value.trim();
+  const subject = document.getElementById("room-subject-select").value;
+  const btn = document.getElementById("create-room-btn");
+  if (!name) return showToast("Введите название комнаты", "error");
+
+  setButtonLoading(btn, true);
+  try {
+    const room = await api("/rooms/create", "POST", {
+      name,
+      subject,
+      teacher_id: toInt(state.user.id),
+    });
+    showToast(`Комната создана. Код: ${room.code}`, "success");
+    document.getElementById("room-name-input").value = "";
+    await loadTeacherRooms();
+    await openTeacherRoom(room);
+  } catch (err) {
+    showToast(err.message, "error");
+  } finally {
+    setButtonLoading(btn, false, "Создать");
+  }
+}
+
+async function openTeacherRoom(room) {
+  state.currentRoom = room;
+  document.getElementById("teacher-create-room").classList.add("hidden");
+  document.getElementById("teacher-rooms-list").classList.add("hidden");
+  document.getElementById("teacher-dashboard").classList.remove("hidden");
+  document.getElementById("dash-room-name").textContent = room.name;
+  document.getElementById("dash-room-subject").textContent = room.subject;
+  document.getElementById("dash-room-code").textContent = room.code;
+  await refreshDashboard();
+}
+
+function backToTeacherRooms(e) {
+  e?.preventDefault();
+  state.currentRoom = null;
+  document.getElementById("teacher-dashboard").classList.add("hidden");
+  document.getElementById("teacher-create-room").classList.remove("hidden");
+  loadTeacherRooms();
+}
+
+function copyRoomCode(e) {
+  e?.preventDefault();
+  const code = document.getElementById("dash-room-code").textContent;
+  navigator.clipboard?.writeText(code).then(
+    () => showToast("Код скопирован", "success"),
+    () => showToast("Не удалось скопировать", "error"),
+  );
+}
+
+async function refreshDashboard(e) {
+  e?.preventDefault();
+  if (!state.currentRoom) return;
+  try {
+    const dash = await api(`/rooms/${state.currentRoom.id}/dashboard`);
+    state.dashboard = dash;
+    renderStudentsTable(dash.students || []);
+    renderHeatmap(dash.heatmap || []);
+    renderAssignments(dash.assignments || []);
+  } catch (err) {
+    showToast(err.message, "error");
+  }
+}
+
+function renderStudentsTable(students) {
+  const body = document.getElementById("students-table-body");
+  const empty = document.getElementById("students-empty");
+  body.innerHTML = "";
+  if (!students.length) {
+    empty.classList.remove("hidden");
+    return;
+  }
+  empty.classList.add("hidden");
+  students.forEach(s => {
+    const online = String(s.status).startsWith("В сети");
+    const timeLabel = s.last_time_spent_seconds == null
+      ? "—"
+      : formatTime(s.last_time_spent_seconds);
+    const tr = document.createElement("tr");
+    tr.className = "border-t border-white/5";
+    tr.innerHTML = `
+      <td class="py-2 pr-2 font-medium">${escapeHtml(s.full_name)}</td>
+      <td class="py-2 pr-2 text-xs ${online ? "status-online" : "status-away"}">${escapeHtml(s.status)}</td>
+      <td class="py-2 text-right text-xs text-slate-300">${timeLabel}</td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+function renderHeatmap(items) {
+  const grid = document.getElementById("heatmap-grid");
+  const empty = document.getElementById("heatmap-empty");
+  grid.innerHTML = "";
+  if (!items.length) {
+    empty.classList.remove("hidden");
+    return;
+  }
+  empty.classList.add("hidden");
+  items.forEach(it => {
+    const pct = Number(it.error_percent) || 0;
+    // краснее = выше % ошибок
+    const alpha = Math.min(0.15 + pct / 100 * 0.75, 0.9);
+    const cell = document.createElement("div");
+    cell.className = "heat-cell";
+    cell.style.background = `rgba(239, 68, 68, ${alpha})`;
+    cell.innerHTML = `
+      <div class="text-xs font-bold">№${escapeHtml(String(it.task_number))}</div>
+      <div class="text-sm font-extrabold mt-1">${pct}%</div>
+      <div class="text-[10px] text-slate-200/80">${toInt(it.errors)}/${toInt(it.total)}</div>
+    `;
+    grid.appendChild(cell);
+  });
+}
+
+function renderAssignments(list) {
+  const box = document.getElementById("assignments-list");
+  const empty = document.getElementById("assignments-empty");
+  box.innerHTML = "";
+  if (!list.length) {
+    empty.classList.remove("hidden");
+    return;
+  }
+  empty.classList.add("hidden");
+  list.forEach(a => {
+    const row = document.createElement("div");
+    row.className = "rounded-xl px-4 py-3 bg-white/5 border border-white/10";
+    row.innerHTML = `
+      <p class="text-sm font-semibold">${escapeHtml(a.title)}</p>
+      <p class="text-xs text-slate-400">Ч1: ${toInt(a.total_tasks_part1)} · сдач: ${toInt(a.submissions_count)}${a.fipi_url ? " · есть ссылка ФИПИ" : ""}</p>
+    `;
+    box.appendChild(row);
+  });
+}
+
+async function handlePublishAssignment(e) {
+  e.preventDefault();
+  if (!state.currentRoom) return;
+  const title = document.getElementById("assignment-title").value.trim();
+  const fipiUrl = document.getElementById("assignment-fipi-url").value.trim();
+  const btn = document.getElementById("publish-assignment-btn");
+  if (!title) return showToast("Введите название варианта", "error");
+
+  const bulkRaw = document.getElementById("keys-bulk-input")?.value?.trim();
+  const hasAnyKey = [...document.querySelectorAll(".fipi-key")].some(inp => inp.value.trim());
+  if (!hasAnyKey && bulkRaw) applyBulkKeys();
+
+  const fipi_keys = {};
+  document.querySelectorAll(".fipi-key").forEach(inp => {
+    const val = inp.value.trim();
+    if (val) fipi_keys[String(inp.dataset.task)] = val;
+  });
+  if (fipiUrl && !/^https?:\/\//i.test(fipiUrl)) {
+    return showToast("Ссылка должна начинаться с http:// или https://", "error");
+  }
+
+  const total = currentPart1Count();
+  const keyCount = Object.keys(fipi_keys).length;
+  setButtonLoading(btn, true);
+  try {
+    await api("/assignments/create", "POST", {
+      room_id: toInt(state.currentRoom.id),
+      title,
+      fipi_url: fipiUrl || null,
+      fipi_keys,
+      total_tasks_part1: total,
+    });
+    showToast(
+      keyCount
+        ? `Вариант опубликован · автопроверка (${keyCount} ключей)`
+        : "Вариант опубликован · без автопроверки",
+      "success"
+    );
+    document.getElementById("assignment-title").value = "";
+    document.getElementById("assignment-fipi-url").value = "";
+    const bulk = document.getElementById("keys-bulk-input");
+    if (bulk) bulk.value = "";
+    document.querySelectorAll(".fipi-key").forEach(inp => { inp.value = ""; });
+    await refreshDashboard();
+  } catch (err) {
+    showToast(err.message, "error");
+  } finally {
+    setButtonLoading(btn, false, "Опубликовать вариант");
+  }
+}
+
+/* ---------- student ---------- */
+async function loadStudentRooms() {
+  try {
+    const rooms = await api(`/rooms/student/${state.user.id}`);
+    state.studentRooms = rooms || [];
+    renderStudentRooms();
+  } catch (err) {
+    showToast(err.message, "error");
+  }
+}
+
+function renderStudentRooms() {
+  const box = document.getElementById("student-rooms-list");
+  const list = document.getElementById("student-rooms");
+  list.innerHTML = "";
+  if (!state.studentRooms.length) {
+    box.classList.add("hidden");
+    return;
+  }
+  box.classList.remove("hidden");
+  state.studentRooms.forEach(r => {
+    const row = document.createElement("button");
+    row.type = "button";
+    row.className = "w-full text-left panel rounded-xl px-4 py-3";
+    row.innerHTML = `
+      <p class="text-sm font-semibold">${escapeHtml(r.name)}</p>
+      <p class="text-xs text-slate-400">${escapeHtml(r.subject)} · ${escapeHtml(r.teacher_name || "")}</p>
+    `;
+    row.onclick = () => openStudentRoom(r);
+    list.appendChild(row);
+  });
+}
+
+async function handleJoinRoom(e) {
+  e.preventDefault();
+  const code = document.getElementById("join-code-input").value.trim().toUpperCase();
+  const btn = document.getElementById("join-room-btn");
+  if (code.length !== 6) return showToast("Введите 6-значный код", "error");
+
+  setButtonLoading(btn, true);
+  try {
+    const room = await api("/rooms/join", "POST", {
+      code,
+      student_id: toInt(state.user.id),
+    });
+    showToast(`Вы в комнате «${room.name}»`, "success");
+    document.getElementById("join-code-input").value = "";
+    await loadStudentRooms();
+    openStudentRoom(room);
+  } catch (err) {
+    showToast(err.message, "error");
+  } finally {
+    setButtonLoading(btn, false, "Войти");
+  }
+}
+
+function openStudentRoom(room) {
+  state.currentRoom = room;
+  document.getElementById("student-join").classList.add("hidden");
+  document.getElementById("student-rooms-list").classList.add("hidden");
+  document.getElementById("student-room-view").classList.remove("hidden");
+  document.getElementById("student-room-name").textContent = room.name;
+  document.getElementById("student-room-subject").textContent = `Предмет: ${room.subject}`;
+  loadStudentAssignments();
+}
+
+function backToStudentRooms(e) {
+  e?.preventDefault();
+  state.currentRoom = null;
+  document.getElementById("student-room-view").classList.add("hidden");
+  document.getElementById("student-join").classList.remove("hidden");
+  loadStudentRooms();
+}
+
+async function loadStudentAssignments(e) {
+  e?.preventDefault();
+  if (!state.currentRoom) return;
+  try {
+    const list = await api(
+      `/rooms/${state.currentRoom.id}/assignments?student_id=${toInt(state.user.id)}`
+    );
+    renderStudentAssignments(list || []);
+  } catch (err) {
+    showToast(err.message, "error");
+  }
+}
+
+function renderStudentAssignments(list) {
+  const box = document.getElementById("student-assignments");
+  const empty = document.getElementById("student-assignments-empty");
+  box.innerHTML = "";
+  if (!list.length) {
+    empty.classList.remove("hidden");
+    return;
+  }
+  empty.classList.add("hidden");
+  list.forEach(a => {
+    const row = document.createElement("button");
+    row.type = "button";
+    row.className = "w-full text-left rounded-xl px-4 py-3 bg-white/5 border border-white/10";
+    const status = a.already_submitted
+      ? `Сдано · ${toInt(a.primary_score)} перв. / ${toInt(a.secondary_score)} втор.`
+      : (a.fipi_url ? "Есть ссылка ФИПИ · нажмите, чтобы решать" : "Нажмите, чтобы решать");
+    row.innerHTML = `
+      <p class="text-sm font-semibold">${escapeHtml(a.title)}</p>
+      <p class="text-xs text-slate-400">Часть 1: ${toInt(a.total_tasks_part1)} заданий · ${escapeHtml(status)}</p>
+    `;
+    row.onclick = () => startSolve(a);
+    box.appendChild(row);
+  });
+}
+
+/* ---------- solve + timer ---------- */
+function startTimer() {
+  stopTimer();
+  state.timerSeconds = 0;
+  document.getElementById("timer-display").textContent = "00:00";
+  state.timerId = setInterval(() => {
+    state.timerSeconds = toInt(state.timerSeconds) + 1;
+    document.getElementById("timer-display").textContent = formatTime(state.timerSeconds);
+  }, 1000);
+}
+
+function stopTimer() {
+  if (state.timerId) clearInterval(state.timerId);
+  state.timerId = null;
+}
+
+function startSolve(assignment) {
+  state.solveAssignment = assignment;
+  state.photos = [];
+  document.getElementById("photo-preview").innerHTML = "";
+  document.getElementById("solve-title").textContent = assignment.title;
+  document.getElementById("solve-subject").textContent = state.currentRoom?.subject || "";
+
+  const fipiPanel = document.getElementById("fipi-open-panel");
+  const fallback = document.getElementById("fipi-fallback-link");
+  if (assignment.fipi_url) {
+    fipiPanel.classList.remove("hidden");
+    fallback.href = assignment.fipi_url;
+  } else {
+    fipiPanel.classList.add("hidden");
+    fallback.href = "#";
+  }
+
+  const total = toInt(assignment.total_tasks_part1) || PART1_COUNT;
+  const grid = document.getElementById("solve-answers-grid");
+  grid.innerHTML = "";
+  for (let i = 1; i <= total; i++) {
+    const card = document.createElement("div");
+    card.className = "rounded-xl border border-white/10 bg-white/5 p-3";
+    card.innerHTML = `
+      <div class="flex items-center justify-between gap-3">
+        <span class="text-sm font-bold">Задание ${i}</span>
+        <input data-task="${i}" type="text" inputmode="text" placeholder="ответ"
+          class="field solve-answer w-36 rounded-lg px-3 py-2 text-sm text-center" />
+      </div>
+    `;
+    grid.appendChild(card);
+  }
+
+  startTimer();
+  showScreen("screen-solve");
+  if (assignment.fipi_url) {
+    showToast("Откройте ФИПИ и вводите ответы здесь", "info");
+  }
+}
+
+function openFipiLink(e) {
+  e?.preventDefault();
+  const url = state.solveAssignment?.fipi_url;
+  if (!url) {
+    showToast("Учитель не добавил ссылку ФИПИ", "error");
+    return;
+  }
+  haptic("medium");
+  // В Telegram Mini App openLink открывает браузер поверх, мини-апп остаётся
+  try {
+    if (tg?.openLink) {
+      tg.openLink(url, { try_instant_view: false });
+      return;
+    }
+  } catch (_) {}
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+
+function cancelSolve(e) {
+  e?.preventDefault();
+  stopTimer();
+  state.solveAssignment = null;
+  showScreen("screen-student");
+}
+
+function handlePhotosSelected(e) {
+  const files = Array.from(e.target.files || []);
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      state.photos.push(String(reader.result));
+      renderPhotoPreview();
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = "";
+}
+
+function renderPhotoPreview() {
+  const box = document.getElementById("photo-preview");
+  box.innerHTML = "";
+  state.photos.forEach((src, idx) => {
+    const wrap = document.createElement("div");
+    wrap.className = "relative";
+    wrap.innerHTML = `
+      <img src="${src}" class="photo-thumb" alt="photo" />
+      <button type="button" class="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-[10px]">×</button>
+    `;
+    wrap.querySelector("button").onclick = () => {
+      state.photos.splice(idx, 1);
+      renderPhotoPreview();
+    };
+    box.appendChild(wrap);
+  });
+}
+
+async function handleSubmitWork(e) {
+  e.preventDefault();
+  if (!state.solveAssignment) return;
+  const btn = document.getElementById("submit-work-btn");
+
+  const answers_part1 = {};
+  document.querySelectorAll(".solve-answer").forEach(inp => {
+    const val = inp.value.trim();
+    if (val) answers_part1[String(inp.dataset.task)] = val;
+  });
+
+  const time_spent_seconds = toInt(state.timerSeconds);
+
+  setButtonLoading(btn, true);
+  try {
+    const result = await api("/submissions/submit", "POST", {
+      assignment_id: toInt(state.solveAssignment.id),
+      student_id: toInt(state.user.id),
+      answers_part1,
+      photo_urls_part2: state.photos,
+      time_spent_seconds,
+    });
+    stopTimer();
+    state.lastDiagnostic = result;
+    renderDiagnostic(result);
+    showScreen("screen-diagnostic");
+    showToast("Работа сдана", "success");
+  } catch (err) {
+    showToast(err.message, "error");
+  } finally {
+    setButtonLoading(btn, false, "Сдать работу");
+  }
+}
+
+function renderDiagnostic(result) {
+  document.getElementById("diag-title").textContent = result.assignment_title || "Результат";
+  const auto = result.auto_checked === true;
+  const primary = toInt(result.primary_score);
+  const secondary = toInt(result.secondary_score);
+
+  if (auto) {
+    document.getElementById("diag-score").textContent = `${primary} / ${secondary}`;
+    document.getElementById("diag-score").nextElementSibling.textContent = "перв. / втор.";
+  } else {
+    document.getElementById("diag-score").textContent = "Принято";
+    document.getElementById("diag-score").nextElementSibling.textContent =
+      "автопроверка выключена (учитель не задал ключи)";
+  }
+
+  document.getElementById("diag-time").textContent =
+    `Затраченное время: ${formatTimeHuman(result.time_spent_seconds)}`;
+
+  const list = document.getElementById("diag-list");
+  list.innerHTML = "";
+  const diag = result.diagnostic || {};
+  const keys = Object.keys(diag).sort((a, b) => toInt(a) - toInt(b));
+
+  if (!keys.length) {
+    list.innerHTML = `<p class="text-sm text-slate-400 text-center py-2">Ответы не были заполнены.</p>`;
+    return;
+  }
+
+  keys.forEach(num => {
+    const item = diag[num] || {};
+    const row = document.createElement("div");
+
+    if (item.unchecked || item.correct == null) {
+      row.className = "rounded-xl px-4 py-3 bg-white/5 border border-white/10";
+      row.innerHTML = `
+        <p class="text-sm font-semibold">№${escapeHtml(num)}</p>
+        <p class="text-xs text-slate-300 mt-1">Ваш ответ: ${escapeHtml(String(item.user || "—"))}</p>
+      `;
+    } else if (item.correct === true) {
+      row.className = "rounded-xl px-4 py-3 diag-ok";
+      row.innerHTML = `
+        <p class="text-sm font-semibold">№${escapeHtml(num)} ✓ Верно</p>
+        <p class="text-xs text-slate-300 mt-1">Ваш ответ: ${escapeHtml(String(item.user ?? ""))}</p>
+      `;
+    } else {
+      row.className = "rounded-xl px-4 py-3 diag-bad";
+      row.innerHTML = `
+        <p class="text-sm font-semibold">№${escapeHtml(num)} ✕ Ошибка</p>
+        <p class="text-xs text-slate-300 mt-1">Ваш: ${escapeHtml(String(item.user || "—"))} · Ключ: ${escapeHtml(String(item.key ?? ""))}</p>
+      `;
+    }
+    list.appendChild(row);
+  });
+}
+
+function backFromDiagnostic(e) {
+  e?.preventDefault();
+  state.solveAssignment = null;
+  state.lastDiagnostic = null;
+  showScreen("screen-student");
+  if (state.currentRoom) {
+    document.getElementById("student-room-view").classList.remove("hidden");
+    loadStudentAssignments();
+  }
+}
+
+/* ---------- boot ---------- */
+(async function boot() {
+  try { tg?.ready?.(); tg?.expand?.(); } catch (_) {}
+  buildFipiKeysGrid();
+  const user = loadUser();
+  if (user) {
+    state.user = user;
+    updateHeader();
+    await enterApp(user);
+  } else {
+    showScreen("screen-auth");
+  }
+})();
+</script>
+</body>
+</html>

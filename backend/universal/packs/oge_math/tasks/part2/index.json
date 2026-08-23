@@ -1,0 +1,26 @@
+{
+
+  "note": "Часть 2 (20–25): критерии LLM-grading — stub. Шаблоны в specs/math_oge.json. Чертежи 23–25: assets/figures/part2/ + figure_data (см. TZ_PART2_FIGURES.md).",
+
+  "source_spec": "backend/universal/specs/math_oge.json",
+
+  "slots": [20, 21, 22, 23, 24, 25],
+
+  "max_score_default": 2,
+
+  "grading": "manual_or_teacher_stub",
+
+  "figures": {
+
+    "dir": "assets/figures/part2/",
+
+    "samples_json": "tasks/part2/figures_part2_samples.json",
+
+  "wired_subtypes": ["23a", "23b", "23c", "23d", "24a", "24b", "24c", "24d", "25a", "25b", "25c", "25d"]
+
+  },
+
+  "samples": ["task_23_sample.json", "figures_part2_samples.json"]
+
+}
+

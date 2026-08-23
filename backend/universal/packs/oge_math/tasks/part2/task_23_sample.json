@@ -1,0 +1,28 @@
+{
+  "note": "Пример figure_data для слота 23 (MVP). Сидится через math_oge.json → PG.",
+  "task_number": 23,
+  "subtype_code": "23a",
+  "figure_kind": "asset",
+  "figure_data": {
+    "has_condition_figure": true,
+    "has_solution_figure": true,
+    "figure_type": "trapezoid",
+    "main_figure_url": "assets/figures/part2/q23_sample_main.svg",
+    "steps": [
+      {
+        "id": 1,
+        "caption": "Отметить точки касания вписанной окружности",
+        "figure_url": null
+      },
+      {
+        "id": 2,
+        "caption": "Высота = диаметр = 2r",
+        "figure_url": null
+      }
+    ]
+  },
+  "figure_params": {
+    "title": "равнобедренная трапеция ABCD",
+    "note": "основания 8 и 18, вписанная окружность r=6"
+  }
+}

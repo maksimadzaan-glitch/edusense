@@ -1,0 +1,1076 @@
+{
+  "context_id": "etalon_oge_math_demo_01",
+  "title": "Эталон · ОГЭ математика · demo",
+  "description_text": "Демонстрационный эталонный вариант (слоты 1–25).",
+  "figure_kind": null,
+  "figure_params": {
+    "etalon": true,
+    "variant_code": "oge_math_demo_01",
+    "kim_spec_id": "oge_math_2026",
+    "provenance": {
+      "source": "demo2026",
+      "year": 2026,
+      "variant_code": "oge_math_demo_01",
+      "kim_spec_id": "oge_math_2026",
+      "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+      "imported_at": "2026-08-04T18:51:42.527407+00:00",
+      "assets": [
+        {
+          "path": "assets/etalon/demo_01/q01.svg",
+          "sha256": "sha256:1a900c63cdb1e9df7b072fc27047f409b76304f2de390cd9e880b0dca25b8e94",
+          "task_number": 1
+        }
+      ]
+    },
+    "published": false,
+    "status": "draft"
+  },
+  "etalon": true,
+  "tasks": [
+    {
+      "task_number": 1,
+      "part": 1,
+      "prototype_title": "slot 1 · etalon · oge_math_demo_01 #1",
+      "prompt_instruction": "Эталонный слот №1 (slot_1). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №1. Найдите значение. Ответ: 1.",
+      "correct_answer": "1",
+      "template_answer": "1",
+      "template_solution": null,
+      "figure_kind": "asset",
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [
+            "/packs/oge_math/assets/etalon/demo_01/q01.svg"
+          ],
+          "media": [
+            {
+              "kind": "image",
+              "path": "assets/etalon/demo_01/q01.svg",
+              "alt": "Рисунок к заданию 1",
+              "sha256": "sha256:1a900c63cdb1e9df7b072fc27047f409b76304f2de390cd9e880b0dca25b8e94"
+            }
+          ],
+          "matching": null,
+          "image_paths": [
+            "assets/etalon/demo_01/q01.svg"
+          ],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [
+          "/packs/oge_math/assets/etalon/demo_01/q01.svg"
+        ],
+        "media": [
+          {
+            "kind": "image",
+            "path": "assets/etalon/demo_01/q01.svg",
+            "alt": "Рисунок к заданию 1",
+            "sha256": "sha256:1a900c63cdb1e9df7b072fc27047f409b76304f2de390cd9e880b0dca25b8e94"
+          }
+        ],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 2,
+      "part": 1,
+      "prototype_title": "slot 2 · etalon · oge_math_demo_01 #2",
+      "prompt_instruction": "Эталонный слот №2 (slot_2). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №2. Найдите значение. Ответ: 2.",
+      "correct_answer": "2",
+      "template_answer": "2",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 3,
+      "part": 1,
+      "prototype_title": "slot 3 · etalon · oge_math_demo_01 #3",
+      "prompt_instruction": "Эталонный слот №3 (slot_3). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №3. Найдите значение. Ответ: 3.",
+      "correct_answer": "3",
+      "template_answer": "3",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 4,
+      "part": 1,
+      "prototype_title": "slot 4 · etalon · oge_math_demo_01 #4",
+      "prompt_instruction": "Эталонный слот №4 (slot_4). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №4. Найдите значение. Ответ: 4.",
+      "correct_answer": "4",
+      "template_answer": "4",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 5,
+      "part": 1,
+      "prototype_title": "slot 5 · etalon · oge_math_demo_01 #5",
+      "prompt_instruction": "Эталонный слот №5 (slot_5). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №5. Найдите значение. Ответ: 5.",
+      "correct_answer": "5",
+      "template_answer": "5",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 6,
+      "part": 1,
+      "prototype_title": "slot 6 · etalon · oge_math_demo_01 #6",
+      "prompt_instruction": "Эталонный слот №6 (slot_6). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №6. Найдите значение. Ответ: 6.",
+      "correct_answer": "6",
+      "template_answer": "6",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 7,
+      "part": 1,
+      "prototype_title": "slot 7 · etalon · oge_math_demo_01 #7",
+      "prompt_instruction": "Эталонный слот №7 (slot_7). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №7. Найдите значение. Ответ: 7.",
+      "correct_answer": "7",
+      "template_answer": "7",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 8,
+      "part": 1,
+      "prototype_title": "slot 8 · etalon · oge_math_demo_01 #8",
+      "prompt_instruction": "Эталонный слот №8 (slot_8). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №8. Найдите значение. Ответ: 8.",
+      "correct_answer": "8",
+      "template_answer": "8",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 9,
+      "part": 1,
+      "prototype_title": "slot 9 · etalon · oge_math_demo_01 #9",
+      "prompt_instruction": "Эталонный слот №9 (slot_9). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №9. Найдите значение. Ответ: 9.",
+      "correct_answer": "9",
+      "template_answer": "9",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 10,
+      "part": 1,
+      "prototype_title": "slot 10 · etalon · oge_math_demo_01 #10",
+      "prompt_instruction": "Эталонный слот №10 (slot_10). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №10. Найдите значение. Ответ: 10.",
+      "correct_answer": "10",
+      "template_answer": "10",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 11,
+      "part": 1,
+      "prototype_title": "slot 11 · etalon · oge_math_demo_01 #11",
+      "prompt_instruction": "Эталонный слот №11 (slot_11). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №11. Найдите значение. Ответ: 11.",
+      "correct_answer": "11",
+      "template_answer": "11",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 12,
+      "part": 1,
+      "prototype_title": "slot 12 · etalon · oge_math_demo_01 #12",
+      "prompt_instruction": "Эталонный слот №12 (slot_12). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №12. Найдите значение. Ответ: 12.",
+      "correct_answer": "12",
+      "template_answer": "12",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 13,
+      "part": 1,
+      "prototype_title": "slot 13 · etalon · oge_math_demo_01 #13",
+      "prompt_instruction": "Эталонный слот №13 (slot_13). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №13. Найдите значение. Ответ: 13.",
+      "correct_answer": "13",
+      "template_answer": "13",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 14,
+      "part": 1,
+      "prototype_title": "slot 14 · etalon · oge_math_demo_01 #14",
+      "prompt_instruction": "Эталонный слот №14 (slot_14). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №14. Найдите значение. Ответ: 14.",
+      "correct_answer": "14",
+      "template_answer": "14",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 15,
+      "part": 1,
+      "prototype_title": "slot 15 · etalon · oge_math_demo_01 #15",
+      "prompt_instruction": "Эталонный слот №15 (slot_15). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №15. Найдите значение. Ответ: 15.",
+      "correct_answer": "15",
+      "template_answer": "15",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 16,
+      "part": 1,
+      "prototype_title": "slot 16 · etalon · oge_math_demo_01 #16",
+      "prompt_instruction": "Эталонный слот №16 (slot_16). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №16. Найдите значение. Ответ: 16.",
+      "correct_answer": "16",
+      "template_answer": "16",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 17,
+      "part": 1,
+      "prototype_title": "slot 17 · etalon · oge_math_demo_01 #17",
+      "prompt_instruction": "Эталонный слот №17 (slot_17). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №17. Найдите значение. Ответ: 17.",
+      "correct_answer": "17",
+      "template_answer": "17",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 18,
+      "part": 1,
+      "prototype_title": "slot 18 · etalon · oge_math_demo_01 #18",
+      "prompt_instruction": "Эталонный слот №18 (slot_18). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №18. Найдите значение. Ответ: 18.",
+      "correct_answer": "18",
+      "template_answer": "18",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 19,
+      "part": 1,
+      "prototype_title": "slot 19 · etalon · oge_math_demo_01 #19",
+      "prompt_instruction": "Эталонный слот №19 (slot_19). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №19. Найдите значение. Ответ: 19.",
+      "correct_answer": "19",
+      "template_answer": "19",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 1,
+      "answer_type": "SHORT_VALUE",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 20,
+      "part": 2,
+      "prototype_title": "slot 20 · etalon · oge_math_demo_01 #20",
+      "prompt_instruction": "Эталонный слот №20 (slot_20). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №20 (часть 2). Решите задачу.",
+      "correct_answer": "решение-20",
+      "template_answer": "решение-20",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 2,
+      "answer_type": "EXTENDED",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 21,
+      "part": 2,
+      "prototype_title": "slot 21 · etalon · oge_math_demo_01 #21",
+      "prompt_instruction": "Эталонный слот №21 (slot_21). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №21 (часть 2). Решите задачу.",
+      "correct_answer": "решение-21",
+      "template_answer": "решение-21",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 2,
+      "answer_type": "EXTENDED",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 22,
+      "part": 2,
+      "prototype_title": "slot 22 · etalon · oge_math_demo_01 #22",
+      "prompt_instruction": "Эталонный слот №22 (slot_22). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №22 (часть 2). Решите задачу.",
+      "correct_answer": "решение-22",
+      "template_answer": "решение-22",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 2,
+      "answer_type": "EXTENDED",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 23,
+      "part": 2,
+      "prototype_title": "slot 23 · etalon · oge_math_demo_01 #23",
+      "prompt_instruction": "Эталонный слот №23 (slot_23). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №23 (часть 2). Решите задачу.",
+      "correct_answer": "решение-23",
+      "template_answer": "решение-23",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 2,
+      "answer_type": "EXTENDED",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 24,
+      "part": 2,
+      "prototype_title": "slot 24 · etalon · oge_math_demo_01 #24",
+      "prompt_instruction": "Эталонный слот №24 (slot_24). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №24 (часть 2). Решите задачу.",
+      "correct_answer": "решение-24",
+      "template_answer": "решение-24",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 2,
+      "answer_type": "EXTENDED",
+      "acceptable_answers": null
+    },
+    {
+      "task_number": 25,
+      "part": 2,
+      "prototype_title": "slot 25 · etalon · oge_math_demo_01 #25",
+      "prompt_instruction": "Эталонный слот №25 (slot_25). Не перефразировать. Текст и ключ — как в источнике.",
+      "template_text": "Эталонное задание ОГЭ математика №25 (часть 2). Решите задачу.",
+      "correct_answer": "решение-25",
+      "template_answer": "решение-25",
+      "template_solution": null,
+      "figure_kind": null,
+      "figure_params": {
+        "etalon": true,
+        "payload": {
+          "image_urls": [],
+          "media": [],
+          "matching": null,
+          "image_paths": [],
+          "etalon": true,
+          "provenance": {
+            "variant_code": "oge_math_demo_01",
+            "kim_spec_id": "oge_math_2026",
+            "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+            "source": "demo2026",
+            "year": 2026
+          }
+        },
+        "image_urls": [],
+        "media": [],
+        "provenance": {
+          "variant_code": "oge_math_demo_01",
+          "kim_spec_id": "oge_math_2026",
+          "content_hash": "sha256:7469cc3e86160c45c63ef0b0158da57afe6d7a9eb072f6d72ba47777c29e6f65",
+          "source": "demo2026",
+          "year": 2026
+        }
+      },
+      "figure_svg": null,
+      "max_score": 2,
+      "answer_type": "EXTENDED",
+      "acceptable_answers": null
+    }
+  ]
+}

@@ -1,0 +1,569 @@
+{
+  "subject_code": "math_base",
+  "subject_name": "Математика (базовая)",
+  "exam_code": "EGE",
+  "exam_name": "ЕГЭ (база)",
+  "notes": "ЕГЭ базовая математика: задания 1–21, только часть 1. Шаблоны из backend/bank_data/ege_base_math.py.",
+  "prototypes": [
+    {
+      "task_number": 1,
+      "part": 1,
+      "prototype_title": "Арифметика · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Вычислите: 15 + 27 − 8.",
+      "template_answer": "34"
+    },
+    {
+      "task_number": 1,
+      "part": 1,
+      "prototype_title": "Арифметика · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Вычислите: 12 · 5.",
+      "template_answer": "60"
+    },
+    {
+      "task_number": 1,
+      "part": 1,
+      "prototype_title": "Арифметика · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Вычислите: 96 : 8 + 7.",
+      "template_answer": "19"
+    },
+    {
+      "task_number": 1,
+      "part": 1,
+      "prototype_title": "Степени · ex4",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Вычислите: 3² + 4².",
+      "template_answer": "25"
+    },
+    {
+      "task_number": 2,
+      "part": 1,
+      "prototype_title": "Проценты · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Найдите 20% от числа 150.",
+      "template_answer": "30"
+    },
+    {
+      "task_number": 2,
+      "part": 1,
+      "prototype_title": "Проценты · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Товар стоил 400 руб., скидка 10%. Найдите цену со скидкой.",
+      "template_answer": "360"
+    },
+    {
+      "task_number": 2,
+      "part": 1,
+      "prototype_title": "Проценты · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Число 80 увеличили на 25%. Найдите результат.",
+      "template_answer": "100"
+    },
+    {
+      "task_number": 2,
+      "part": 1,
+      "prototype_title": "Проценты · ex4",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Скидка 15% от 2000 руб. Найдите размер скидки в рублях.",
+      "template_answer": "300"
+    },
+    {
+      "task_number": 3,
+      "part": 1,
+      "prototype_title": "Площадь · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Площадь квадрата со стороной 7 равна…",
+      "template_answer": "49"
+    },
+    {
+      "task_number": 3,
+      "part": 1,
+      "prototype_title": "Периметр · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Периметр прямоугольника со сторонами 3 и 8 равен…",
+      "template_answer": "22"
+    },
+    {
+      "task_number": 3,
+      "part": 1,
+      "prototype_title": "Пифагор · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Катеты 6 и 8. Найдите гипотенузу.",
+      "template_answer": "10"
+    },
+    {
+      "task_number": 3,
+      "part": 1,
+      "prototype_title": "Периметр · ex4",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Сторона квадрата 5. Найдите периметр.",
+      "template_answer": "20"
+    },
+    {
+      "task_number": 4,
+      "part": 1,
+      "prototype_title": "Вероятность · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Монету бросают один раз. Вероятность орла равна…",
+      "template_answer": "0.5"
+    },
+    {
+      "task_number": 4,
+      "part": 1,
+      "prototype_title": "Вероятность · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "В мешке 2 красных и 3 синих карандаша. Вероятность вынуть красный равна…",
+      "template_answer": "0.4"
+    },
+    {
+      "task_number": 4,
+      "part": 1,
+      "prototype_title": "Кубик · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Кубик бросают один раз. Вероятность выпадения 6 равна…",
+      "template_answer": "1/6"
+    },
+    {
+      "task_number": 4,
+      "part": 1,
+      "prototype_title": "Вероятность · ex4",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "В урне 5 белых и 5 чёрных шаров. Вероятность белого равна…",
+      "template_answer": "0.5"
+    },
+    {
+      "task_number": 5,
+      "part": 1,
+      "prototype_title": "Среднее · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Среднее арифметическое 10 и 20 равно…",
+      "template_answer": "15"
+    },
+    {
+      "task_number": 5,
+      "part": 1,
+      "prototype_title": "Степени · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Найдите значение 2³.",
+      "template_answer": "8"
+    },
+    {
+      "task_number": 5,
+      "part": 1,
+      "prototype_title": "Среднее · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Среднее арифметическое 5, 7 и 9 равно…",
+      "template_answer": "7"
+    },
+    {
+      "task_number": 5,
+      "part": 1,
+      "prototype_title": "Степени · ex4",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Найдите 3⁴.",
+      "template_answer": "81"
+    },
+    {
+      "task_number": 6,
+      "part": 1,
+      "prototype_title": "График · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "На графике y = x отмечена точка при x = 3. Найдите y.",
+      "template_answer": "3"
+    },
+    {
+      "task_number": 6,
+      "part": 1,
+      "prototype_title": "Функция · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Найдите f(2) для f(x) = 5x − 1.",
+      "template_answer": "9"
+    },
+    {
+      "task_number": 6,
+      "part": 1,
+      "prototype_title": "Функция · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Найдите f(0) для f(x) = 4x + 7.",
+      "template_answer": "7"
+    },
+    {
+      "task_number": 6,
+      "part": 1,
+      "prototype_title": "Функция · ex4",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Найдите f(3) для f(x) = x².",
+      "template_answer": "9"
+    },
+    {
+      "task_number": 7,
+      "part": 1,
+      "prototype_title": "Уравнения · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Решите уравнение 3x − 9 = 0.",
+      "template_answer": "3"
+    },
+    {
+      "task_number": 7,
+      "part": 1,
+      "prototype_title": "Уравнения · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Решите уравнение 2x + 5 = 17.",
+      "template_answer": "6"
+    },
+    {
+      "task_number": 7,
+      "part": 1,
+      "prototype_title": "Уравнения · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Решите уравнение x² = 49. Укажите положительный корень.",
+      "template_answer": "7"
+    },
+    {
+      "task_number": 7,
+      "part": 1,
+      "prototype_title": "Квадратные · ex4",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Решите уравнение x² − 5x + 6 = 0. Укажите больший корень.",
+      "template_answer": "3"
+    },
+    {
+      "task_number": 8,
+      "part": 1,
+      "prototype_title": "Неравенства · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Решите неравенство x > 3. Укажите наименьшее целое решение.",
+      "template_answer": "4"
+    },
+    {
+      "task_number": 8,
+      "part": 1,
+      "prototype_title": "Неравенства · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Решите неравенство 2x − 4 ≤ 6. Укажите наибольшее целое решение.",
+      "template_answer": "5"
+    },
+    {
+      "task_number": 8,
+      "part": 1,
+      "prototype_title": "Неравенства · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Решите неравенство x² < 9. Укажите длину промежутка решения.",
+      "template_answer": "6"
+    },
+    {
+      "task_number": 9,
+      "part": 1,
+      "prototype_title": "Пифагор · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Катеты 9 и 12. Найдите гипотенузу.",
+      "template_answer": "15"
+    },
+    {
+      "task_number": 9,
+      "part": 1,
+      "prototype_title": "Пифагор · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Гипотенуза 13, катет 5. Найдите второй катет.",
+      "template_answer": "12"
+    },
+    {
+      "task_number": 9,
+      "part": 1,
+      "prototype_title": "Площадь · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Площадь прямоугольного треугольника с катетами 6 и 8 равна…",
+      "template_answer": "24"
+    },
+    {
+      "task_number": 10,
+      "part": 1,
+      "prototype_title": "Окружность · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Радиус окружности 6. Найдите длину диаметра.",
+      "template_answer": "12"
+    },
+    {
+      "task_number": 10,
+      "part": 1,
+      "prototype_title": "Многоугольник · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Сторона правильного шестиугольника 4. Найдите периметр.",
+      "template_answer": "24"
+    },
+    {
+      "task_number": 10,
+      "part": 1,
+      "prototype_title": "Круг · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Площадь круга равна 25π. Найдите радиус.",
+      "template_answer": "5"
+    },
+    {
+      "task_number": 11,
+      "part": 1,
+      "prototype_title": "Куб · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Ребро куба 4. Найдите объём.",
+      "template_answer": "64"
+    },
+    {
+      "task_number": 11,
+      "part": 1,
+      "prototype_title": "Параллелепипед · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Параллелепипед 2×3×5. Найдите объём.",
+      "template_answer": "30"
+    },
+    {
+      "task_number": 11,
+      "part": 1,
+      "prototype_title": "Куб · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Ребро куба 3. Найдите площадь полной поверхности.",
+      "template_answer": "54"
+    },
+    {
+      "task_number": 12,
+      "part": 1,
+      "prototype_title": "Проценты · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Вклад 10000 руб. увеличили на 8%. Найдите новую сумму.",
+      "template_answer": "10800"
+    },
+    {
+      "task_number": 12,
+      "part": 1,
+      "prototype_title": "Проценты · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Цена 2500 руб., скидка 12%. Найдите цену со скидкой.",
+      "template_answer": "2200"
+    },
+    {
+      "task_number": 12,
+      "part": 1,
+      "prototype_title": "Проценты · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Число уменьшили на 10% и получили 90. Найдите исходное число.",
+      "template_answer": "100"
+    },
+    {
+      "task_number": 13,
+      "part": 1,
+      "prototype_title": "Статистика · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "В таблице: 12, 15, 18, 21. Найдите среднее арифметическое.",
+      "template_answer": "16.5"
+    },
+    {
+      "task_number": 13,
+      "part": 1,
+      "prototype_title": "Статистика · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Оценки: 3, 4, 5, 4, 4. Найдите медиану.",
+      "template_answer": "4"
+    },
+    {
+      "task_number": 13,
+      "part": 1,
+      "prototype_title": "Среднее · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Сумма чисел 8, 12 и 16 равна… Найдите среднее.",
+      "template_answer": "12"
+    },
+    {
+      "task_number": 14,
+      "part": 1,
+      "prototype_title": "Движение · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Пешеход шёл 4 часа со скоростью 5 км/ч. Какой путь?",
+      "template_answer": "20"
+    },
+    {
+      "task_number": 14,
+      "part": 1,
+      "prototype_title": "Движение · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Поезд проехал 240 км за 3 часа. Найдите скорость в км/ч.",
+      "template_answer": "80"
+    },
+    {
+      "task_number": 14,
+      "part": 1,
+      "prototype_title": "Работа · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Два крана наполняют бассейн за 6 часов. Сколько часов нужно одному (в 2 раза медленнее пары)?",
+      "template_answer": "12"
+    },
+    {
+      "task_number": 15,
+      "part": 1,
+      "prototype_title": "Логика · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Сколько простых чисел среди 2, 3, 4, 5, 6, 7?",
+      "template_answer": "4"
+    },
+    {
+      "task_number": 15,
+      "part": 1,
+      "prototype_title": "Числа · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Найдите наименьшее двузначное число, кратное 7.",
+      "template_answer": "14"
+    },
+    {
+      "task_number": 15,
+      "part": 1,
+      "prototype_title": "Делители · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Сколько делителей у числа 18?",
+      "template_answer": "6"
+    },
+    {
+      "task_number": 16,
+      "part": 1,
+      "prototype_title": "Координаты · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Точки A(0; 0) и B(3; 4). Найдите длину AB.",
+      "template_answer": "5"
+    },
+    {
+      "task_number": 16,
+      "part": 1,
+      "prototype_title": "Векторы · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Вектор a(3; 4). Найдите |a|.",
+      "template_answer": "5"
+    },
+    {
+      "task_number": 16,
+      "part": 1,
+      "prototype_title": "Координаты · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Точка M(2; −1). Найдите сумму координат.",
+      "template_answer": "1"
+    },
+    {
+      "task_number": 17,
+      "part": 1,
+      "prototype_title": "Выражения · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Упростите и найдите значение: 2(x + 3) при x = 4.",
+      "template_answer": "14"
+    },
+    {
+      "task_number": 17,
+      "part": 1,
+      "prototype_title": "Выражения · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Найдите значение (a + b)² при a = 2, b = 3.",
+      "template_answer": "25"
+    },
+    {
+      "task_number": 17,
+      "part": 1,
+      "prototype_title": "Дроби · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Вычислите: [[2|3]] · 6.",
+      "template_answer": "4"
+    },
+    {
+      "task_number": 18,
+      "part": 1,
+      "prototype_title": "Площадь · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Комната 5×6 м. Найдите площадь пола в м².",
+      "template_answer": "30"
+    },
+    {
+      "task_number": 18,
+      "part": 1,
+      "prototype_title": "Периметр · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Участок 12 м на 8 м. Найдите периметр в метрах.",
+      "template_answer": "40"
+    },
+    {
+      "task_number": 18,
+      "part": 1,
+      "prototype_title": "Площадь · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Квадратный участок со стороной 10 м. Найдите площадь.",
+      "template_answer": "100"
+    },
+    {
+      "task_number": 19,
+      "part": 1,
+      "prototype_title": "Вероятность · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "В лотерее 10 билетов, 2 выигрышных. Вероятность выигрышного равна…",
+      "template_answer": "0.2"
+    },
+    {
+      "task_number": 19,
+      "part": 1,
+      "prototype_title": "Комбинаторика · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Сколько двузначных чисел можно составить из цифр 1 и 2 (цифры могут повторяться)?",
+      "template_answer": "4"
+    },
+    {
+      "task_number": 19,
+      "part": 1,
+      "prototype_title": "Кубик · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Кубик бросают один раз. Вероятность числа больше 4 равна…",
+      "template_answer": "1/3"
+    },
+    {
+      "task_number": 20,
+      "part": 1,
+      "prototype_title": "Функция · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Найдите f(−3) для f(x) = 2x + 1.",
+      "template_answer": "−5"
+    },
+    {
+      "task_number": 20,
+      "part": 1,
+      "prototype_title": "Нуль функции · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Найдите нуль функции f(x) = x − 8.",
+      "template_answer": "8"
+    },
+    {
+      "task_number": 20,
+      "part": 1,
+      "prototype_title": "Функция · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Найдите f(4) для f(x) = x² − 5x.",
+      "template_answer": "−4"
+    },
+    {
+      "task_number": 21,
+      "part": 1,
+      "prototype_title": "Проценты · ex1",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Товар стоил 1200 руб. Скидка 25%, затем наценка 10% на новую цену. Найдите итоговую цену.",
+      "template_answer": "990"
+    },
+    {
+      "task_number": 21,
+      "part": 1,
+      "prototype_title": "Доли · ex2",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Смешали 2 л воды и 3 л сока. Какова доля сока в смеси (в виде десятичной дроби)?",
+      "template_answer": "0.6"
+    },
+    {
+      "task_number": 21,
+      "part": 1,
+      "prototype_title": "Проценты · ex3",
+      "prompt_instruction": "Измени числа и формулировку условия, сохрани тип задания и корректный ответ.",
+      "template_text": "Билет 800 руб., студенческая скидка 50%. Сколько заплатит студент?",
+      "template_answer": "400"
+    }
+  ]
+}
