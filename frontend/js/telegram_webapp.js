@@ -63,17 +63,36 @@
     if (accent) root.style.setProperty("--accent", accent);
   }
 
+  function normalizeEntryCode(raw) {
+    let s = String(raw || "").trim();
+    if (!s) return "";
+    try {
+      s = decodeURIComponent(s);
+    } catch {
+      /* ignore */
+    }
+    const edu = s.match(/EDU-\d{4}/i);
+    if (edu) return edu[0].toUpperCase();
+    return s.replace(/\s+/g, "").toUpperCase();
+  }
+
   function readEntryCode(tg) {
     try {
       const params = new URLSearchParams(global.location.search);
-      const fromQuery = (params.get("code") || params.get("join") || "").trim();
-      if (fromQuery) return fromQuery.toUpperCase();
+      const fromQuery = params.get("code") || params.get("join") || params.get("startapp") || "";
+      const normalized = normalizeEntryCode(fromQuery);
+      if (normalized) return normalized;
     } catch {
       /* ignore */
     }
     try {
       const sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param;
-      if (sp) return String(sp).trim().toUpperCase();
+      if (sp) return normalizeEntryCode(sp);
+    } catch {
+      /* ignore */
+    }
+    try {
+      return normalizeEntryCode(global.location.href);
     } catch {
       /* ignore */
     }

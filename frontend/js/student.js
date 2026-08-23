@@ -20,6 +20,55 @@ const NAV = [
   { id: "invite", label: "Пригласить человека", icon: "gift", action: "invite", badge: { text: "Бонус", kind: "bonus" } },
 ];
 
+/** Из ссылки/вставки достаёт EDU-XXXX (или чистый код). */
+function normalizeJoinCode(raw) {
+  let s = String(raw || "").trim();
+  if (!s) return "";
+  try {
+    s = decodeURIComponent(s);
+  } catch {
+    /* ignore */
+  }
+  let candidate = s;
+  try {
+    let urlStr = s;
+    if (/^(t\.me|telegram\.me)\//i.test(urlStr)) urlStr = "https://" + urlStr;
+    if (/^https?:\/\//i.test(urlStr)) {
+      const u = new URL(urlStr);
+      candidate =
+        u.searchParams.get("code") ||
+        u.searchParams.get("join") ||
+        u.searchParams.get("startapp") ||
+        u.searchParams.get("start") ||
+        candidate;
+    }
+  } catch {
+    /* not a full URL */
+  }
+  const fromQuery = String(candidate).match(/(?:^|[?&#])(?:code|join|startapp|start)=([^&\s#]+)/i);
+  if (fromQuery) candidate = fromQuery[1];
+  const edu = String(candidate).match(/EDU-\d{4}/i);
+  if (edu) return edu[0].toUpperCase();
+  const eduInRaw = s.match(/EDU-\d{4}/i);
+  if (eduInRaw) return eduInRaw[0].toUpperCase();
+  return String(candidate)
+    .replace(/\s+/g, "")
+    .replace(/^["'`]+|["'`]+$/g, "")
+    .toUpperCase();
+}
+
+function applyCodeFromInput(el) {
+  if (!el) return "";
+  const normalized = normalizeJoinCode(el.value);
+  if (normalized && normalized !== el.value.trim().toUpperCase()) {
+    el.value = normalized;
+  } else if (normalized) {
+    el.value = normalized;
+  }
+  state.code = normalized;
+  return normalized;
+}
+
 const ICONS = {
   home: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5z"/></svg>`,
   file: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>`,
@@ -2455,7 +2504,7 @@ function renderJoin() {
       <p class="sub">Учитель закрыл приём работ по этому коду. Новую попытку можно сделать, только если приём снова откроют.</p>
       <label class="field">
         <span>Код класса или работы</span>
-        <input type="text" id="inp-code" value="${escapeHtml(state.code)}" placeholder="EDU-XXXX" autocomplete="off" />
+        <input type="text" id="inp-code" value="${escapeHtml(state.code)}" placeholder="EDU-XXXX или ссылка" autocomplete="off" />
         ${state.codeError ? `<span class="field-error" id="err-code">${escapeHtml(state.codeError)}</span>` : ""}
       </label>
       <button class="btn btn-secondary" id="btn-check-code" ${state.loading ? "disabled" : ""}>
@@ -2494,7 +2543,7 @@ function renderJoin() {
       }
       <label class="field">
         <span>Код класса или работы</span>
-        <input type="text" id="inp-code" value="${escapeHtml(state.code)}" placeholder="EDU-XXXX" autocomplete="off" aria-invalid="${state.codeError ? "true" : "false"}" />
+        <input type="text" id="inp-code" value="${escapeHtml(state.code)}" placeholder="EDU-XXXX или ссылка" autocomplete="off" aria-invalid="${state.codeError ? "true" : "false"}" />
         ${state.codeError ? `<span class="field-error" id="err-code">${escapeHtml(state.codeError)}</span>` : ""}
       </label>
       ${
@@ -3361,7 +3410,7 @@ function bind() {
   });
   document.getElementById("btn-check-code")?.addEventListener("click", () => previewByCode());
   document.getElementById("inp-code")?.addEventListener("input", (e) => {
-    state.code = e.target.value.trim().toUpperCase();
+    applyCodeFromInput(e.target);
     state.codeError = "";
     const saved = loadSavedEntry();
     state.savedEntry = saved;
@@ -3374,6 +3423,16 @@ function bind() {
       state.previewSubject = "";
       render();
     }
+  });
+  document.getElementById("inp-code")?.addEventListener("paste", (e) => {
+    const text = (e.clipboardData || window.clipboardData)?.getData("text") || "";
+    if (!text) return;
+    e.preventDefault();
+    const el = e.target;
+    el.value = text;
+    applyCodeFromInput(el);
+    state.codeError = "";
+    el.dispatchEvent(new Event("input", { bubbles: true }));
   });
   document.getElementById("inp-name")?.addEventListener("input", (e) => {
     state.name = e.target.value;
@@ -3692,6 +3751,8 @@ function readFileAsDataURL(file, maxSide = 1280) {
 
 async function previewByCode() {
   state.codeError = "";
+  applyCodeFromInput(document.getElementById("inp-code"));
+  state.code = normalizeJoinCode(state.code);
   if (!state.code) {
     state.codeError = "Введите код класса или работы";
     render();
@@ -3730,7 +3791,9 @@ async function previewByCode() {
 async function joinStudent(useSavedName = false) {
   state.codeError = "";
   state.nameError = "";
-  const code = String(state.code || "").trim().toUpperCase();
+  applyCodeFromInput(document.getElementById("inp-code"));
+  const code = normalizeJoinCode(state.code);
+  state.code = code;
   if (!code) {
     state.codeError = "Введите код класса или работы";
     render();
@@ -3890,8 +3953,8 @@ async function boot() {
   const params = new URLSearchParams(location.search);
   const tgEntry =
     (typeof window !== "undefined" && window.EduSenseTG && window.EduSenseTG.entryCode) || "";
-  const code = params.get("code") || params.get("join") || tgEntry || "";
-  if (code) state.code = String(code).trim().toUpperCase();
+  const code = normalizeJoinCode(params.get("code") || params.get("join") || tgEntry || "");
+  if (code) state.code = code;
   if (typeof window !== "undefined" && window.EduSenseTG?.isTelegramMiniApp) {
     document.documentElement.classList.add("is-telegram-miniapp");
     document.body?.classList.add("is-telegram-miniapp");
