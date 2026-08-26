@@ -965,28 +965,70 @@ function renderQrProjector(code) {
     </div>`;
 }
 
+function liveClassBadge(classroom) {
+  const grade = String(gradeDisplay(classroom) || "");
+  const letter = classLetterOf(classroom);
+  return letter ? `${grade}${letter}` : grade || "Кл";
+}
+
+function liveClassLabel(classroom) {
+  const grade = String(gradeDisplay(classroom) || "—");
+  const letter = classLetterOf(classroom);
+  return letter ? `Класс ${grade}"${letter}"` : `Класс ${grade}`;
+}
+
 function renderLiveHub() {
   const c = state.classroom;
   const names = state.connectedStudents || [];
   const n = names.length;
-  const title = classTitle(c);
+  const onlineLabel = n ? `${n} в сети` : "Никого нет";
+  const code = c?.access_code || "—";
   return `
-    <div class="bento live-hub">
-      <section class="glass live-hub-card reveal">
-        <div class="live-hub-kicker">Live · Хаб комнаты</div>
-        <h2>Live-уроки</h2>
-        <p class="shell-lead">Откройте комнату текущего класса, следите за подключением и покажите QR на проекторе.</p>
-        <article class="live-hub-session">
-          <div class="live-hub-session-top">
-            <div>
-              <strong>${escapeHtml(title)}</strong>
-              <span>Код ${escapeHtml(c.access_code || "—")}</span>
-            </div>
-            <span class="live-hub-online">${n ? `${n} в сети` : "Никого нет"}</span>
+    <div class="live-hub-page reveal">
+      <div class="live-hub-page-top">
+        <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="app-sidebar">
+          <span class="nav-toggle-bars" aria-hidden="true"></span>
+        </button>
+        <div class="live-hub-page-head">
+          <h1 class="live-hub-page-title">
+            <span class="live-hub-page-title-text">Live-Урок</span>
+            <span class="live-hub-live-pill">LIVE</span>
+          </h1>
+          <p class="live-hub-page-sub">Комната урока в реальном времени</p>
+        </div>
+        <div class="live-hub-page-tools" id="notif-root"></div>
+      </div>
+
+      <div class="live-hub-panel">
+        <div class="live-hub-panel-head">
+          <div>
+            <span class="live-hub-kicker">LIVE · Хаб комнаты</span>
+            <h2 class="live-hub-panel-title">Управление уроком</h2>
+            <p class="live-hub-panel-lead">
+              Откройте комнату текущего класса, следите за подключением учеников и выведите QR-код на проектор.
+            </p>
           </div>
-          <button type="button" class="btn-primary" id="btn-enter-live-room">Открыть комнату →</button>
-        </article>
-      </section>
+        </div>
+
+        <div class="live-hub-class-row">
+          <div class="live-hub-class-meta">
+            <div class="live-hub-class-avatar" aria-hidden="true">${escapeHtml(liveClassBadge(c))}</div>
+            <div>
+              <div class="live-hub-class-line">
+                <span class="live-hub-class-name">${escapeHtml(liveClassLabel(c))}</span>
+                <span class="live-hub-online">${escapeHtml(onlineLabel)}</span>
+              </div>
+              <p class="live-hub-class-code">
+                Код подключения:
+                <span class="live-hub-code-mono">${escapeHtml(code)}</span>
+              </p>
+            </div>
+          </div>
+          <button type="button" class="live-hub-open-btn" id="btn-enter-live-room">
+            Открыть комнату →
+          </button>
+        </div>
+      </div>
     </div>
   `;
 }
@@ -6884,6 +6926,8 @@ function renderDashboard() {
   const c = state.classroom;
   const u = state.user;
   const inLiveRoom = state.tab === "live" && state.liveInRoom;
+  const inLiveHub = state.tab === "live" && !state.liveInRoom;
+  const hideMainHead = inLiveRoom || inLiveHub;
   const titles = {
     home: "Главная",
     live: "Live-Урок",
@@ -6906,7 +6950,7 @@ function renderDashboard() {
   const tabMeta = [...NAV, NAV_SETTINGS].find((n) => n.id === state.tab) || NAV[0];
 
   return `
-    <div class="dash ${state.tab === "students" ? "is-students" : ""}${inLiveRoom ? " is-live-room" : ""}" id="dash-shell">
+    <div class="dash ${state.tab === "students" ? "is-students" : ""}${inLiveRoom ? " is-live-room" : ""}${inLiveHub ? " is-live-hub" : ""}" id="dash-shell">
       <div class="sidebar-backdrop" id="sidebar-backdrop" hidden></div>
       <aside class="sidebar" id="app-sidebar">
         <div class="sidebar-brand">
@@ -6981,7 +7025,7 @@ function renderDashboard() {
         </div>
         <div class="main-inner">
           ${
-            inLiveRoom
+            hideMainHead
               ? ""
               : `<div class="main-head">
             <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="app-sidebar">
