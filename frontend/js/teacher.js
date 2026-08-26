@@ -466,15 +466,44 @@ function qrImageUrl(code, size = 360) {
   return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(inviteUrl(code))}`;
 }
 
+async function copyText(text, okMsg = "Скопировано") {
+  const value = String(text || "");
+  if (!value) return false;
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(value);
+      showToast(okMsg, "success");
+      return true;
+    }
+  } catch (_) {
+    /* fallback below */
+  }
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = value;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, value.length);
+    const ok = document.execCommand("copy");
+    document.body.removeChild(ta);
+    if (ok) {
+      showToast(okMsg, "success");
+      return true;
+    }
+  } catch (_) {
+    /* ignore */
+  }
+  window.prompt("Скопируйте код вручную (Ctrl+C):", value);
+  return false;
+}
+
 async function copyClassCode() {
   const code = state.classroom?.access_code;
   if (!code) return;
-  try {
-    await navigator.clipboard.writeText(code);
-    showToast("Код скопирован", "success");
-  } catch (_) {
-    showToast("Не удалось скопировать", "error");
-  }
+  await copyText(code, "Код скопирован");
 }
 
 async function copyInvite() {
@@ -488,13 +517,7 @@ async function copyInviteLink() {
 async function copyClassInviteLink() {
   const code = state.classroom?.access_code;
   if (!code) return;
-  const url = inviteUrl(code);
-  try {
-    await navigator.clipboard.writeText(url);
-    showToast("Ссылка скопирована", "success");
-  } catch (_) {
-    showToast("Не удалось скопировать", "error");
-  }
+  await copyText(inviteUrl(code), "Ссылка скопирована");
 }
 
 function printClassQr() {

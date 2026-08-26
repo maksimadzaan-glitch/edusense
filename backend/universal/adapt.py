@@ -145,67 +145,39 @@ def human_topic_from_title(title: str, task_number: int | None = None) -> str:
 
 
 def pg_has_ready_templates(subject_code: str, exam_code: str) -> bool:
-
     """True, если в PG есть хотя бы один прототип с template_text+answer для пары."""
-
     if not is_postgres_configured():
-
         return False
-
     sc = (subject_code or "").strip()
-
     ec = (exam_code or "").strip().upper()
-
     if not sc or not ec:
-
         return False
-
     try:
-
         SessionLocal = session_factory()
-
         db = SessionLocal()
-
         try:
-
             n = db.scalar(
-
                 select(func.count())
-
                 .select_from(TaskPrototype)
-
                 .where(
-
                     and_(
-
                         TaskPrototype.subject_code == sc,
-
                         TaskPrototype.exam_code == ec,
-
                         TaskPrototype.template_text.isnot(None),
-
                         TaskPrototype.template_answer.isnot(None),
-
                         func.length(func.trim(TaskPrototype.template_text)) > 0,
-
                         func.length(func.trim(TaskPrototype.template_answer)) > 0,
-
                     )
-
                 )
-
             )
-
             return int(n or 0) > 0
-
         finally:
-
             db.close()
+    except Exception as exc:
+        # Не маскируем под «нет шаблонов» — иначе путает с пустым банком
+        import logging
 
-    except Exception:
-
-        # PG недоступен / схема не готова — тихий degrade
-
+        logging.getLogger(__name__).warning("pg_has_ready_templates(%s, %s): %s", sc, ec, exc)
         return False
 
 

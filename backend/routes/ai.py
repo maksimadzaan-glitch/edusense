@@ -92,7 +92,12 @@ async def ai_generate(payload: AiGenerateRequest):
 
     subject_code, exam_code = mapped
     if not pg_has_ready_templates(subject_code, exam_code):
-        raise HTTPException(status_code=404, detail=_NO_TEMPLATES)
+        # Частая причина: сервис без POSTGRES_URL или пустой банк
+        detail = (
+            f"{_NO_TEMPLATES} ({subject_code}/{exam_code}). "
+            "Проверьте POSTGRES_URL в .env и seed банка на сервере."
+        )
+        raise HTTPException(status_code=404, detail=detail)
 
     mode = getattr(payload, "mode", None)
     is_etalon_req = (mode or "").strip().lower() == "etalon"
