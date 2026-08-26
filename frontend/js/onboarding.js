@@ -184,9 +184,10 @@ async function handleLaunch(event) {
         password,
         role: selectedRole,
       });
-      user.needs_onboarding = true;
+      /* Beta: без тура — сразу на главный экран */
+      user.needs_onboarding = false;
       try {
-        localStorage.setItem("edusense_needs_tour", "1");
+        localStorage.removeItem("edusense_needs_tour");
       } catch (_) {}
       showToast(`Добро пожаловать, ${user.full_name}`, "success");
     } else {

@@ -7876,15 +7876,41 @@ html.figure-lightbox-open body {
 }
 
 .qr-projector {
-  background: rgba(0, 0, 0, 0.82);
+  background: rgba(2, 6, 23, 0.62);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .qr-projector-card {
+  position: relative;
   width: min(520px, 100%);
-  padding: 28px 24px 22px;
+  padding: 32px 24px 24px;
   text-align: center;
   background: #fff;
   color: #111;
+  border-radius: 20px;
+}
+
+.qr-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #111;
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.qr-modal-close:hover {
+  background: #f3f4f6;
 }
 
 .qr-projector-card img {
@@ -7917,6 +7943,22 @@ html.figure-lightbox-open body {
   font-size: 0.88rem;
 }
 
+.qr-copy-link {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #111;
+  color: #fff;
+  border: 0;
+}
+
+.qr-copy-link svg {
+  width: 16px;
+  height: 16px;
+}
+
 .qr-projector-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -7934,6 +7976,187 @@ html.figure-lightbox-open body {
   color: #fff;
 }
 
+.live-hub-card {
+  padding: 28px 24px;
+}
+
+.live-hub-kicker {
+  margin: 0 0 8px;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.live-hub-session {
+  margin-top: 18px;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  display: grid;
+  gap: 14px;
+}
+
+.live-hub-session-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.live-hub-session-top strong {
+  display: block;
+  font-size: 1.05rem;
+}
+
+.live-hub-session-top span {
+  display: block;
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.88rem;
+}
+
+.live-hub-online {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(94, 234, 212, 0.12);
+  color: #99f6e4;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.live-room {
+  display: grid;
+  gap: 16px;
+}
+
+.live-room-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 4px 0 8px;
+}
+
+.live-room-back {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.live-room-back:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.live-room-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.live-room-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.live-onair {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.live-onair-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f87171;
+  box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.7);
+  animation: live-onair-pulse 1.4s ease-out infinite;
+}
+
+@keyframes live-onair-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.65);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(248, 113, 113, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(248, 113, 113, 0);
+  }
+}
+
+.live-room-qr-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.live-room-qr-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.live-room-body {
+  padding: 22px;
+}
+
+.live-room-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.live-room-actions .btn-secondary,
+.live-room-actions .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.live-room-actions svg {
+  width: 16px;
+  height: 16px;
+}
+
+.dash.is-live-room .main-inner {
+  padding-top: 12px;
+}
+
+@media (max-width: 720px) {
+  .live-room-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .live-room-qr-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 @media (max-width: 520px) {
   .subject-seg,
   .code-actions,
@@ -7943,6 +8166,7 @@ html.figure-lightbox-open body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .live-onair-dot,
   .live-ping,
   .live-ping::after,
   .live-chip,

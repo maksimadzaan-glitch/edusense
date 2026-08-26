@@ -25,7 +25,7 @@ const GRADES = {};
 
 const NAV = [
   { id: "home", label: "Главная", icon: "layoutDashboard" },
-  { id: "live", label: "Live-Урок", icon: "rocket", action: "live", badge: { text: "LIVE", kind: "live" } },
+  { id: "live", label: "Live-Урок", icon: "rocket", badge: { text: "LIVE", kind: "live" } },
   { id: "students", label: "Ученики", icon: "users" },
   { id: "assignments", label: "Задания", icon: "bookOpen" },
   { id: "tests", label: "Тесты", icon: "fileCheck" },
@@ -102,6 +102,8 @@ const state = {
   submitting: false,
   showQr: false,
   showInvite: false,
+  /** true = комната урока; false = хаб /live */
+  liveInRoom: false,
   connectedStudents: [],
   studentsBoard: {
     loading: false,
@@ -562,7 +564,24 @@ function liveFeedHtml(names) {
 function liveRosterActive() {
   if (!state.classroom?.access_code) return false;
   if (state.step === "code") return true;
-  return state.step === "dashboard" && state.tab === "home";
+  if (state.step !== "dashboard") return false;
+  return state.tab === "home" || state.tab === "live";
+}
+
+function openLiveRoom() {
+  state.tab = "live";
+  state.liveInRoom = true;
+  state.showQr = false;
+  startLiveRoster();
+  render();
+}
+
+function openLiveHub() {
+  state.tab = "live";
+  state.liveInRoom = false;
+  state.showQr = false;
+  startLiveRoster();
+  render();
 }
 
 function patchLiveUi() {
@@ -932,17 +951,101 @@ function renderQrProjector(code) {
   if (!state.showQr || !code) return "";
   return `
     <div class="modal-backdrop qr-projector" id="qr-backdrop">
-      <div class="modal-card qr-projector-card">
-        <p class="qr-projector-kicker">Наведите камеру</p>
+      <div class="modal-card qr-projector-card" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title">
+        <button type="button" class="qr-modal-close" id="btn-close-qr" aria-label="Закрыть">×</button>
+        <p class="qr-projector-kicker" id="qr-modal-title">Наведите камеру</p>
         <img alt="QR код класса" src="${qrImageUrl(code, 420)}" />
         <p class="qr-projector-code">${escapeHtml(code)}</p>
         <p class="qr-projector-hint">Покажите этот экран на проекторе</p>
-        <div class="qr-projector-actions">
-          <button class="btn-secondary" id="btn-print-qr-modal">Печать</button>
-          <button class="btn-primary" id="btn-close-qr">Закрыть</button>
-        </div>
+        <button type="button" class="btn-primary qr-copy-link" id="btn-copy-qr-link">
+          ${icon("copy")}
+          Скопировать ссылку на урок
+        </button>
       </div>
     </div>`;
+}
+
+function renderLiveHub() {
+  const c = state.classroom;
+  const names = state.connectedStudents || [];
+  const n = names.length;
+  const title = classTitle(c);
+  return `
+    <div class="bento live-hub">
+      <section class="glass live-hub-card reveal">
+        <div class="live-hub-kicker">Live · Хаб комнаты</div>
+        <h2>Live-уроки</h2>
+        <p class="shell-lead">Откройте комнату текущего класса, следите за подключением и покажите QR на проекторе.</p>
+        <article class="live-hub-session">
+          <div class="live-hub-session-top">
+            <div>
+              <strong>${escapeHtml(title)}</strong>
+              <span>Код ${escapeHtml(c.access_code || "—")}</span>
+            </div>
+            <span class="live-hub-online">${n ? `${n} в сети` : "Никого нет"}</span>
+          </div>
+          <button type="button" class="btn-primary" id="btn-enter-live-room">Открыть комнату →</button>
+        </article>
+      </section>
+    </div>
+  `;
+}
+
+function renderLiveLesson() {
+  const c = state.classroom;
+  const names = state.connectedStudents || [];
+  const n = names.length;
+  const title = classTitle(c);
+  return `
+    <div class="live-room reveal">
+      <header class="live-room-header">
+        <button type="button" class="nav-toggle live-room-nav-toggle" id="nav-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="app-sidebar">
+          <span class="nav-toggle-bars" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="live-room-back" id="btn-live-back" aria-label="Назад к Live">
+          ← Назад
+        </button>
+        <div class="live-room-title-wrap">
+          <h2 class="live-room-title">${escapeHtml(title)}</h2>
+          <span class="live-onair">
+            <span class="live-onair-dot" aria-hidden="true"></span>
+            В эфире
+          </span>
+        </div>
+        <button type="button" class="btn-secondary live-room-qr-btn" id="btn-qr">
+          ${icon("qr")}
+          QR-код
+        </button>
+      </header>
+
+      <section class="glass live-room-body">
+        <div class="live-status" aria-live="polite">
+          <span class="live-ping" aria-hidden="true"></span>
+          <div class="live-copy">
+            <strong id="live-label">${n ? "Ученики подключаются" : "Ожидаем учеников…"}</strong>
+            <span>Подключилось: <b id="live-count">${n}</b></span>
+          </div>
+        </div>
+        <div class="live-feed" id="live-feed">${liveFeedHtml(names)}</div>
+        <div class="live-room-actions">
+          <button type="button" class="btn-secondary" id="btn-print-qr">
+            ${icon("printer")}
+            Печать QR-кода
+          </button>
+          <button type="button" class="btn-primary" id="btn-qr-secondary">
+            ${icon("qr")}
+            Показать QR для подключения
+          </button>
+        </div>
+      </section>
+    </div>
+    ${renderQrProjector(c.access_code)}
+  `;
+}
+
+function renderLiveTab() {
+  if (state.liveInRoom) return renderLiveLesson();
+  return renderLiveHub();
 }
 
 function emptyStudentsSvg() {
@@ -6671,6 +6774,8 @@ function renderTab() {
   switch (state.tab) {
     case "home":
       return renderHome();
+    case "live":
+      return renderLiveTab();
     case "students":
       return renderStudentsTab();
     case "assignments":
@@ -6778,8 +6883,10 @@ function renderInviteModal() {
 function renderDashboard() {
   const c = state.classroom;
   const u = state.user;
+  const inLiveRoom = state.tab === "live" && state.liveInRoom;
   const titles = {
     home: "Главная",
+    live: "Live-Урок",
     students: "Ученики",
     assignments: "Выданные работы",
     tests: "Тесты",
@@ -6788,6 +6895,7 @@ function renderDashboard() {
   };
   const hellos = {
     home: "ОГЭ · Математика и Русский",
+    live: "Комната урока в реальном времени",
     students: "Список класса и профиль ученика",
     assignments: "Мониторинг сданных вариантов и ведомости",
     tests: "Генератор КИМ",
@@ -6798,7 +6906,7 @@ function renderDashboard() {
   const tabMeta = [...NAV, NAV_SETTINGS].find((n) => n.id === state.tab) || NAV[0];
 
   return `
-    <div class="dash ${state.tab === "students" ? "is-students" : ""}" id="dash-shell">
+    <div class="dash ${state.tab === "students" ? "is-students" : ""}${inLiveRoom ? " is-live-room" : ""}" id="dash-shell">
       <div class="sidebar-backdrop" id="sidebar-backdrop" hidden></div>
       <aside class="sidebar" id="app-sidebar">
         <div class="sidebar-brand">
@@ -6872,7 +6980,10 @@ function renderDashboard() {
           ${icon(tabMeta.icon)}
         </div>
         <div class="main-inner">
-          <div class="main-head">
+          ${
+            inLiveRoom
+              ? ""
+              : `<div class="main-head">
             <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="app-sidebar">
               <span class="nav-toggle-bars" aria-hidden="true"></span>
             </button>
@@ -6888,7 +6999,8 @@ function renderDashboard() {
                   : ""
               }
             </div>
-          </div>
+          </div>`
+          }
           ${renderTab()}
         </div>
       </main>
@@ -7186,10 +7298,13 @@ function bind() {
       render();
     });
     document.getElementById("btn-print-qr")?.addEventListener("click", printClassQr);
-    document.getElementById("btn-print-qr-modal")?.addEventListener("click", printClassQr);
     document.getElementById("btn-close-qr")?.addEventListener("click", () => {
       state.showQr = false;
       render();
+    });
+    document.getElementById("btn-copy-qr-link")?.addEventListener("click", () => {
+      const code = state.classroom?.access_code;
+      if (code) copyClassInviteLink();
     });
     document.getElementById("qr-backdrop")?.addEventListener("click", (e) => {
       if (e.target.id === "qr-backdrop") {
@@ -7212,6 +7327,7 @@ function bind() {
     btn.addEventListener("click", () => {
       const next = btn.getAttribute("data-tab");
       state.tab = next;
+      if (next !== "live") state.liveInRoom = false;
       setNavOpen(false);
       render();
       if (next === "assignments") {
@@ -7225,6 +7341,7 @@ function bind() {
         loadHomeInsights();
       }
       if (next === "analytics") loadAnalyticsBoard();
+      if (next === "live") startLiveRoster();
     });
   });
 
@@ -7232,11 +7349,6 @@ function bind() {
     btn.addEventListener("click", () => {
       const action = btn.getAttribute("data-nav-action");
       setNavOpen(false);
-      if (action === "live") {
-        startLiveRoster();
-        state.showQr = true;
-        render();
-      }
       if (action === "invite") {
         state.showInvite = true;
         render();
@@ -7250,6 +7362,7 @@ function bind() {
     btn.addEventListener("click", () => {
       const next = btn.getAttribute("data-quick");
       state.tab = next;
+      if (next !== "live") state.liveInRoom = false;
       render();
       if (next === "assignments") {
         loadAssignmentsBoard();
@@ -7262,6 +7375,7 @@ function bind() {
         loadHomeInsights();
       }
       if (next === "analytics") loadAnalyticsBoard();
+      if (next === "live") startLiveRoster();
     });
   });
 
@@ -7594,9 +7708,13 @@ function bind() {
   });
   document.getElementById("btn-copy-dash")?.addEventListener("click", copyClassInviteLink);
   document.getElementById("btn-home-live")?.addEventListener("click", () => {
-    startLiveRoster();
-    state.showQr = true;
-    render();
+    openLiveRoom();
+  });
+  document.getElementById("btn-enter-live-room")?.addEventListener("click", () => {
+    openLiveRoom();
+  });
+  document.getElementById("btn-live-back")?.addEventListener("click", () => {
+    openLiveHub();
   });
   document.getElementById("btn-close-invite")?.addEventListener("click", () => {
     state.showInvite = false;
@@ -7616,8 +7734,21 @@ function bind() {
     render();
   });
   document.getElementById("btn-quick-drill")?.addEventListener("click", startQuickTrainer);
+  document.getElementById("btn-qr")?.addEventListener("click", () => {
+    state.showQr = true;
+    render();
+  });
+  document.getElementById("btn-print-qr")?.addEventListener("click", printClassQr);
   document.getElementById("btn-close-qr")?.addEventListener("click", () => {
     state.showQr = false;
+    render();
+  });
+  document.getElementById("btn-copy-qr-link")?.addEventListener("click", () => {
+    const code = state.classroom?.access_code;
+    if (code) copyClassInviteLink();
+  });
+  document.getElementById("btn-qr-secondary")?.addEventListener("click", () => {
+    state.showQr = true;
     render();
   });
   document.getElementById("qr-backdrop")?.addEventListener("click", (e) => {
@@ -7626,7 +7757,6 @@ function bind() {
       render();
     }
   });
-  document.getElementById("btn-print-qr-modal")?.addEventListener("click", printClassQr);
   document.querySelectorAll(".js-new-class").forEach((btn) => {
     btn.addEventListener("click", startCreateClass);
   });

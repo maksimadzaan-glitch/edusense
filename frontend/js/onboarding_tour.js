@@ -1,8 +1,12 @@
 /**
  * Пошаговый гид: подсветка кнопки. Дальше — только по «Далее».
+ * Beta: тур отключён — после входа сразу Dashboard.
  */
 (function (global) {
   "use strict";
+
+  /** Beta release: прямой вход без обучения */
+  var TOUR_ENABLED = false;
 
   var NEED_KEY = "edusense_needs_tour";
   var STORE_PREFIX = "edusense_tour_v9:";
@@ -625,6 +629,7 @@
   }
 
   function maybeStart(opts) {
+    if (!TOUR_ENABLED) return;
     if (opts) hooks = Object.assign(hooks, opts);
     if (dismissed) return;
     if (enrolled) {
@@ -642,6 +647,7 @@
   }
 
   function onRendered() {
+    if (!TOUR_ENABLED) return;
     if (enrolled) schedulePaint();
   }
 
