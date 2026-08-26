@@ -122,9 +122,14 @@ async def ai_generate(payload: AiGenerateRequest):
         )
     except UniversalGenerateError as exc:
         msg = str(exc)
-        if "Нет прототипов" in msg or "шаблон" in msg.lower() or "mode=etalon" in msg:
-            raise HTTPException(status_code=404, detail=msg if "etalon" in msg else _NO_TEMPLATES) from exc
-        raise HTTPException(status_code=502, detail=msg) from exc
+        # Не прячем причину — иначе на проде всегда одно «Нет шаблонов»
+        code = 404 if (
+            "Нет прототипов" in msg
+            or "шаблон" in msg.lower()
+            or "mode=etalon" in msg
+            or "POSTGRES_URL" in msg
+        ) else 502
+        raise HTTPException(status_code=code, detail=msg) from exc
     except HTTPException:
         raise
     except Exception as exc:
@@ -135,7 +140,10 @@ async def ai_generate(payload: AiGenerateRequest):
         ) from exc
 
     if not questions:
-        raise HTTPException(status_code=404, detail=_NO_TEMPLATES)
+        raise HTTPException(
+            status_code=404,
+            detail=f"Сборка вернула 0 заданий ({subject_code}/{exam_code})",
+        )
 
     try:
         out_questions = [
