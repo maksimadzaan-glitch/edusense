@@ -1,15 +1,19 @@
 import hashlib
 import hmac
+import logging
 import os
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
+from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
 from backend.models import ClassStudent, EduClass, User
 from backend.services.classroom import normalize_student_name
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api", tags=["auth"])
 
@@ -152,7 +156,21 @@ def register(payload: UserRegister, db: Session = Depends(get_db)):
         subject=(payload.subject.strip() if payload.subject else None),
     )
     db.add(user)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Пользователь с таким именем уже зарегистрирован.",
+        ) from None
+    except OperationalError as exc:
+        db.rollback()
+        logger.exception("register failed: database schema mismatch")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Ошибка базы данных при регистрации. Обновите сервис или обратитесь в поддержку.",
+        ) from exc
     db.refresh(user)
     return _user_response(db, user)
 

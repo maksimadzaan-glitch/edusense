@@ -32,6 +32,10 @@ def get_db():
 def ensure_sqlite_columns() -> None:
     """Добавляет новые колонки в уже существующие SQLite-таблицы (без Alembic)."""
     specs: dict[str, list[tuple[str, str]]] = {
+        # Legacy auth: старые БД создавались без subject → INSERT в /api/register давал 500
+        "users": [
+            ("subject", "VARCHAR"),
+        ],
         "assignments": [
             ("shuffle_variants", "INTEGER NOT NULL DEFAULT 0"),
             ("accepting_submissions", "INTEGER NOT NULL DEFAULT 1"),
@@ -51,6 +55,9 @@ def ensure_sqlite_columns() -> None:
             try:
                 rows = conn.execute(text(f"PRAGMA table_info({table})")).fetchall()
             except Exception:
+                continue
+            # Пустой PRAGMA = таблицы ещё нет (create_all создаст её с нужными колонками)
+            if not rows:
                 continue
             existing = {r[1] for r in rows}
             for name, ddl in columns:
