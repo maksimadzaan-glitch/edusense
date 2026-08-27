@@ -634,6 +634,8 @@ input {
   padding: 20px;
   text-align: left;
   isolation: isolate;
+  position: relative;
+  z-index: 5;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.06);
   -webkit-backdrop-filter: blur(16px) saturate(1.5);
@@ -1080,9 +1082,20 @@ input {
 @media (max-width: 420px) {
   .hero {
     padding-top: 28px;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+  .nav {
+    flex-wrap: nowrap;
+    gap: 8px;
   }
   .nav-meta {
     display: none;
+  }
+  .auth {
+    margin-bottom: 8px;
+  }
+  #launch-btn {
+    margin-bottom: 4px;
   }
 }
 

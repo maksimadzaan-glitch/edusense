@@ -1040,6 +1040,7 @@ h3 {
   position: relative;
   z-index: 1;
   max-width: 1080px;
+  width: 100%;
   margin: 0 auto;
   animation: rise 0.5s var(--ease);
 }
@@ -1066,10 +1067,32 @@ h3 {
 
 .main-head {
   display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 20px;
+  position: relative;
+}
+
+.main-head-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.main-head-tools-inline {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.main-head-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .main-head h1 {
@@ -1079,6 +1102,7 @@ h3 {
   font-weight: 800;
   letter-spacing: -0.04em;
   color: #f7f8fa;
+  white-space: nowrap;
 }
 
 .main-head .hello {
@@ -1087,12 +1111,17 @@ h3 {
   font-size: 0.95rem;
 }
 
-.main-head > .btn-primary {
+.main-head > .btn-primary,
+.head-issue-btn {
   width: auto;
   min-width: 180px;
   margin-top: 0;
   flex-shrink: 0;
   padding: 0 16px;
+}
+
+.head-issue-short {
+  display: none;
 }
 
 /* Bento home */
@@ -1716,7 +1745,8 @@ h3 {
     font-size: clamp(1.35rem, 5vw, 1.85rem);
   }
 
-  .main-head > .btn-primary {
+  .main-head > .btn-primary,
+  .head-issue-btn {
     width: auto;
     min-width: 0;
     padding: 0 12px;
@@ -1865,6 +1895,12 @@ html.is-telegram-miniapp .noise {
 
 .gap-4 {
   gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 1024px) {
@@ -7647,6 +7683,124 @@ html.figure-lightbox-open body {
 
   .students-invite-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* —— Mobile layout & responsive fix (<768px) —— */
+@media (max-width: 767px) {
+  .main {
+    padding: 16px;
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+    padding-bottom: max(28px, env(safe-area-inset-bottom));
+    overflow-x: hidden;
+    overflow-y: visible;
+  }
+
+  .main-inner {
+    max-width: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    padding: 0;
+  }
+
+  .main-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .main-head-top {
+    width: 100%;
+  }
+
+  .main-head-text {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .main-head h1 {
+    font-size: 1.25rem;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .main-head .hello {
+    margin-top: 4px;
+    font-size: 0.82rem;
+  }
+
+  .main-head-actions {
+    width: 100%;
+  }
+
+  .head-issue-btn,
+  .main-head-actions .btn-primary {
+    width: 100%;
+    min-width: 0;
+    margin-top: 0;
+  }
+
+  .head-issue-full {
+    display: inline;
+  }
+
+  .head-issue-short {
+    display: none;
+  }
+
+  .class-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .class-bar .roster-code-btn {
+    width: 100%;
+    border-right: 0;
+    padding-right: 0;
+  }
+
+  .class-bar-stats {
+    width: 100%;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .students-invite-actions {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    display: flex;
+    gap: 8px;
+  }
+
+  .students-invite-actions .students-cta,
+  .students-invite-actions .students-quiet {
+    flex: 1;
+    min-height: 44px;
+  }
+
+  .bento,
+  .home-widgets,
+  .home-live-grid,
+  .actions-row,
+  .gen-modes,
+  .an-kpis,
+  .stats-bento {
+    grid-template-columns: 1fr !important;
+  }
+
+  .welcome,
+  .code-panel,
+  .metric,
+  .students-panel,
+  .actions-row,
+  .dash-hero,
+  .home-live,
+  .home-widgets {
+    grid-column: auto;
   }
 }
 

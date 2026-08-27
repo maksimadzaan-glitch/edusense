@@ -7028,21 +7028,28 @@ function renderDashboard() {
             hideMainHead
               ? ""
               : `<div class="main-head">
-            <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="app-sidebar">
-              <span class="nav-toggle-bars" aria-hidden="true"></span>
-            </button>
-            <div class="main-head-text">
-              <h1>${titles[state.tab] || "Главная"}</h1>
-              <p class="hello">${hellos[state.tab] || ""}</p>
+            <div class="main-head-top">
+              <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="app-sidebar">
+                <span class="nav-toggle-bars" aria-hidden="true"></span>
+              </button>
+              <div class="main-head-text">
+                <h1>${titles[state.tab] || "Главная"}</h1>
+                <p class="hello">${hellos[state.tab] || ""}</p>
+              </div>
+              <div class="main-head-tools main-head-tools-inline">
+                <div id="notif-root"></div>
+              </div>
             </div>
-            <div class="main-head-tools">
-              <div id="notif-root"></div>
-              ${
-                state.tab === "assignments"
-                  ? `<button type="button" class="btn-primary" id="btn-issue-new">+ Выдать работу</button>`
-                  : ""
-              }
-            </div>
+            ${
+              state.tab === "assignments"
+                ? `<div class="main-head-actions">
+              <button type="button" class="btn-primary head-issue-btn" id="btn-issue-new">
+                <span class="head-issue-full">+ Выдать работу</span>
+                <span class="head-issue-short" aria-hidden="true">+</span>
+              </button>
+            </div>`
+                : ""
+            }
           </div>`
           }
           ${renderTab()}

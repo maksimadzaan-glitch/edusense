@@ -253,19 +253,36 @@ html.tour-on body {
 
 .notif-pop {
   position: absolute;
-  top: calc(100% + 8px);
+  top: 100%;
   right: 0;
-  width: min(360px, calc(100vw - 24px));
+  margin-top: 0.5rem;
+  width: 20rem;
+  max-width: calc(100vw - 32px);
   max-height: min(72vh, 480px);
   overflow: auto;
-  z-index: 40;
-  padding: 10px;
-  border-radius: 16px;
-  background: rgba(12, 17, 27, 0.97);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+  overflow-wrap: anywhere;
+  z-index: 50;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
+  box-sizing: border-box;
 }
 .notif-pop[hidden] { display: none !important; }
+
+/* Mobile: escape .main overflow clipping; pin under header, not centered */
+@media (max-width: 767px) {
+  .notif-pop {
+    position: fixed;
+    top: max(64px, calc(env(safe-area-inset-top, 0px) + 56px));
+    right: 16px;
+    left: auto;
+    width: min(20rem, calc(100vw - 32px));
+    max-width: calc(100vw - 32px);
+    z-index: 80;
+  }
+}
 .notif-pop-head {
   display: flex;
   align-items: center;
@@ -309,8 +326,8 @@ html.tour-on body {
   text-transform: uppercase;
   color: #5eead4;
 }
-.notif-item-title { font-size: 0.88rem; font-weight: 700; }
-.notif-item-text { font-size: 0.78rem; color: #8b97ab; line-height: 1.35; }
+.notif-item-title { font-size: 0.88rem; font-weight: 700; overflow-wrap: anywhere; }
+.notif-item-text { font-size: 0.78rem; color: #8b97ab; line-height: 1.35; overflow-wrap: anywhere; }
 .notif-empty {
   margin: 8px 6px 12px;
   color: #8b97ab;
@@ -428,7 +445,7 @@ html.tour-on body {
 
 .pwa-nav-btn {
   appearance: none;
-  margin-left: 10px;
+  margin-left: auto;
   height: 32px;
   padding: 0 12px;
   border-radius: 999px;
@@ -443,13 +460,34 @@ html.tour-on body {
   text-decoration: none;
   display: inline-flex;
   align-items: center;
+  flex-shrink: 0;
 }
 .pwa-nav-btn:hover { background: rgba(94, 234, 212, 0.22); color: #f2f5f9; }
 .pwa-nav-btn[hidden] { display: none !important; }
 
 @media (max-width: 640px) {
-  .pwa-banner { flex-wrap: wrap; bottom: 12px; }
-  .pwa-banner-install { width: 100%; }
+  .pwa-banner { display: none !important; }
+  .pwa-nav-btn {
+    height: 28px;
+    padding: 0 10px;
+    font-size: 0.7rem;
+  }
+}
+
+/* Tiny phones: hide header install so brand stays intact */
+@media (max-width: 400px) {
+  .pwa-nav-btn {
+    display: none !important;
+  }
+}
+
+html.is-telegram-miniapp .pwa-banner,
+html.is-telegram-miniapp #pwa-install-root,
+html.is-telegram-miniapp .pwa-nav-btn,
+body.is-telegram-miniapp .pwa-banner,
+body.is-telegram-miniapp #pwa-install-root,
+body.is-telegram-miniapp .pwa-nav-btn {
+  display: none !important;
 }
 
 #pwa-install-root {
@@ -458,7 +496,7 @@ html.tour-on body {
   right: 0;
   bottom: 0;
   top: auto;
-  z-index: 2147483000;
+  z-index: 40;
   pointer-events: none;
   padding: 12px 12px max(16px, env(safe-area-inset-bottom));
 }

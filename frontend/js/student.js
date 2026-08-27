@@ -2443,16 +2443,18 @@ function renderCabinetShell(mainHtml) {
       <main class="main">
         <div class="main-inner">
           <div class="main-head">
-            <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="app-sidebar">
-              <span class="nav-toggle-bars" aria-hidden="true"></span>
-            </button>
-            <div class="main-head-text">
-              <h1>${titles[state.tab] || "Главная"}</h1>
-              <p class="hello">${hellos[state.tab] || escapeHtml(classLineText())}</p>
-            </div>
-            <div class="main-head-tools">
-              <div id="notif-root"></div>
-              <button type="button" class="head-logout js-student-logout" title="Выйти">Выйти</button>
+            <div class="main-head-top">
+              <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="app-sidebar">
+                <span class="nav-toggle-bars" aria-hidden="true"></span>
+              </button>
+              <div class="main-head-text">
+                <h1>${titles[state.tab] || "Главная"}</h1>
+                <p class="hello">${hellos[state.tab] || escapeHtml(classLineText())}</p>
+              </div>
+              <div class="main-head-tools main-head-tools-inline">
+                <div id="notif-root"></div>
+                <button type="button" class="head-logout js-student-logout" title="Выйти">Выйти</button>
+              </div>
             </div>
           </div>
           ${mainHtml}

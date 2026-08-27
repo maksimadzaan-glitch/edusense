@@ -1,20 +1,20 @@
 /**
- * Баннер установки: один клик через системный запрос браузера,
- * иначе — ссылка на страницу с пошаговой инструкцией. Без оверлея.
+ * PWA helpers. Bottom install banner is disabled (beta UX).
+ * Manual install stays on /install and header link (desktop).
  */
 (function (global) {
   "use strict";
 
-  var BANNER_KEY = "edusense_install_banner_v4";
-  var MARK = "/assets/edusense-mark-192.png";
+  var BANNER_KEY = "edusense_install_banner_v5";
   var GUIDE = "/install";
+  /** Beta: never auto-show bottom install banner */
+  var AUTO_BANNER = false;
 
   var deferredPrompt = global.__edusenseBip || null;
 
   global.addEventListener("beforeinstallprompt", function (e) {
     e.preventDefault();
     deferredPrompt = e;
-    paint();
   });
 
   function lsGet(key) {
@@ -33,16 +33,20 @@
     return global.matchMedia("(display-mode: standalone)").matches || global.navigator.standalone === true;
   }
   function inTelegram() {
-    return !!(global.EduSenseTG && global.EduSenseTG.isTelegramMiniApp);
+    try {
+      if (global.EduSenseTG && global.EduSenseTG.isTelegramMiniApp) return true;
+      var tg = global.Telegram && global.Telegram.WebApp;
+      if (!tg) return false;
+      if (tg.initData || tg.initDataUnsafe) return true;
+      if (typeof tg.platform === "string" && tg.platform !== "unknown") return true;
+    } catch (_) {}
+    return false;
   }
-  function detectName() {
-    var ua = String(navigator.userAgent || "");
-    if (/iPhone|iPad|iPod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)) return "iPhone";
-    if (/Android/i.test(ua)) return "Android";
-    if (/Mac/i.test(ua)) return "Mac";
-    if (/YaBrowser|Yowser/i.test(ua)) return "Яндекс Браузер";
-    if (/Windows/i.test(ua)) return "Windows";
-    return "компьютер";
+  function isMobile() {
+    try {
+      if (global.matchMedia && global.matchMedia("(max-width: 720px)").matches) return true;
+    } catch (_) {}
+    return /Android|iPhone|iPad|iPod|Mobile/i.test(String(navigator.userAgent || ""));
   }
 
   function rootEl() {
@@ -53,6 +57,14 @@
       document.body.appendChild(root);
     }
     return root;
+  }
+
+  function hideBanner() {
+    var root = rootEl();
+    root.hidden = true;
+    root.innerHTML = "";
+    var leftover = document.getElementById("pwa-guide-dialog");
+    if (leftover) leftover.remove();
   }
 
   function install(e) {
@@ -68,52 +80,19 @@
     }
     bip.userChoice
       .then(function (res) {
-        if (res && res.outcome === "accepted") {
-          lsSet(BANNER_KEY, "1");
-        }
-        paint();
+        if (res && res.outcome === "accepted") lsSet(BANNER_KEY, "1");
+        hideBanner();
       })
-      .catch(paint);
+      .catch(hideBanner);
   }
 
   function paint() {
-    if (!document.body) return;
-    var leftover = document.getElementById("pwa-guide-dialog");
-    if (leftover) leftover.remove();
-    var root = rootEl();
-    if (inStandalone() || inTelegram() || lsGet(BANNER_KEY) === "1") {
-      root.hidden = true;
-      root.innerHTML = "";
+    /* Auto bottom banner off: mobile / Telegram / beta */
+    if (!AUTO_BANNER || inStandalone() || inTelegram() || isMobile() || lsGet(BANNER_KEY) === "1") {
+      hideBanner();
       return;
     }
-    if (document.documentElement.classList.contains("tour-on") ||
-        document.documentElement.classList.contains("exam-on") ||
-        document.querySelector(".work-focus")) {
-      root.hidden = true;
-      root.innerHTML = "";
-      return;
-    }
-    var oneClick = !!deferredPrompt;
-    root.hidden = false;
-    root.innerHTML =
-      '<div class="pwa-banner" role="region" aria-label="Установить приложение">' +
-      '<img class="pwa-banner-mark" src="' + MARK + '" alt="" width="48" height="48" />' +
-      '<div class="pwa-banner-copy"><strong>Установите приложение EduSense</strong>' +
-      "<span>Сейчас у вас: " + detectName() + ". " +
-      (oneClick ? "Один клик — и значок сохранится." : "Откроется страница с шагами.") +
-      "</span></div>" +
-      '<a class="pwa-banner-install" id="pwa-banner-cta" href="' + GUIDE + '">' +
-      (oneClick ? "Установить" : "Как установить") +
-      "</a>" +
-      '<button type="button" class="pwa-banner-close" id="pwa-banner-x" aria-label="Закрыть">✕</button>' +
-      "</div>";
-    var x = document.getElementById("pwa-banner-x");
-    if (x) {
-      x.onclick = function () {
-        lsSet(BANNER_KEY, "1");
-        paint();
-      };
-    }
+    hideBanner();
   }
 
   function killSw() {
@@ -141,28 +120,27 @@
   }
 
   function registerSw() {
-    /* Beta: SW off — offline page masked real server hangs on mobile/Yandex. */
-    if (!("serviceWorker" in navigator) || inTelegram()) {
-      killSw();
-      return;
-    }
     killSw();
   }
 
   function hideInstallLinks(hide) {
-    document.querySelectorAll("[data-pwa-install]").forEach(function (el) {
-      el.hidden = hide;
+    document.querySelectorAll("[data-pwa-install], #pwa-nav-btn, .sidebar-install").forEach(function (el) {
+      if (hide) el.setAttribute("hidden", "");
+      else if (!el.classList.contains("pwa-nav-btn")) el.removeAttribute("hidden");
     });
+    /* Header install: hide on Telegram always; CSS handles tiny screens */
+    var nav = document.getElementById("pwa-nav-btn");
+    if (nav && (hide || inTelegram())) nav.setAttribute("hidden", "");
   }
 
   function boot() {
     registerSw();
     hideInstallLinks(inStandalone() || inTelegram());
-    paint();
+    hideBanner();
+    document.documentElement.classList.toggle("is-telegram-miniapp", inTelegram());
+    document.body && document.body.classList.toggle("is-telegram-miniapp", inTelegram());
   }
 
-  /* Любая ссылка «установить» ставит приложение сразу, пока браузер это разрешает.
-     Делегирование нужно из-за сайдбаров, которые перерисовываются на ходу. */
   document.addEventListener("click", function (e) {
     if (!deferredPrompt || !e.target || !e.target.closest) return;
     if (e.target.closest('a[href="' + GUIDE + '"], #pwa-nav-btn')) install(e);
@@ -171,7 +149,7 @@
   global.addEventListener("appinstalled", function () {
     deferredPrompt = null;
     lsSet(BANNER_KEY, "1");
-    paint();
+    hideBanner();
   });
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
@@ -190,7 +168,7 @@
     },
     sync: function () {
       hideInstallLinks(inStandalone() || inTelegram());
-      paint();
+      hideBanner();
     },
   };
 })(typeof window !== "undefined" ? window : this);

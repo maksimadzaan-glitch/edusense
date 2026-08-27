@@ -220,6 +220,17 @@ body:has(.work-focus) #toast-root {
   letter-spacing: 0.04em;
 }
 
+/* Mobile: hide news banner so it never overlaps the menu / header */
+@media (max-width: 767px) {
+  #announce-root {
+    display: none !important;
+  }
+
+  body.has-announce #toast-root {
+    top: 18px;
+  }
+}
+
 @media (max-width: 640px) {
   .announce-banner {
     min-height: 0;
