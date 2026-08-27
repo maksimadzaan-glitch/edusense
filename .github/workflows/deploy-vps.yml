@@ -23,10 +23,16 @@ jobs:
           script: |
             set -e
             cd /opt/edusense
+            # After previous www-data chown, git-as-root needs a safe.directory / root-owned .git
+            git config --global --add safe.directory /opt/edusense || true
+            chown -R root:root /opt/edusense/.git || true
             git fetch origin main
             git reset --hard origin/main
-            # git от root ломает запись SQLite (www-data) → readonly database на /api/register
+            # Runtime user must write SQLite DB + journals in the app directory
             chown -R www-data:www-data /opt/edusense
+            # Keep .git owned by root so the next deploy can fetch/reset
+            chown -R root:root /opt/edusense/.git
             systemctl restart edusense
             systemctl is-active edusense
+            curl -sf -m 5 http://127.0.0.1:8010/api/health >/dev/null
             echo "Deploy OK: $(git rev-parse --short HEAD)"
