@@ -166,11 +166,18 @@ def register(payload: UserRegister, db: Session = Depends(get_db)):
         ) from None
     except OperationalError as exc:
         db.rollback()
-        logger.exception("register failed: database schema mismatch")
-        root = getattr(exc, "orig", None) or exc
+        logger.exception("register failed: database write error")
+        root = str(getattr(exc, "orig", None) or exc)
+        if "readonly" in root.lower():
+            detail = (
+                "База данных только для чтения. На VPS выполните: "
+                "chown -R www-data:www-data /opt/edusense && systemctl restart edusense"
+            )
+        else:
+            detail = f"Ошибка базы данных при регистрации: {root}"
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Ошибка базы данных при регистрации: {root}",
+            detail=detail,
         ) from exc
     db.refresh(user)
     return _user_response(db, user)

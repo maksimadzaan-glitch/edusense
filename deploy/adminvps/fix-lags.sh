@@ -11,6 +11,7 @@ echo "==> Kill wedged listeners / restart"
 systemctl stop edusense || true
 pkill -f 'uvicorn backend.main:app' || true
 sleep 1
+chown -R www-data:www-data /opt/edusense || true
 systemctl start edusense
 systemctl restart nginx
 sleep 2
