@@ -167,9 +167,10 @@ def register(payload: UserRegister, db: Session = Depends(get_db)):
     except OperationalError as exc:
         db.rollback()
         logger.exception("register failed: database schema mismatch")
+        root = getattr(exc, "orig", None) or exc
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Ошибка базы данных при регистрации. Обновите сервис или обратитесь в поддержку.",
+            detail=f"Ошибка базы данных при регистрации: {root}",
         ) from exc
     db.refresh(user)
     return _user_response(db, user)
