@@ -1135,6 +1135,7 @@
       '<div class="oge-exam-match oge-rus-matching" data-oge-matching="' +
       escapeHtml(task.num) +
       '">' +
+      '<div class="kim-table-scroll">' +
       '<div class="oge-exam-match-table oge-rus-match-cols" role="group" aria-label="Соответствие правил и предложений">' +
       '<div class="oge-exam-match-col oge-exam-match-col--left">' +
       '<p class="oge-exam-match-head">Пунктуационные правила</p>' +
@@ -1143,7 +1144,7 @@
       '<div class="oge-exam-match-col oge-exam-match-col--right">' +
       '<p class="oge-exam-match-head">Предложения</p>' +
       rightHtml +
-      "</div></div>" +
+      "</div></div></div>" +
       '<p class="oge-exam-answer-hint oge-rus-match-hint">' +
       "Впишите номер предложения (1–5) для А, Б, В. В бланк уйдёт три цифры подряд (АБВ).</p></div>"
     );

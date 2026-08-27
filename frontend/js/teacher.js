@@ -3402,7 +3402,7 @@ function renderTests() {
       ${g.generating ? `<div class="gen-loading-overlay">${renderGeneratingStage()}</div>` : ""}
       <section class="variant-viewer glass reveal">
         <div class="variant-toolbar">
-          <div>
+          <div class="variant-toolbar-meta">
             <p class="export-kicker">${v.variant_label || v.code ? `Вариант ${escapeHtml(v.code || "")}` : "Вариант"}</p>
             ${etalonBadgeHtml(v)}
             <h2>${escapeHtml(v.title)}</h2>
@@ -3413,9 +3413,9 @@ function renderTests() {
                 : `<p class="variant-meta" style="margin-top:6px;opacity:.85">Вариант собран</p>`
             }
           </div>
-          <div class="variant-toolbar-actions">
+          <div class="variant-toolbar-extras">
             ${renderMutatorToggle(g)}
-            <div class="gen-size-row" role="group" aria-label="Сложность" style="margin:0 4px 0 0">
+            <div class="gen-size-row" role="group" aria-label="Сложность">
               ${difficultyLevelsForUi()
                 .map(
                   (d) => `
@@ -3423,20 +3423,24 @@ function renderTests() {
                 )
                 .join("")}
             </div>
-            <button type="button" class="btn-ghost" id="btn-gen-modes" style="width:auto;margin:0">← Режимы</button>
+          </div>
+          <div class="variant-toolbar-controls">
+            <button type="button" class="btn-ghost" id="btn-gen-modes">← Режимы</button>
             <button type="button" class="btn-secondary" id="btn-regen" ${g.generating ? "disabled" : ""}>Пересобрать</button>
-            <button type="button" class="btn-primary" id="btn-open-publish" data-tour="issue" style="width:auto;margin:0;min-width:150px">Выдать классу</button>
+            <button type="button" class="btn-primary btn-issue-class" id="btn-open-publish" data-tour="issue">Выдать классу</button>
           </div>
         </div>
 
         <div class="task-filter">
-          <button type="button" class="chip ${!g.selectedTaskId ? "is-active" : ""}" data-open-task="">Весь вариант</button>
-          ${v.tasks
-            .map(
-              (t) =>
-                `<button type="button" class="chip ${g.selectedTaskId === t.id ? "is-active" : ""}" data-open-task="${t.id}">№${t.num}</button>`
-            )
-            .join("")}
+          <button type="button" class="chip task-filter-all ${!g.selectedTaskId ? "is-active" : ""}" data-open-task="">Весь вариант</button>
+          <div class="task-filter-grid" role="group" aria-label="Номера заданий">
+            ${v.tasks
+              .map(
+                (t) =>
+                  `<button type="button" class="chip task-filter-num ${g.selectedTaskId === t.id ? "is-active" : ""}" data-open-task="${t.id}">№${t.num}</button>`
+              )
+              .join("")}
+          </div>
         </div>
 
         ${renderExportPanel(selected ? "task" : "variant")}

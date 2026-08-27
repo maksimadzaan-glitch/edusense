@@ -1832,13 +1832,13 @@ h3 {
     flex-direction: column;
   }
 
-  .variant-toolbar-actions {
+  .variant-toolbar-extras,
+  .variant-toolbar-controls {
     width: 100%;
   }
 
-  .variant-toolbar-actions .btn-primary,
-  .variant-toolbar-actions .btn-secondary {
-    flex: 1;
+  .variant-toolbar-controls .btn-secondary {
+    flex: 1 1 auto;
   }
 
   .publish-modal {
@@ -2989,11 +2989,15 @@ html.is-telegram-miniapp .noise {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
 }
 .task-media-img {
-  max-width: min(100%, 420px);
+  max-width: 100%;
+  width: auto;
   height: auto;
+  object-fit: contain;
   display: block;
+  border-radius: 0.75rem;
   border: 1px solid rgba(148, 163, 184, 0.28);
   background: #fff;
 }
@@ -3048,22 +3052,26 @@ html.is-telegram-miniapp .noise {
   opacity: 0.75;
 }
 
+.variant-toolbar-extras .gen-etalon-opt,
 .variant-toolbar-actions .gen-etalon-opt {
   margin: 0 8px 0 0;
   padding: 6px 10px;
   font-size: 0.85rem;
 }
 
+.variant-toolbar-extras .gen-etalon-opt em,
 .variant-toolbar-actions .gen-etalon-opt em {
   display: none;
 }
 
+.variant-toolbar-extras .tc-mutator,
 .variant-toolbar-actions .tc-mutator {
   margin: 0;
   padding: 6px 10px;
   font-size: 0.85rem;
 }
 
+.variant-toolbar-extras .tc-mutator-note,
 .variant-toolbar-actions .tc-mutator-note {
   margin: 0;
   padding: 6px 0;
@@ -3263,16 +3271,17 @@ html.is-telegram-miniapp .noise {
 }
 
 .task-figure {
-  width: 200px;
+  width: min(200px, 100%);
   max-width: 100%;
   margin: 12px 0 14px;
   padding: 0;
-  border-radius: 0;
+  border-radius: 0.75rem;
   border: 1px solid #111;
   background: #fff;
   color: #111;
   box-shadow: none;
   cursor: zoom-in;
+  overflow: hidden;
 }
 
 .ep-solution-figure {
@@ -3704,28 +3713,162 @@ html.figure-lightbox-open body {
 
 .variant-viewer {
   padding: 22px;
-  overflow: hidden;
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* Tables / images / text in KIM preview (incl. paper mode) */
+.variant-viewer .kim-table-scroll,
+.task-grid .kim-table-scroll,
+.oge-rus-exam .kim-table-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  border: 1px solid #1e293b;
+  margin: 1rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.variant-viewer table,
+.task-card table,
+.task-text table,
+.oge-rus-exam-sheet table,
+.export-preview table {
+  max-width: none;
+}
+
+.variant-viewer img,
+.task-card img,
+.task-text img,
+.oge-rus-exam img:not(.publish-qr),
+.task-figure svg {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.variant-viewer .task-text,
+.variant-viewer .ep-body,
+.variant-viewer .oge-exam-stem,
+.variant-viewer .oge-exam-instruction,
+.variant-viewer .oge-fmt-p,
+.variant-viewer .oge-passage-p,
+.variant-viewer .oge-rus-shared-body,
+.oge-rus-exam.is-paper .oge-exam-stem,
+.oge-rus-exam.is-paper .oge-exam-instruction,
+.oge-rus-exam.is-paper .oge-fmt-p,
+.oge-rus-exam.is-paper .oge-passage-p,
+.oge-rus-exam.is-paper .oge-rus-shared-body {
+  width: 100%;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.oge-exam-match {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .variant-toolbar {
   display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
   margin-bottom: 16px;
+  position: relative;
 }
 
-.variant-toolbar-actions {
+.variant-toolbar-meta {
+  min-width: 0;
+  width: 100%;
+}
+
+.variant-toolbar-extras {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
+}
+
+.variant-toolbar-extras .gen-size-row {
+  margin: 0;
+}
+
+.variant-toolbar-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  position: static;
+}
+
+.variant-toolbar-controls .btn-ghost,
+.variant-toolbar-controls .btn-secondary,
+.variant-toolbar-controls .btn-primary {
+  position: static !important;
+  inset: auto !important;
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  flex: 0 1 auto;
+}
+
+.variant-toolbar-controls .btn-issue-class {
+  min-width: 150px;
 }
 
 .task-filter {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
   margin-bottom: 16px;
+}
+
+.task-filter-all {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.task-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.task-filter-num {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 4px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-align: center;
+  border-radius: 10px;
+  line-height: 1.2;
+}
+
+@media (min-width: 640px) {
+  .variant-toolbar-controls .btn-issue-class {
+    width: auto;
+    margin-top: 0;
+  }
+
+  .task-filter-grid {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 639px) {
+  .variant-toolbar-controls .btn-issue-class {
+    width: 100%;
+    margin-top: 8px;
+    min-width: 0;
+  }
 }
 
 .chip {
@@ -4420,6 +4563,10 @@ html.figure-lightbox-open body {
   font-size: 0.95rem;
   line-height: 1.65;
   white-space: pre-wrap;
+  width: 100%;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .task-text .frac {
@@ -5977,9 +6124,14 @@ html.figure-lightbox-open body {
   margin-bottom: 0;
 }
 .math-oge-table-wrap {
+  width: 100%;
   overflow-x: auto;
-  margin: 10px 0 12px;
+  margin: 1rem 0;
+  padding: 0;
   white-space: normal;
+  border-radius: 0.75rem;
+  border: 1px solid #1e293b;
+  -webkit-overflow-scrolling: touch;
 }
 .math-oge-table-wrap.is-answer-grid {
   max-width: 280px;

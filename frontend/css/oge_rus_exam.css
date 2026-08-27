@@ -1145,7 +1145,42 @@
   background: #fff !important;
   border: 1px solid #cbd5e1 !important;
   border-radius: 4px;
-  overflow: hidden;
+  overflow: visible;
+}
+
+.oge-rus-exam.is-paper .kim-table-scroll,
+.oge-rus-exam .kim-table-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  border: 1px solid #1e293b;
+  margin: 1rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.oge-rus-exam.is-paper .kim-table-scroll {
+  border-color: #cbd5e1;
+  background: #fff;
+}
+
+.oge-rus-exam.is-paper img,
+.oge-rus-exam img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 0.75rem;
+}
+
+.oge-rus-exam .oge-exam-stem,
+.oge-rus-exam .oge-exam-instruction,
+.oge-rus-exam .oge-fmt-p,
+.oge-rus-exam .oge-passage-p,
+.oge-rus-exam .oge-rus-shared-body,
+.oge-rus-exam .task-text {
+  width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .oge-rus-exam.is-paper .oge-exam-match-head {

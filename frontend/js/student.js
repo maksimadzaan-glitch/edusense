@@ -1804,7 +1804,7 @@ function renderWarmupWidget() {
   const picked = locked ? Number(saved.choice) : null;
   const ok = locked ? !!saved.correct : false;
   return `
-    <section class="warmup-card reveal${locked ? (ok ? " is-ok" : " is-bad") : ""}">
+    <section class="warmup-card home-dash-card reveal${locked ? (ok ? " is-ok" : " is-bad") : ""}">
       <div class="warmup-head">
         <h3>${escapeHtml(quiz.title)}</h3>
         ${locked ? `<span class="warmup-chip">${ok ? "+50 XP" : "Попробуй завтра"}</span>` : ""}
@@ -1856,7 +1856,7 @@ function renderClassBoard(data) {
   const medals = ["🥇", "🥈", "🥉"];
   const klass = formatClassTitle(state.className, state.classCode || "классе");
   return `
-    <aside class="class-board reveal">
+    <aside class="class-board home-dash-card reveal">
       <div class="class-board-head">
         <h2>🏆 Топ недели в ${escapeHtml(klass)}</h2>
         <button type="button" class="btn btn-ghost btn-compact" id="btn-board-all">${
@@ -1978,6 +1978,8 @@ function ensureFocusPlayer({ visible }) {
     document.body.appendChild(root);
   }
   root.hidden = !visible;
+  document.body.classList.toggle("has-focus-player", !!visible);
+  document.documentElement.classList.toggle("has-focus-player", !!visible);
   if (!visible) {
     state.focusPlayerOpen = false;
     const audio = getFocusAudio();
@@ -2047,7 +2049,9 @@ function renderStudentHero(data) {
       <span class="student-hero-glow student-hero-glow-b" aria-hidden="true"></span>
       <div class="student-hero-inner">
         <div class="student-hero-copy">
-          <h2>Привет, ${escapeHtml(greet)}! 👋</h2>
+          <h2 class="student-hero-greet">Привет, <span class="student-hero-name">${escapeHtml(
+            greet
+          )}</span>! <span aria-hidden="true">👋</span></h2>
           <p class="student-hero-sub">Твой прогресс подготовки к экзамену</p>
           ${renderOgeCountdown()}
           ${renderDailyGoal(data)}
@@ -2061,19 +2065,17 @@ function renderStudentHero(data) {
 function renderHomeTab(data) {
   const variants = activeVariantItems(data.active || []);
   return `
-    <div class="bento student-home">
+    <div class="bento student-home student-home-grid">
       ${renderStudentHero(data)}
       <div class="home-split">
-        <div class="home-main-col">
-          <section class="home-variants reveal">
-            <div class="panel-head">
-              <h2>Активные варианты</h2>
-            </div>
-            ${renderActiveSection(variants)}
-          </section>
-          ${renderWarmupWidget()}
-        </div>
+        <section class="home-variants home-dash-card reveal">
+          <div class="panel-head">
+            <h2>Активные варианты</h2>
+          </div>
+          ${renderActiveSection(variants)}
+        </section>
         ${renderClassBoard(data)}
+        ${renderWarmupWidget()}
       </div>
     </div>
   `;
