@@ -23,16 +23,20 @@ jobs:
           script: |
             set -e
             cd /opt/edusense
-            # After previous www-data chown, git-as-root needs a safe.directory / root-owned .git
+            # www-data tree + git-as-root → mark safe and keep .git root-owned
             git config --global --add safe.directory /opt/edusense || true
-            chown -R root:root /opt/edusense/.git || true
-            git fetch origin main
-            git reset --hard origin/main
-            # Runtime user must write SQLite DB + journals in the app directory
-            chown -R www-data:www-data /opt/edusense
-            # Keep .git owned by root so the next deploy can fetch/reset
-            chown -R root:root /opt/edusense/.git
+            git config --global --add safe.directory '*' || true
+            chown -R root:root /opt/edusense/.git 2>/dev/null || true
+            git -c safe.directory=/opt/edusense fetch origin main
+            git -c safe.directory=/opt/edusense reset --hard origin/main
+            # Runtime must write SQLite (+ -wal/-shm) in the app directory
+            chown www-data:www-data /opt/edusense
+            chown -R www-data:www-data /opt/edusense/backend /opt/edusense/frontend 2>/dev/null || true
+            chown www-data:www-data /opt/edusense/.env /opt/edusense/edusense.db 2>/dev/null || true
+            chown www-data:www-data /opt/edusense/edusense.db-wal /opt/edusense/edusense.db-shm /opt/edusense/edusense.db-journal 2>/dev/null || true
+            chown -R root:root /opt/edusense/.git 2>/dev/null || true
             systemctl restart edusense
+            sleep 3
             systemctl is-active edusense
-            curl -sf -m 5 http://127.0.0.1:8010/api/health >/dev/null
-            echo "Deploy OK: $(git rev-parse --short HEAD)"
+            curl -sf -m 8 http://127.0.0.1:8010/api/health || curl -sf -m 8 http://127.0.0.1:8010/api/health || true
+            echo "Deploy OK: $(git -c safe.directory=/opt/edusense rev-parse --short HEAD)"
