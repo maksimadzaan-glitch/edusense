@@ -215,7 +215,11 @@
   });
 
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(function () {});
+    navigator.serviceWorker.getRegistrations().then(function (regs) {
+      regs.forEach(function (r) {
+        r.unregister();
+      });
+    });
   }
 
   render();

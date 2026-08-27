@@ -1,24 +1,24 @@
 #!/usr/bin/env bash
-# Quick recover when EduSense hangs on small VPS
+# Recover when HTTPS hangs from outside but local may still work
 set -euo pipefail
 
-echo "==> Memory / disk"
-free -h || true
-df -h / | tail -1 || true
+echo "==> Before"
+free -h | sed -n '1,3p' || true
+ss -s || true
+systemctl is-active edusense nginx || true
 
-echo "==> Restart services"
-systemctl restart edusense
+echo "==> Kill wedged listeners / restart"
+systemctl stop edusense || true
+pkill -f 'uvicorn backend.main:app' || true
+sleep 1
+systemctl start edusense
 systemctl restart nginx
 sleep 2
 
-echo "==> Status"
+echo "==> After"
 systemctl is-active edusense nginx
-ss -lptn | grep -E ':8010|:80|:443' || true
-
-echo "==> Local health"
-curl -s -m 5 http://127.0.0.1:8010/api/health || echo "LOCAL HEALTH FAIL"
-curl -s -m 8 -o /dev/null -w "public https:%{http_code} time:%{time_total}s\n" https://edusence.ru/api/health || echo "PUBLIC HEALTH FAIL"
-
-echo "==> Last logs"
-journalctl -u edusense -n 25 --no-pager || true
-echo "Done."
+ss -lptn | grep -E ':8010|:443|:80' || true
+curl -s -m 4 http://127.0.0.1:8010/api/health || echo LOCAL_FAIL
+curl -s -m 8 -o /dev/null -w "public:%{http_code} t=%{time_total}\n" https://127.0.0.1/api/health -k --resolve edusence.ru:443:127.0.0.1 || echo PUBLIC_LOCAL_FAIL
+journalctl -u edusense -n 20 --no-pager || true
+echo Done

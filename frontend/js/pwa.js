@@ -141,15 +141,12 @@
   }
 
   function registerSw() {
-    if (!("serviceWorker" in navigator) || inTelegram()) return;
-    try {
-      var q = new URLSearchParams(global.location.search || "");
-      if (q.get("leave") === "1" || q.get("nosw") === "1") {
-        killSw();
-        return;
-      }
-    } catch (_) {}
-    navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(function () {});
+    /* Beta: SW off — offline page masked real server hangs on mobile/Yandex. */
+    if (!("serviceWorker" in navigator) || inTelegram()) {
+      killSw();
+      return;
+    }
+    killSw();
   }
 
   function hideInstallLinks(hide) {
