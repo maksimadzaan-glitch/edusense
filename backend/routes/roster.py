@@ -311,36 +311,42 @@ def list_students(code: str, db: Session = Depends(get_db)):
 async def live_class_roster(code: str):
     """SSE: имена учеников, как только кто-то ввёл код на телефоне."""
 
+    def _snapshot() -> str:
+        db = SessionLocal()
+        try:
+            classroom = ensure_edu_class(db, class_code=code)
+            rows = (
+                db.query(ClassStudent)
+                .filter(ClassStudent.class_id == classroom.id)
+                .order_by(ClassStudent.id.asc())
+                .all()
+            )
+            names = [r.name for r in rows]
+            return json.dumps(
+                {"names": names, "count": len(names)},
+                ensure_ascii=False,
+            )
+        except HTTPException:
+            return json.dumps({"names": [], "count": 0, "error": True})
+        except Exception:
+            return json.dumps({"names": [], "count": 0})
+        finally:
+            db.close()
+
     async def events():
         last = None
         while True:
-            db = SessionLocal()
             try:
-                classroom = ensure_edu_class(db, class_code=code)
-                rows = (
-                    db.query(ClassStudent)
-                    .filter(ClassStudent.class_id == classroom.id)
-                    .order_by(ClassStudent.id.asc())
-                    .all()
-                )
-                names = [r.name for r in rows]
-                payload = json.dumps(
-                    {"names": names, "count": len(names)},
-                    ensure_ascii=False,
-                )
-            except HTTPException:
-                payload = json.dumps({"names": [], "count": 0, "error": True})
+                payload = await asyncio.to_thread(_snapshot)
             except Exception:
                 payload = last or json.dumps({"names": [], "count": 0})
-            finally:
-                db.close()
 
             if payload != last:
                 yield f"data: {payload}\n\n"
                 last = payload
             else:
                 yield ": ping\n\n"
-            await asyncio.sleep(1.5)
+            await asyncio.sleep(2.0)
 
     return StreamingResponse(
         events(),

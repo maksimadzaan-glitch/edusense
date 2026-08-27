@@ -116,8 +116,39 @@
     }
   }
 
+  function killSw() {
+    if (!("serviceWorker" in navigator)) return Promise.resolve();
+    return navigator.serviceWorker
+      .getRegistrations()
+      .then(function (regs) {
+        return Promise.all(
+          regs.map(function (r) {
+            return r.unregister();
+          })
+        );
+      })
+      .then(function () {
+        if (!("caches" in global)) return;
+        return caches.keys().then(function (keys) {
+          return Promise.all(
+            keys.map(function (k) {
+              return caches.delete(k);
+            })
+          );
+        });
+      })
+      .catch(function () {});
+  }
+
   function registerSw() {
     if (!("serviceWorker" in navigator) || inTelegram()) return;
+    try {
+      var q = new URLSearchParams(global.location.search || "");
+      if (q.get("leave") === "1" || q.get("nosw") === "1") {
+        killSw();
+        return;
+      }
+    } catch (_) {}
     navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(function () {});
   }
 
