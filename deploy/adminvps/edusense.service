@@ -8,9 +8,18 @@ User=www-data
 Group=www-data
 WorkingDirectory=/opt/edusense
 Environment=PYTHONUNBUFFERED=1
-ExecStart=/opt/edusense/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8010
+# Keep one worker on small VPS (Promo 1GB) — more workers = OOM hangs
+ExecStart=/opt/edusense/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8010 --timeout-keep-alive 5 --limit-concurrency 40
 Restart=always
-RestartSec=5
+RestartSec=3
+# Auto-recover if process wedges
+WatchdogSec=0
+TimeoutStopSec=20
+KillMode=mixed
+# Soft memory guard (Promo VPS)
+MemoryMax=700M
+MemoryHigh=550M
+OOMPolicy=continue
 
 [Install]
 WantedBy=multi-user.target
