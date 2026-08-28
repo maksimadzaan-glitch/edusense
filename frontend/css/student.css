@@ -128,6 +128,33 @@ body {
   margin: 0 auto;
   padding: clamp(48px, 12vh, 96px) 18px 80px;
 }
+
+body.is-student-entry {
+  min-height: 100vh;
+}
+
+body.is-student-entry #app.is-entry {
+  max-width: none;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: clamp(24px, 8vh, 64px) 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+body.is-student-entry .entry-card {
+  width: min(100%, 480px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(94, 234, 212, 0.2);
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 0 1px rgba(94, 234, 212, 0.06);
+}
 #app.is-menu {
   max-width: 560px;
   margin: 0 auto;
@@ -182,9 +209,93 @@ body {
 .entry-card {
   padding: 28px 26px 24px;
   background:
+    radial-gradient(90% 70% at 0% 0%, rgba(94, 234, 212, 0.12), transparent 55%),
+    radial-gradient(70% 60% at 100% 100%, rgba(232, 168, 124, 0.08), transparent 50%),
+    rgba(14, 20, 32, 0.72);
+}
+
+.code-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.code-input-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-qr-scan {
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 0 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border-radius: 12px;
+  border: 1px solid rgba(94, 234, 212, 0.28);
+  background: rgba(94, 234, 212, 0.1);
+  color: #99f6e4;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-qr-scan:hover {
+  background: rgba(94, 234, 212, 0.18);
+  border-color: rgba(94, 234, 212, 0.42);
+}
+
+.qr-scan-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(2, 6, 23, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: riseIn 0.25s var(--ease-out) both;
+}
+
+.qr-scan-card {
+  width: min(100%, 420px);
+  padding: 22px 20px 20px;
+  border-radius: 18px;
+  border: 1px solid rgba(94, 234, 212, 0.22);
+  background:
     radial-gradient(90% 70% at 0% 0%, rgba(94, 234, 212, 0.1), transparent 55%),
-    radial-gradient(70% 60% at 100% 100%, rgba(232, 168, 124, 0.07), transparent 50%),
-    var(--card);
+    rgba(14, 20, 32, 0.92);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+}
+
+.qr-scan-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.qr-scan-head h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.qr-reader {
+  margin-top: 14px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: #020617;
+  min-height: 280px;
+}
+
+html.qr-scan-open,
+html.qr-scan-open body {
+  overflow: hidden;
 }
 
 .menu-card {
@@ -2106,6 +2217,13 @@ html.dash-ready .student-hero-glow {
   .review-row { grid-template-columns: auto 1fr; }
   .review-note { grid-column: 1 / -1; }
   #app.is-entry { padding: 18px 12px max(60px, env(safe-area-inset-bottom)); }
+  .code-input-row {
+    flex-direction: column;
+  }
+  .btn-qr-scan {
+    width: 100%;
+    min-height: 48px;
+  }
 }
 
 /* —— Mobile layout & responsive fix (<768px) —— */

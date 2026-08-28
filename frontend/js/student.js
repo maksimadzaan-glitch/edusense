@@ -21,6 +21,15 @@ const NAV = [
 ];
 
 /** Из ссылки/вставки достаёт EDU-XXXX (или чистый код). */
+function looksLikeInvalidJoinCode(code) {
+  if (!code) return true;
+  if (/^HTTPS?:\/\//i.test(code)) return true;
+  if (code.includes("/")) return true;
+  if (/DASHBOARD|STUDENT\/JOIN|EDUSENCE\.RU|LOCALHOST/i.test(code)) return true;
+  if (code.length > 32) return true;
+  return false;
+}
+
 function normalizeJoinCode(raw) {
   let s = String(raw || "").trim();
   if (!s) return "";
@@ -30,6 +39,24 @@ function normalizeJoinCode(raw) {
     /* ignore */
   }
   let candidate = s;
+
+  const joinPath = s.match(/\/join\/([^/?#\s]+)/i);
+  if (joinPath) candidate = joinPath[1];
+
+  if (s.startsWith("/") || s.includes("?") || s.includes("#")) {
+    try {
+      const u = new URL(s, window.location.origin);
+      candidate =
+        u.searchParams.get("code") ||
+        u.searchParams.get("join") ||
+        candidate;
+      const pathMatch = u.pathname.match(/\/join\/([^/]+)/i);
+      if (pathMatch) candidate = pathMatch[1];
+    } catch {
+      /* not a relative URL */
+    }
+  }
+
   try {
     let urlStr = s;
     if (/^(t\.me|telegram\.me)\//i.test(urlStr)) urlStr = "https://" + urlStr;
@@ -41,32 +68,166 @@ function normalizeJoinCode(raw) {
         u.searchParams.get("startapp") ||
         u.searchParams.get("start") ||
         candidate;
+      const pathMatch = u.pathname.match(/\/join\/([^/]+)/i);
+      if (pathMatch) candidate = pathMatch[1];
     }
   } catch {
     /* not a full URL */
   }
+
   const fromQuery = String(candidate).match(/(?:^|[?&#])(?:code|join|startapp|start)=([^&\s#]+)/i);
   if (fromQuery) candidate = fromQuery[1];
   const edu = String(candidate).match(/EDU-\d{4}/i);
   if (edu) return edu[0].toUpperCase();
   const eduInRaw = s.match(/EDU-\d{4}/i);
   if (eduInRaw) return eduInRaw[0].toUpperCase();
-  return String(candidate)
+  const es = String(candidate).match(/ES-[A-Z0-9]{4}/i);
+  if (es) return es[0].toUpperCase();
+
+  candidate = String(candidate)
     .replace(/\s+/g, "")
     .replace(/^["'`]+|["'`]+$/g, "")
     .toUpperCase();
+
+  if (looksLikeInvalidJoinCode(candidate)) return "";
+  return candidate;
+}
+
+function joinCodeDisplayValue() {
+  const code = normalizeJoinCode(state.code);
+  return code && !looksLikeInvalidJoinCode(code) ? code : "";
+}
+
+function joinCodeFieldHtml(extraAttrs = "") {
+  const value = joinCodeDisplayValue();
+  return `
+      <label class="field">
+        <span>Код класса или работы</span>
+        <div class="code-input-row">
+          <input type="text" id="inp-code" value="${escapeHtml(value)}" placeholder="EDU-XXXX или ссылка" autocomplete="off" ${extraAttrs} />
+          <button type="button" class="btn btn-qr-scan" id="btn-scan-qr" title="Сканировать QR-код">📷 Сканировать QR</button>
+        </div>
+        ${state.codeError ? `<span class="field-error" id="err-code">${escapeHtml(state.codeError)}</span>` : ""}
+      </label>`;
 }
 
 function applyCodeFromInput(el) {
   if (!el) return "";
   const normalized = normalizeJoinCode(el.value);
-  if (normalized && normalized !== el.value.trim().toUpperCase()) {
+  if (normalized) {
     el.value = normalized;
-  } else if (normalized) {
-    el.value = normalized;
+  } else if (looksLikeInvalidJoinCode(el.value.trim())) {
+    el.value = "";
   }
   state.code = normalized;
   return normalized;
+}
+
+async function ensureHtml5QrcodeLib() {
+  if (window.Html5Qrcode) return window.Html5Qrcode;
+  await new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[data-lib="html5-qrcode"]');
+    if (existing) {
+      existing.addEventListener("load", resolve, { once: true });
+      existing.addEventListener("error", reject, { once: true });
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js";
+    script.dataset.lib = "html5-qrcode";
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+  return window.Html5Qrcode;
+}
+
+function closeQrScannerModal() {
+  document.getElementById("qr-scan-modal")?.remove();
+  document.documentElement.classList.remove("qr-scan-open");
+  if (window.__qrScannerInstance) {
+    window.__qrScannerInstance
+      .stop()
+      .catch(() => {})
+      .finally(() => {
+        try {
+          window.__qrScannerInstance.clear();
+        } catch (_) {
+          /* ignore */
+        }
+        window.__qrScannerInstance = null;
+      });
+  }
+}
+
+function applyScannedJoinCode(text) {
+  const el = document.getElementById("inp-code");
+  if (!el) return;
+  el.value = text;
+  applyCodeFromInput(el);
+  state.codeError = "";
+  closeQrScannerModal();
+  el.dispatchEvent(new Event("input", { bubbles: true }));
+  showToast("Код из QR подставлен", "success");
+}
+
+async function openBrowserQrScanner() {
+  closeQrScannerModal();
+  const modal = document.createElement("div");
+  modal.id = "qr-scan-modal";
+  modal.className = "qr-scan-modal";
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
+  modal.setAttribute("aria-label", "Сканер QR-кода");
+  modal.innerHTML = `
+    <div class="qr-scan-card">
+      <div class="qr-scan-head">
+        <h2>Сканер QR</h2>
+        <button type="button" class="icon-x" id="btn-close-qr-scan" aria-label="Закрыть">×</button>
+      </div>
+      <p class="sub">Наведите камеру на QR-код работы или класса</p>
+      <div id="qr-reader" class="qr-reader"></div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  document.documentElement.classList.add("qr-scan-open");
+  modal.querySelector("#btn-close-qr-scan")?.addEventListener("click", closeQrScannerModal);
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeQrScannerModal();
+  });
+
+  try {
+    const Html5Qrcode = await ensureHtml5QrcodeLib();
+    const scanner = new Html5Qrcode("qr-reader");
+    window.__qrScannerInstance = scanner;
+    await scanner.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 240, height: 240 } },
+      (decodedText) => {
+        applyScannedJoinCode(decodedText);
+      },
+      () => {}
+    );
+  } catch (err) {
+    closeQrScannerModal();
+    showToast(err?.message || "Не удалось открыть камеру", "error");
+  }
+}
+
+function openQrScanner() {
+  const tg = window.Telegram?.WebApp;
+  if (tg && typeof tg.showScanQrPopup === "function") {
+    tg.showScanQrPopup({ text: "Наведите камеру на QR-код работы" }, (decodedText) => {
+      if (decodedText) {
+        applyScannedJoinCode(decodedText);
+        tg.closeScanQrPopup?.();
+      }
+    });
+    return;
+  }
+  openBrowserQrScanner().catch((err) => {
+    showToast(err?.message || "Сканер недоступен", "error");
+  });
 }
 
 const ICONS = {
@@ -128,6 +289,29 @@ const state = {
   showFullBoard: false,
   focusPlayerOpen: false,
 };
+
+function pageTransition(fn, opts) {
+  const PT = window.EduSensePageTransition;
+  if (PT?.run) return PT.run(fn, opts);
+  return fn();
+}
+
+async function switchStudentTab(tab) {
+  if (!tab) {
+    setNavOpen(false);
+    return;
+  }
+  if (tab === state.tab) return;
+  if (window.EduSensePageTransition?.isBusy?.()) return;
+  await pageTransition(
+    async () => {
+      state.tab = tab;
+      setNavOpen(false);
+      render();
+    },
+    { minMs: 200 }
+  );
+}
 
 const FOCUS_TRACKS = [
   {
@@ -2506,11 +2690,7 @@ function renderJoin() {
       <h1>${escapeHtml(title)}</h1>
       <div class="closed-banner" role="status">Приём ответов закрыт</div>
       <p class="sub">Учитель закрыл приём работ по этому коду. Новую попытку можно сделать, только если приём снова откроют.</p>
-      <label class="field">
-        <span>Код класса или работы</span>
-        <input type="text" id="inp-code" value="${escapeHtml(state.code)}" placeholder="EDU-XXXX или ссылка" autocomplete="off" />
-        ${state.codeError ? `<span class="field-error" id="err-code">${escapeHtml(state.codeError)}</span>` : ""}
-      </label>
+      ${joinCodeFieldHtml()}
       <button class="btn btn-secondary" id="btn-check-code" ${state.loading ? "disabled" : ""}>
         ${state.loading ? "Проверяем…" : "Проверить другой код"}
       </button>
@@ -2545,11 +2725,7 @@ function renderJoin() {
           ? `<p class="sub">Вы вошли как <strong>${escapeHtml(state.name)}</strong></p>`
           : ""
       }
-      <label class="field">
-        <span>Код класса или работы</span>
-        <input type="text" id="inp-code" value="${escapeHtml(state.code)}" placeholder="EDU-XXXX или ссылка" autocomplete="off" aria-invalid="${state.codeError ? "true" : "false"}" />
-        ${state.codeError ? `<span class="field-error" id="err-code">${escapeHtml(state.codeError)}</span>` : ""}
-      </label>
+      ${joinCodeFieldHtml(`aria-invalid="${state.codeError ? "true" : "false"}"`)}
       ${
         nameLocked
           ? ""
@@ -3132,6 +3308,7 @@ function render() {
   const inWork =
     state.step === "work" || state.step === "review" || state.step === "done";
   document.documentElement.classList.toggle("exam-on", inWork);
+  document.body?.classList.toggle("is-student-entry", state.step === "join");
   root.classList.toggle("is-entry", state.step === "join");
   root.classList.toggle("is-menu", false);
   root.classList.toggle("is-dashboard", inShell);
@@ -3152,9 +3329,7 @@ function render() {
       EduSenseTour.maybeStart({
         goToTab: (tab) => {
           if (!tab || state.step !== "dashboard") return;
-          if (state.tab === tab) return;
-          state.tab = tab;
-          render();
+          switchStudentTab(tab);
         },
         screen: () => state.step,
         tab: () => state.tab,
@@ -3220,41 +3395,43 @@ function goToJoinFresh({ clearSessionFlag = false } = {}) {
 }
 
 async function loadDashboard({ navigate = true } = {}) {
-  if (!state.classCode || !state.name) {
-    goToJoinFresh({ clearSessionFlag: false });
-    return;
-  }
-  state.step = "dashboard";
-  state.loading = true;
-  render();
-  try {
-    const data = await api(
-      `/api/student/tasks?class_code=${encodeURIComponent(state.classCode)}&student_name=${encodeURIComponent(
-        state.name
-      )}`
-    );
-    state.dashboard = data;
-    state.className = data.class_name || state.className;
-    state.subject = data.subject || state.subject;
-    state.exam = data.exam || state.exam;
-    state.step = "dashboard";
-    if (navigate) navigateStudent("/student/dashboard");
-    if (state.pendingAssignmentCode) {
-      const code = state.pendingAssignmentCode;
-      state.pendingAssignmentCode = null;
-      await openWorkByCode(code);
+  return pageTransition(async () => {
+    if (!state.classCode || !state.name) {
+      goToJoinFresh({ clearSessionFlag: false });
       return;
     }
-  } catch (err) {
-    showToast(err.message || "Не удалось загрузить список работ", "error");
-    state.dashboard = state.dashboard || { active: [], completed: [], stats: {} };
     state.step = "dashboard";
-    state.tab = "home";
-    if (navigate) navigateStudent("/student/dashboard");
-  } finally {
-    state.loading = false;
+    state.loading = true;
     render();
-  }
+    try {
+      const data = await api(
+        `/api/student/tasks?class_code=${encodeURIComponent(state.classCode)}&student_name=${encodeURIComponent(
+          state.name
+        )}`
+      );
+      state.dashboard = data;
+      state.className = data.class_name || state.className;
+      state.subject = data.subject || state.subject;
+      state.exam = data.exam || state.exam;
+      state.step = "dashboard";
+      if (navigate) navigateStudent("/student/dashboard");
+      if (state.pendingAssignmentCode) {
+        const code = state.pendingAssignmentCode;
+        state.pendingAssignmentCode = null;
+        await openWorkByCode(code);
+        return;
+      }
+    } catch (err) {
+      showToast(err.message || "Не удалось загрузить список работ", "error");
+      state.dashboard = state.dashboard || { active: [], completed: [], stats: {} };
+      state.step = "dashboard";
+      state.tab = "home";
+      if (navigate) navigateStudent("/student/dashboard");
+    } finally {
+      state.loading = false;
+      render();
+    }
+  }, { overlay: true });
 }
 
 async function openWorkByCode(code) {
@@ -3413,6 +3590,7 @@ function bind() {
     loadDashboard({ navigate: true });
   });
   document.getElementById("btn-check-code")?.addEventListener("click", () => previewByCode());
+  document.getElementById("btn-scan-qr")?.addEventListener("click", () => openQrScanner());
   document.getElementById("inp-code")?.addEventListener("input", (e) => {
     applyCodeFromInput(e.target);
     state.codeError = "";
@@ -3464,14 +3642,7 @@ function bind() {
 
   document.querySelectorAll("[data-tab]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const tab = btn.getAttribute("data-tab");
-      if (!tab) {
-        setNavOpen(false);
-        return;
-      }
-      state.tab = tab;
-      setNavOpen(false);
-      render();
+      switchStudentTab(btn.getAttribute("data-tab"));
     });
   });
 
@@ -3520,11 +3691,7 @@ function bind() {
 
   document.querySelectorAll("[data-tab-jump]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const tab = btn.getAttribute("data-tab-jump");
-      if (!tab) return;
-      state.tab = tab;
-      setNavOpen(false);
-      render();
+      switchStudentTab(btn.getAttribute("data-tab-jump"));
     });
   });
 
@@ -3540,7 +3707,8 @@ function bind() {
   document.querySelectorAll("[data-start]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const code = btn.getAttribute("data-start");
-      if (code) openWorkByCode(code);
+      if (!code || window.EduSensePageTransition?.isBusy?.()) return;
+      pageTransition(() => openWorkByCode(code), { overlay: true });
     });
   });
 
@@ -3959,6 +4127,7 @@ async function boot() {
     (typeof window !== "undefined" && window.EduSenseTG && window.EduSenseTG.entryCode) || "";
   const code = normalizeJoinCode(params.get("code") || params.get("join") || tgEntry || "");
   if (code) state.code = code;
+  else state.code = "";
   if (typeof window !== "undefined" && window.EduSenseTG?.isTelegramMiniApp) {
     document.documentElement.classList.add("is-telegram-miniapp");
     document.body?.classList.add("is-telegram-miniapp");

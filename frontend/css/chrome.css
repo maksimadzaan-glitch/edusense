@@ -883,3 +883,126 @@ body.is-telegram-miniapp .pwa-nav-btn {
 @media (min-width: 720px) {
   .ig-overlay { justify-content: center; }
 }
+
+/* —— Page transition loader (top bar + spinner) —— */
+.page-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  height: 3px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+
+.page-progress.is-visible {
+  opacity: 1;
+}
+
+.page-progress-track {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.page-progress-bar {
+  height: 100%;
+  width: calc(var(--pp, 0) * 100%);
+  background: linear-gradient(90deg, #10b981 0%, #6366f1 100%);
+  box-shadow: 0 0 10px #10b981, 0 0 16px rgba(99, 102, 241, 0.42);
+  transition: width 0.18s ease;
+  position: relative;
+}
+
+.page-progress.is-done .page-progress-bar {
+  transition: width 0.14s ease;
+}
+
+.page-progress-peg {
+  position: absolute;
+  right: 0;
+  top: -2px;
+  width: 14px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 12px #10b981, 0 0 8px rgba(99, 102, 241, 0.55);
+  transform: rotate(4deg);
+  opacity: 0.9;
+}
+
+.page-spinner-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(2, 6, 23, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.22s ease, visibility 0.22s ease;
+  pointer-events: none;
+}
+
+.page-spinner-overlay.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.page-spinner-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page-spinner-ring {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(99, 102, 241, 0.2);
+  border-top-color: #6366f1;
+  border-right-color: #10b981;
+  border-radius: 50%;
+  animation: pageSpinRing 0.85s linear infinite;
+  box-shadow: 0 0 24px rgba(99, 102, 241, 0.32);
+}
+
+@keyframes pageSpinRing {
+  to { transform: rotate(360deg); }
+}
+
+.page-spinner-label {
+  margin: 12px 0 0;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  animation: pageSpinnerPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pageSpinnerPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+html.nav-busy [data-tab],
+html.nav-busy [data-quick],
+html.nav-busy [data-tab-jump],
+html.nav-busy .nav-item,
+html.nav-busy a[href]:not([href^="#"]):not([target="_blank"]) {
+  pointer-events: none;
+}
+
+html.nav-busy.page-spinner-open {
+  overflow: hidden;
+}
+
+html.nav-busy.page-spinner-open body {
+  overflow: hidden;
+}

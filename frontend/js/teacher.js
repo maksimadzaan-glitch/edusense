@@ -199,6 +199,44 @@ const state = {
   part2Grades: {},
 };
 
+const TEACHER_TAB_OVERLAY = new Set(["assignments", "students", "analytics", "home"]);
+
+function pageTransition(fn, opts) {
+  const PT = window.EduSensePageTransition;
+  if (PT?.run) return PT.run(fn, opts);
+  return fn();
+}
+
+async function switchTeacherTab(next) {
+  if (!next || next === state.tab) return;
+  if (window.EduSensePageTransition?.isBusy?.()) return;
+  await pageTransition(
+    async () => {
+      state.tab = next;
+      if (next !== "live") state.liveInRoom = false;
+      setNavOpen(false);
+      render();
+      const tasks = [];
+      if (next === "assignments") {
+        tasks.push(loadAssignmentsBoard());
+        tasks.push(loadStudentsBoard());
+      } else if (next === "students") {
+        tasks.push(loadStudentsBoard());
+      } else if (next === "home") {
+        tasks.push(loadStudentsBoard());
+        tasks.push(loadAssignmentsBoard());
+        tasks.push(loadHomeInsights());
+      } else if (next === "analytics") {
+        tasks.push(loadAnalyticsBoard());
+      } else if (next === "live") {
+        startLiveRoster();
+      }
+      await Promise.all(tasks);
+    },
+    { overlay: TEACHER_TAB_OVERLAY.has(next), minMs: TEACHER_TAB_OVERLAY.has(next) ? 0 : 200 }
+  );
+}
+
 const DIFFICULTY_LEVELS = [
   { id: "easy", label: "Лёгкий", hint: "5 простых сюжетов 1–5, базовые №6–19" },
   { id: "medium", label: "Обычный", hint: "Как на экзамене: печи, участок, маршруты" },
@@ -1486,6 +1524,19 @@ function demoVariant() {
   };
 }
 
+function isVariantPublished(variant) {
+  if (!variant) return false;
+  if (variant.isPublished) return true;
+  return (state.generator.published || []).some(
+    (p) => p.id === variant.id || (p.code && variant.code && p.code === variant.code)
+  );
+}
+
+function markVariantPublished(variant) {
+  if (!variant) return;
+  variant.isPublished = true;
+}
+
 function variantShareUrl(variant) {
   if (!variant) return `${window.location.origin}/student`;
   const published = state.generator.published.find(
@@ -2229,23 +2280,41 @@ function eduSenseBrandHtml(extra) {
 }
 
 function eduSenseWatermarkHtml() {
-  const src = escapeHtml(eduSenseMarkUrl());
-  return `<div class="ep-watermark" aria-hidden="true"><div class="ep-wm-single"><img src="${src}" alt=""><b>EduSense</b></div></div>`;
+  return `<div class="ep-watermark" aria-hidden="true"><div class="ep-wm-layer"><span class="ep-wm-text">EduSense</span></div></div>`;
 }
 
 function eduSensePrintWatermarkCss() {
   return `
+    .a4-sheet, .export-preview.is-a4, #export-preview-card {
+      position: relative;
+    }
     .ep-watermark {
-      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-      overflow: hidden; pointer-events: none; user-select: none; z-index: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+      overflow: visible;
     }
-    .ep-wm-single {
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
-      transform: rotate(-28deg); opacity: 0.06; color: #0f172a;
+    .ep-wm-layer {
+      transform: rotate(-30deg);
+      opacity: 0.06;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ep-wm-text {
       font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
-      font-weight: 800; letter-spacing: -0.045em; text-transform: none; font-size: 42px; line-height: 1;
+      font-weight: 800;
+      letter-spacing: -0.045em;
+      text-transform: none;
+      font-size: clamp(48px, 12vw, 72px);
+      line-height: 1;
+      color: #94a3b8;
+      white-space: nowrap;
     }
-    .ep-wm-single img { width: 84px; height: 84px; object-fit: contain; display: block; opacity: 0.9; }
     .ep-brand {
       display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
       font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
@@ -2254,7 +2323,22 @@ function eduSensePrintWatermarkCss() {
     .ep-brand img { width: 22px; height: 22px; object-fit: contain; display: block; }
     .ep-brand-extra { margin-left: 4px; font-size: 0.78rem; font-weight: 650; letter-spacing: 0; color: #64748b; }
     .a4-inner[style*="text-align:center"] .ep-brand { justify-content: center; }
-    .a4-inner, .print-inner { position: relative; z-index: 1; }
+    .a4-inner, .print-inner, .ep-sheet { position: relative; z-index: 10; }
+    .task-media-img,
+    .ep-body img,
+    .ep-task img:not(.ep-brand img),
+    .task-figure svg,
+    .task-figure img {
+      max-width: 80%;
+      min-width: 250px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      margin: 12px auto;
+      display: block;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
   `;
 }
 
@@ -2325,7 +2409,7 @@ function brandedExamPrintCss() {
     @media print {
       html, body { background: #fff !important; }
       .a4-sheet { box-shadow: none; margin: 0 auto; max-width: none; }
-      .ep-wm-single { opacity: 0.055; }
+      .ep-wm-layer { opacity: 0.055; }
       .no-print { display: none !important; }
     }
     @media (max-width: 640px) { .key-grid { grid-template-columns: 1fr; } }
@@ -2498,6 +2582,31 @@ function pdfSafeName(title) {
       .trim()
       .slice(0, 60) || "variant"
   );
+}
+
+function showPdfExportOverlay() {
+  closePdfExportOverlay();
+  const el = document.createElement("div");
+  el.id = "pdf-export-overlay";
+  el.className = "pdf-export-overlay";
+  el.setAttribute("role", "dialog");
+  el.setAttribute("aria-modal", "true");
+  el.setAttribute("aria-label", "Генерация PDF");
+  el.innerHTML = `
+    <div class="pdf-export-panel">
+      <div class="pdf-export-spinner" aria-hidden="true"></div>
+      <h2 class="pdf-export-title">Генерация бланка КИМ...</h2>
+      <p class="pdf-export-sub">Оптимизируем изображения и верстаем задачи...</p>
+      <div class="pdf-export-progress" aria-hidden="true"><div class="pdf-export-progress-bar"></div></div>
+    </div>
+  `;
+  document.body.appendChild(el);
+  document.documentElement.classList.add("pdf-export-busy");
+}
+
+function closePdfExportOverlay() {
+  document.getElementById("pdf-export-overlay")?.remove();
+  document.documentElement.classList.remove("pdf-export-busy");
 }
 
 async function downloadHtmlAsPdf(title, innerHtml, css, filename) {
@@ -3396,6 +3505,7 @@ function renderTests() {
   const v = g.variant;
   const selected = currentExportTask();
   const ogeRus = isTeacherOgeRusExam(v);
+  const variantPublished = isVariantPublished(v);
 
   return `
     <div class="gen-layout">
@@ -3427,7 +3537,12 @@ function renderTests() {
           <div class="variant-toolbar-controls">
             <button type="button" class="btn-ghost" id="btn-gen-modes">← Режимы</button>
             <button type="button" class="btn-secondary" id="btn-regen" ${g.generating ? "disabled" : ""}>Пересобрать</button>
-            <button type="button" class="btn-primary btn-issue-class" id="btn-open-publish" data-tour="issue">Выдать классу</button>
+            ${
+              variantPublished
+                ? `<button type="button" class="btn-secondary btn-issue-done" disabled aria-disabled="true">Уже выдано ✓</button>
+            <button type="button" class="btn-primary" id="btn-goto-journal-from-variant">Перейти в Журнал</button>`
+                : `<button type="button" class="btn-primary btn-issue-class" id="btn-open-publish" data-tour="issue">Выдать классу</button>`
+            }
           </div>
         </div>
 
@@ -6249,7 +6364,7 @@ function buildParentMeetingReportHtml(classroom, data) {
     .is-warn { color:#9a3412 !important; }
     .is-ok { color:#166534 !important; }
     .no-print { display:none !important; }
-    .ep-wm-single { opacity:0.06; color:#0f172a !important; }
+    .ep-wm-layer { opacity:0.06; color:#0f172a !important; }
   }
 </style></head><body>
   <div class="sheet">
@@ -7368,11 +7483,14 @@ function bind() {
       }
     });
     document.getElementById("btn-to-dashboard")?.addEventListener("click", () => {
-      stopLiveRoster();
-      state.step = "dashboard";
-      state.tab = "home";
-      localStorage.setItem("edusense_classroom", JSON.stringify(state.classroom));
-      render();
+      pageTransition(async () => {
+        stopLiveRoster();
+        state.step = "dashboard";
+        state.tab = "home";
+        localStorage.setItem("edusense_classroom", JSON.stringify(state.classroom));
+        render();
+        await Promise.all([loadStudentsBoard(), loadAssignmentsBoard(), loadHomeInsights()]);
+      }, { overlay: true });
     });
     startLiveRoster();
     return;
@@ -7380,23 +7498,7 @@ function bind() {
 
   document.querySelectorAll("[data-tab]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const next = btn.getAttribute("data-tab");
-      state.tab = next;
-      if (next !== "live") state.liveInRoom = false;
-      setNavOpen(false);
-      render();
-      if (next === "assignments") {
-        loadAssignmentsBoard();
-        loadStudentsBoard();
-      }
-      if (next === "students") loadStudentsBoard();
-      if (next === "home") {
-        loadStudentsBoard();
-        loadAssignmentsBoard();
-        loadHomeInsights();
-      }
-      if (next === "analytics") loadAnalyticsBoard();
-      if (next === "live") startLiveRoster();
+      switchTeacherTab(btn.getAttribute("data-tab"));
     });
   });
 
@@ -7415,22 +7517,7 @@ function bind() {
 
   document.querySelectorAll("[data-quick]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const next = btn.getAttribute("data-quick");
-      state.tab = next;
-      if (next !== "live") state.liveInRoom = false;
-      render();
-      if (next === "assignments") {
-        loadAssignmentsBoard();
-        loadStudentsBoard();
-      }
-      if (next === "students") loadStudentsBoard();
-      if (next === "home") {
-        loadStudentsBoard();
-        loadAssignmentsBoard();
-        loadHomeInsights();
-      }
-      if (next === "analytics") loadAnalyticsBoard();
-      if (next === "live") startLiveRoster();
+      switchTeacherTab(btn.getAttribute("data-quick"));
     });
   });
 
@@ -8125,6 +8212,10 @@ function bindGenerator() {
   });
 
   document.getElementById("btn-open-publish")?.addEventListener("click", () => {
+    if (isVariantPublished(state.generator.variant)) {
+      showToast("Эта работа уже выписана ученикам", "info");
+      return;
+    }
     state.generator.publishOpen = true;
     state.generator.publishSuccess = null;
     state.generator.publishBusy = false;
@@ -8186,6 +8277,12 @@ function bindGenerator() {
   document.getElementById("btn-publish-to-journal")?.addEventListener("click", () => {
     state.generator.publishOpen = false;
     state.generator.publishSuccess = null;
+    state.tab = "assignments";
+    state.assignmentsBoard.loadedFor = null;
+    render();
+    loadAssignmentsBoard(true);
+  });
+  document.getElementById("btn-goto-journal-from-variant")?.addEventListener("click", () => {
     state.tab = "assignments";
     state.assignmentsBoard.loadedFor = null;
     render();
@@ -8276,6 +8373,10 @@ function bindGenerator() {
     const v = state.generator.variant;
     const classroom = publishTargetClassroom() || state.classroom;
     if (!v || !classroom || state.generator.publishBusy) return;
+    if (isVariantPublished(v)) {
+      showToast("Эта работа уже выписана ученикам", "info");
+      return;
+    }
     const audience = publishAudienceValue();
     const allowed =
       audience === "individual" ? (state.generator.publishAudienceNames || []).filter(Boolean) : [];
@@ -8364,6 +8465,7 @@ function bindGenerator() {
         shuffleVariants: shuffle,
         publishedAt: new Date().toISOString(),
       });
+      markVariantPublished(v);
       state.generator.publishBusy = false;
       state.generator.publishSuccess = {
         code: workCode,
@@ -8620,12 +8722,13 @@ function exportBrandedPdf({ keys = false } = {}) {
   };
   if (window.__pdfExportBusy) return;
   window.__pdfExportBusy = true;
-  showToast("Собираем PDF…", "info");
+  showPdfExportOverlay();
   downloadHtmlAsPdf(payload.title, inner, brandedExamPrintCss(), filename)
     .then(() => showToast(keys ? "Ключи скачаны (PDF)" : "PDF скачан", "success"))
     .catch(() => fallbackPrint())
     .finally(() => {
       window.__pdfExportBusy = false;
+      closePdfExportOverlay();
     });
 }
 
@@ -8771,9 +8874,10 @@ async function boot() {
 
   render();
   if (state.step === "dashboard" && state.classroom?.access_code) {
-    loadStudentsBoard();
-    loadAssignmentsBoard();
-    loadHomeInsights();
+    pageTransition(
+      () => Promise.all([loadStudentsBoard(), loadAssignmentsBoard(), loadHomeInsights()]),
+      { overlay: true }
+    );
   }
 }
 
