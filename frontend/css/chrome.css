@@ -900,34 +900,27 @@ body.is-telegram-miniapp .pwa-nav-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
+  width: 38px;
+  height: 38px;
   flex-shrink: 0;
-  font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
-  font-weight: 900;
-  font-size: 1.15rem;
-  letter-spacing: -0.06em;
-  color: #020617;
-  background: linear-gradient(145deg, #34d399 0%, #22d3ee 100%);
-  box-shadow: 0 10px 24px rgba(16, 185, 129, 0.28);
+  background: transparent;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(2, 6, 23, 0.35);
+  color: transparent;
+  font-size: 0;
+  overflow: hidden;
+}
+
+.es-logo-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: hidden;
+  filter: none;
 }
 
 .es-logo-pulse {
-  position: absolute;
-  top: -3px;
-  right: -3px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #67e8f9;
-  box-shadow: 0 0 0 2px rgba(2, 6, 23, 0.35);
-  animation: esLogoPulse 1.6s ease-in-out infinite;
-}
-
-@keyframes esLogoPulse {
-  0%, 100% { opacity: 0.55; transform: scale(0.92); }
-  50% { opacity: 1; transform: scale(1.08); }
+  display: none;
 }
 
 .es-logo-text {
@@ -963,10 +956,10 @@ body.is-telegram-miniapp .pwa-nav-btn {
 }
 
 .es-logo.is-compact .es-logo-mark {
-  width: 32px;
-  height: 32px;
-  font-size: 1rem;
-  border-radius: 10px;
+  width: 34px;
+  height: 34px;
+  font-size: 0;
+  border-radius: 9px;
 }
 
 .es-logo.is-compact .es-logo-name {
@@ -985,10 +978,18 @@ a.nav-brand.es-logo {
   height: 38px;
 }
 
-.sidebar-brand img,
-.brand-row img,
+.sidebar-brand img:not(.es-logo-mark img),
+.brand-row img:not(.es-logo-mark img),
 .nav-brand > img.nav-mark {
   display: none !important;
+}
+
+.es-logo-mark img {
+  display: block !important;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: none;
 }
 
 .sidebar-brand {

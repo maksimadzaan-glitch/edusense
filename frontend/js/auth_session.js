@@ -1,11 +1,21 @@
 /**
- * EduSense — brand mark + persistent auth session (localStorage only).
+ * EduSense — brand mark + persistent auth session (localStorage).
+ *
+ * Keys:
+ *  - edusense_token  — active session (cleared on logout / 401)
+ *  - edusense_user   — current user while logged in
+ *  - edusense_last_account — last account hint (kept after logout for “continue as”)
  */
 (function (global) {
   "use strict";
 
   const LS_USER = "edusense_user";
   const LS_TOKEN = "edusense_token";
+  const LS_LAST = "edusense_last_account";
+
+  function markHtml() {
+    return `<img src="/assets/edusense-mark-192.png?v=9" alt="" width="38" height="38" decoding="async"/>`;
+  }
 
   function logoHtml(opts) {
     const o = opts || {};
@@ -16,10 +26,7 @@
     const extraClass = o.className ? ` ${o.className}` : "";
     return `
       <${tag} class="es-logo${compact ? " is-compact" : ""}${extraClass}"${hrefAttr} aria-label="EduSense">
-        <span class="es-logo-mark" aria-hidden="true">
-          E
-          <span class="es-logo-pulse"></span>
-        </span>
+        <span class="es-logo-mark" aria-hidden="true">${markHtml()}</span>
         <span class="es-logo-text">
           <span class="es-logo-name">EduSense</span>
           <span class="es-logo-beta">BETA</span>
@@ -45,6 +52,52 @@
     }
   }
 
+  function accountHint(user) {
+    if (!user || typeof user !== "object") return null;
+    const full_name = String(user.full_name || "").trim();
+    if (!full_name) return null;
+    const role = user.role === "student" ? "student" : "teacher";
+    const hint = { full_name, role };
+    if (user.id != null) hint.id = user.id;
+    return hint;
+  }
+
+  function rememberAccount(user) {
+    const hint = accountHint(user);
+    if (!hint) return null;
+    try {
+      localStorage.setItem(LS_LAST, JSON.stringify(hint));
+    } catch {
+      /* ignore */
+    }
+    return hint;
+  }
+
+  function getLastAccount() {
+    try {
+      const last = JSON.parse(localStorage.getItem(LS_LAST) || "null");
+      if (last && typeof last === "object" && String(last.full_name || "").trim()) {
+        return {
+          id: last.id,
+          full_name: String(last.full_name).trim(),
+          role: last.role === "student" ? "student" : "teacher",
+        };
+      }
+    } catch {
+      /* ignore */
+    }
+    // Fallback: still-logged-in user, or legacy user without token
+    return accountHint(getUser());
+  }
+
+  function forgetAccount() {
+    try {
+      localStorage.removeItem(LS_LAST);
+    } catch {
+      /* ignore */
+    }
+  }
+
   function saveSession(user, token) {
     const clean = { ...(user || {}) };
     const access = token || clean.access_token || "";
@@ -55,13 +108,22 @@
     } catch {
       /* ignore quota */
     }
+    rememberAccount(clean);
     return clean;
   }
 
-  function clearSession() {
+  /**
+   * End active session.
+   * @param {{ forgetAccount?: boolean }} [opts] — forgetAccount:true wipes “continue as”
+   */
+  function clearSession(opts) {
+    const forget = !!(opts && opts.forgetAccount);
+    const last = forget ? null : getLastAccount() || accountHint(getUser());
     try {
       localStorage.removeItem(LS_TOKEN);
       localStorage.removeItem(LS_USER);
+      if (forget) localStorage.removeItem(LS_LAST);
+      else if (last) localStorage.setItem(LS_LAST, JSON.stringify(last));
     } catch {
       /* ignore */
     }
@@ -118,11 +180,11 @@
         cache: "no-store",
       });
       if (res.status === 401) {
-        clearSession();
+        // Token dead — keep last account for “continue as”, drop active session
+        clearSession({ forgetAccount: false });
         return null;
       }
       if (!res.ok) {
-        // Сеть/5xx — не выкидываем: оставляем локального пользователя
         return getUser();
       }
       const data = await res.json();
@@ -138,8 +200,12 @@
   global.EduSenseAuth = {
     LS_USER,
     LS_TOKEN,
+    LS_LAST,
     getToken,
     getUser,
+    getLastAccount,
+    rememberAccount,
+    forgetAccount,
     saveSession,
     clearSession,
     authHeaders,

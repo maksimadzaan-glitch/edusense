@@ -1471,7 +1471,7 @@ function renderGoalCard(data) {
 function brandBlockHtml() {
   const logo = window.EduSenseBrand?.logoHtml
     ? window.EduSenseBrand.logoHtml({ className: "brand-block-logo" })
-    : `<div class="es-logo"><span class="es-logo-mark" aria-hidden="true">E<span class="es-logo-pulse"></span></span><span class="es-logo-text"><span class="es-logo-name">EduSense</span><span class="es-logo-beta">BETA</span></span></div>`;
+    : `<div class="es-logo"><span class="es-logo-mark" aria-hidden="true"><img src="/assets/edusense-mark-192.png?v=9" alt="" width="38" height="38"/></span><span class="es-logo-text"><span class="es-logo-name">EduSense</span><span class="es-logo-beta">BETA</span></span></div>`;
   return `
     <div class="brand-block">
       ${logo}
@@ -2596,7 +2596,7 @@ function renderCabinetShell(mainHtml) {
           ${
             window.EduSenseBrand?.logoHtml
               ? window.EduSenseBrand.logoHtml({ compact: true })
-              : `<span class="es-logo is-compact"><span class="es-logo-mark" aria-hidden="true">E<span class="es-logo-pulse"></span></span><span class="es-logo-text"><span class="es-logo-name">EduSense</span><span class="es-logo-beta">BETA</span></span></span>`
+              : `<span class="es-logo is-compact"><span class="es-logo-mark" aria-hidden="true"><img src="/assets/edusense-mark-192.png?v=9" alt="" width="34" height="34"/></span><span class="es-logo-text"><span class="es-logo-name">EduSense</span><span class="es-logo-beta">BETA</span></span></span>`
           }
         </div>
 
@@ -3361,7 +3361,7 @@ function logoutToStart() {
   stopWorkTimer();
   clearSession();
   try {
-    window.EduSenseAuth?.clearSession?.();
+    window.EduSenseAuth?.clearSession?.({ forgetAccount: false });
     localStorage.removeItem(LS_AUTH);
     localStorage.removeItem("edusense_token");
     localStorage.removeItem(LS_HOME);
@@ -3372,7 +3372,7 @@ function logoutToStart() {
     goToJoinFresh({ clearSessionFlag: true });
     return;
   }
-  window.location.href = "/?leave=1";
+  window.location.href = "/?leave=1#auth";
 }
 
 function goToJoinFresh({ clearSessionFlag = false } = {}) {

@@ -745,15 +745,9 @@ function stepsBar(active) {
 
 function brandRow() {
   if (window.EduSenseBrand?.logoHtml) return window.EduSenseBrand.logoHtml({ className: "brand-row" });
-  return `
-    <div class="brand-row es-logo">
-      <span class="es-logo-mark" aria-hidden="true">E<span class="es-logo-pulse"></span></span>
-      <span class="es-logo-text">
-        <span class="es-logo-name">EduSense</span>
-        <span class="es-logo-beta">BETA</span>
-      </span>
-    </div>
-  `;
+  return window.EduSenseAuth?.logoHtml
+    ? window.EduSenseAuth.logoHtml({ className: "brand-row" })
+    : `<div class="brand-row es-logo"><span class="es-logo-mark" aria-hidden="true"><img src="/assets/edusense-mark-192.png?v=9" alt="" width="38" height="38"/></span><span class="es-logo-text"><span class="es-logo-name">EduSense</span><span class="es-logo-beta">BETA</span></span></div>`;
 }
 
 function hasExistingClasses() {
@@ -2320,7 +2314,9 @@ function eduSenseBrandHtml(extra) {
     ? `<span class="ep-brand-extra">${escapeHtml(extra)}</span>`
     : "";
   return `<div class="ep-brand">
-    <span class="ep-brand-mark" aria-hidden="true">ES</span>
+    <span class="ep-brand-mark" aria-hidden="true">
+      <img src="${eduSenseMarkUrl()}" alt="" width="28" height="28"/>
+    </span>
     <span class="ep-brand-name">EduSense</span>${tail}
   </div>`;
 }
@@ -2407,13 +2403,11 @@ function eduSensePrintWatermarkCss() {
       font-size: 1.15rem; font-weight: 800; letter-spacing: -0.045em; color: #0f172a;
     }
     .ep-brand-mark {
-      width: 36px; height: 36px; border-radius: 10px;
+      width: 28px; height: 28px; border-radius: 7px; overflow: hidden;
       display: inline-flex; align-items: center; justify-content: center;
-      font-size: 0.92rem; font-weight: 800; letter-spacing: -0.04em; color: #fff;
-      background: linear-gradient(135deg, #06b6d4 0%, #34d399 100%);
-      box-shadow: 0 8px 18px rgba(6, 182, 212, 0.22);
-      flex-shrink: 0;
+      background: transparent; box-shadow: none; flex-shrink: 0;
     }
+    .ep-brand-mark img, .ep-brand-mark svg { display: block; width: 28px; height: 28px; object-fit: cover; }
     .ep-brand-name { letter-spacing: -0.04em; }
     .ep-brand-extra { margin-left: 4px; font-size: 0.78rem; font-weight: 650; letter-spacing: 0; color: #64748b; }
     .a4-inner[style*="text-align:center"] .ep-brand { justify-content: center; }
@@ -7412,7 +7406,7 @@ function renderDashboard() {
           ${
             window.EduSenseBrand?.logoHtml
               ? window.EduSenseBrand.logoHtml({ compact: true })
-              : `<span class="es-logo is-compact"><span class="es-logo-mark" aria-hidden="true">E<span class="es-logo-pulse"></span></span><span class="es-logo-text"><span class="es-logo-name">EduSense</span><span class="es-logo-beta">BETA</span></span></span>`
+              : `<span class="es-logo is-compact"><span class="es-logo-mark" aria-hidden="true"><img src="/assets/edusense-mark-192.png?v=9" alt="" width="34" height="34"/></span><span class="es-logo-text"><span class="es-logo-name">EduSense</span><span class="es-logo-beta">BETA</span></span></span>`
           }
         </div>
 
@@ -8249,11 +8243,13 @@ function bind() {
     }
   });
   document.getElementById("btn-logout")?.addEventListener("click", () => {
-    window.EduSenseAuth?.clearSession?.();
-    localStorage.removeItem("edusense_user");
-    localStorage.removeItem("edusense_token");
-    localStorage.removeItem("edusense_classroom");
-    window.location.href = "/";
+    window.EduSenseAuth?.clearSession?.({ forgetAccount: false });
+    try {
+      localStorage.removeItem("edusense_user");
+      localStorage.removeItem("edusense_token");
+      localStorage.removeItem("edusense_classroom");
+    } catch (_) {}
+    window.location.href = "/#auth";
   });
 
   bindAnalyticsControls();
