@@ -7,9 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/styles.css?v=163" />
+  <link rel="stylesheet" href="/css/styles.css?v=165" />
   <link rel="stylesheet" href="/css/announce.css?v=160" />
-  <link rel="stylesheet" href="/css/chrome.css?v=19" />
+  <link rel="stylesheet" href="/css/chrome.css?v=21" />
   <link rel="stylesheet" href="/css/updates.css?v=1" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="icon" href="/assets/favicon.ico" sizes="any" />
@@ -29,10 +29,12 @@
   <div id="announce-root"></div>
 
   <header class="nav">
-    <a class="nav-brand" href="/">
-      <img class="nav-mark" src="/assets/edusense-mark-192.png" alt="" width="42" height="42" />
-      <span class="nav-word">EduSense</span>
-      <span class="beta-badge" title="Open beta">Beta</span>
+    <a class="nav-brand es-logo" href="/" aria-label="EduSense">
+      <span class="es-logo-mark" aria-hidden="true">E<span class="es-logo-pulse"></span></span>
+      <span class="es-logo-text">
+        <span class="es-logo-name">EduSense</span>
+        <span class="es-logo-beta">BETA</span>
+      </span>
     </a>
     <span class="nav-meta">Обновления</span>
     <a class="updates-back" href="javascript:history.back()">← Назад</a>

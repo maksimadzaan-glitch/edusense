@@ -525,7 +525,9 @@ function loadStudentHome() {
 
 function readAuthUser() {
   try {
-    const user = JSON.parse(localStorage.getItem(LS_AUTH) || "null");
+    const user = window.EduSenseAuth?.getUser
+      ? window.EduSenseAuth.getUser()
+      : JSON.parse(localStorage.getItem(LS_AUTH) || "null");
     if (!user || typeof user !== "object") return null;
     if (String(user.role || "") !== "student") return null;
     return user;
@@ -1172,9 +1174,15 @@ function installFigureLightbox() {
 }
 
 async function api(path, options = {}) {
+  const headers = {
+    "Content-Type": "application/json",
+    ...(window.EduSenseAuth?.authHeaders
+      ? window.EduSenseAuth.authHeaders(options.headers || {})
+      : options.headers || {}),
+  };
   const res = await fetch(path, {
-    headers: { "Content-Type": "application/json", ...(options.headers || {}) },
     ...options,
+    headers,
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
@@ -1461,9 +1469,12 @@ function renderGoalCard(data) {
 }
 
 function brandBlockHtml() {
+  const logo = window.EduSenseBrand?.logoHtml
+    ? window.EduSenseBrand.logoHtml({ className: "brand-block-logo" })
+    : `<div class="es-logo"><span class="es-logo-mark" aria-hidden="true">E<span class="es-logo-pulse"></span></span><span class="es-logo-text"><span class="es-logo-name">EduSense</span><span class="es-logo-beta">BETA</span></span></div>`;
   return `
     <div class="brand-block">
-      <div class="brand">EduSense <span class="beta-badge" title="Open beta">BETA</span></div>
+      ${logo}
       <p class="brand-line">ОГЭ · Математика и Русский</p>
     </div>
   `;
@@ -2582,8 +2593,11 @@ function renderCabinetShell(mainHtml) {
       <div class="sidebar-backdrop" id="sidebar-backdrop" hidden></div>
       <aside class="sidebar" id="app-sidebar">
         <div class="sidebar-brand">
-          <span class="brand-name">EduSense</span>
-          <span class="beta-badge" title="Open beta">BETA</span>
+          ${
+            window.EduSenseBrand?.logoHtml
+              ? window.EduSenseBrand.logoHtml({ compact: true })
+              : `<span class="es-logo is-compact"><span class="es-logo-mark" aria-hidden="true">E<span class="es-logo-pulse"></span></span><span class="es-logo-text"><span class="es-logo-name">EduSense</span><span class="es-logo-beta">BETA</span></span></span>`
+          }
         </div>
 
         <div class="class-switch">
@@ -3347,7 +3361,9 @@ function logoutToStart() {
   stopWorkTimer();
   clearSession();
   try {
+    window.EduSenseAuth?.clearSession?.();
     localStorage.removeItem(LS_AUTH);
+    localStorage.removeItem("edusense_token");
     localStorage.removeItem(LS_HOME);
   } catch {
     /* ignore */
@@ -4131,6 +4147,11 @@ async function boot() {
   if (typeof window !== "undefined" && window.EduSenseTG?.isTelegramMiniApp) {
     document.documentElement.classList.add("is-telegram-miniapp");
     document.body?.classList.add("is-telegram-miniapp");
+  }
+
+  // Persistent auth: validate token before using stored user / redirecting away
+  if (window.EduSenseAuth?.restore) {
+    await window.EduSenseAuth.restore({ splash: true, requireToken: false });
   }
 
   const authUser = readAuthUser();

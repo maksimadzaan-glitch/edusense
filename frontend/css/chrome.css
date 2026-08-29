@@ -884,6 +884,176 @@ body.is-telegram-miniapp .pwa-nav-btn {
   .ig-overlay { justify-content: center; }
 }
 
+/* —— EduSense vector logo mark —— */
+.es-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.es-logo-mark {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 1.15rem;
+  letter-spacing: -0.06em;
+  color: #020617;
+  background: linear-gradient(145deg, #34d399 0%, #22d3ee 100%);
+  box-shadow: 0 10px 24px rgba(16, 185, 129, 0.28);
+}
+
+.es-logo-pulse {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #67e8f9;
+  box-shadow: 0 0 0 2px rgba(2, 6, 23, 0.35);
+  animation: esLogoPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes esLogoPulse {
+  0%, 100% { opacity: 0.55; transform: scale(0.92); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+.es-logo-text {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.es-logo-name {
+  font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: -0.04em;
+  color: #f8fafc;
+  transition: color 0.2s ease;
+}
+
+.es-logo:hover .es-logo-name {
+  color: #34d399;
+}
+
+.es-logo-beta {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 6px;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.22);
+}
+
+.es-logo.is-compact .es-logo-mark {
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
+  border-radius: 10px;
+}
+
+.es-logo.is-compact .es-logo-name {
+  font-size: 1.05rem;
+}
+
+.nav-brand.es-logo,
+a.nav-brand.es-logo {
+  gap: 10px;
+}
+
+.nav-brand .es-logo-mark,
+.sidebar-brand .es-logo-mark,
+.brand-row .es-logo-mark {
+  width: 38px;
+  height: 38px;
+}
+
+.sidebar-brand img,
+.brand-row img,
+.nav-brand > img.nav-mark {
+  display: none !important;
+}
+
+.sidebar-brand {
+  gap: 10px;
+}
+
+.sidebar-brand .es-logo {
+  width: 100%;
+}
+
+/* Auth restore splash */
+.es-auth-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(2, 6, 23, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.es-auth-splash-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 28px 32px;
+  border-radius: 20px;
+  border: 1px solid rgba(94, 234, 212, 0.18);
+  background:
+    radial-gradient(90% 70% at 0% 0%, rgba(52, 211, 153, 0.12), transparent 55%),
+    rgba(14, 20, 32, 0.88);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+}
+
+.es-auth-splash-ring {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 3px solid rgba(52, 211, 153, 0.18);
+  border-top-color: #34d399;
+  animation: esLogoSpin 0.85s linear infinite;
+}
+
+@keyframes esLogoSpin {
+  to { transform: rotate(360deg); }
+}
+
+.es-auth-splash-label {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+html.es-auth-loading,
+html.es-auth-loading body {
+  overflow: hidden;
+}
+
 /* —— Page transition loader (top bar + spinner) —— */
 .page-progress {
   position: fixed;

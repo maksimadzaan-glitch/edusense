@@ -53,12 +53,24 @@ function studentDestForUser(user) {
 }
 
 function readStoredUser() {
+  if (window.EduSenseAuth?.getUser) return window.EduSenseAuth.getUser();
   try {
     const user = JSON.parse(localStorage.getItem("edusense_user") || "null");
     return user && typeof user === "object" ? user : null;
   } catch (_) {
     return null;
   }
+}
+
+function persistAuthUser(user) {
+  if (window.EduSenseAuth?.saveSession) {
+    return window.EduSenseAuth.saveSession(user, user?.access_token);
+  }
+  try {
+    localStorage.setItem("edusense_user", JSON.stringify(user));
+    if (user?.access_token) localStorage.setItem("edusense_token", user.access_token);
+  } catch (_) {}
+  return user;
 }
 
 function selectRole(role) {
@@ -202,7 +214,7 @@ async function handleLaunch(event) {
       showToast(`С возвращением, ${user.full_name}`, "success");
     }
 
-    localStorage.setItem("edusense_user", JSON.stringify(user));
+    persistAuthUser(user);
     setLaunchSuccess();
 
     setTimeout(() => {
@@ -219,7 +231,7 @@ function handleTelegramLogin(event) {
   showToast("Вход через Telegram скоро будет доступен", "info");
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   try {
     const tg = window.EduSenseTG;
     if (tg && tg.isTelegramMiniApp) {
@@ -235,17 +247,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const path = String(window.location.pathname || "").replace(/\/+$/, "") || "/";
   const onLanding = path === "/" || path.endsWith("/index.html");
   const joinCode = joinCodeFromUrl();
-  let stored = readStoredUser();
   const onAuthHash = String(window.location.hash || "") === "#auth";
 
-  // Если этот файл вдруг открыли не с лендинга (офлайн-fallback SW) — не редиректить.
   if (!onLanding) {
     return;
   }
 
   if (params.get("leave") === "1") {
     try {
+      window.EduSenseAuth?.clearSession?.();
       localStorage.removeItem("edusense_user");
+      localStorage.removeItem("edusense_token");
       localStorage.removeItem("edusense_student_entry");
       localStorage.removeItem("student_name");
       localStorage.removeItem("class_code");
@@ -253,16 +265,26 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.removeItem("edusense_student_meta");
       localStorage.removeItem("edusense_student_home");
     } catch (_) {}
-    stored = null;
     history.replaceState(null, "", "/");
+  }
+
+  let stored = null;
+  if (window.EduSenseAuth?.restore) {
+    stored = await window.EduSenseAuth.restore({ splash: !onAuthHash, requireToken: false });
+  } else {
+    stored = readStoredUser();
   }
 
   if (joinCode && stored && stored.role === "student") {
     window.location.replace(`/student?code=${encodeURIComponent(joinCode)}`);
     return;
   }
-  if (!onAuthHash && !joinCode && stored && stored.role === "student") {
+  if (!onAuthHash && !joinCode && stored && stored.role === "student" && window.EduSenseAuth?.getToken?.()) {
     window.location.replace("/student/dashboard");
+    return;
+  }
+  if (!onAuthHash && !joinCode && stored && stored.role === "teacher" && window.EduSenseAuth?.getToken?.()) {
+    window.location.replace("/teacher");
     return;
   }
 
@@ -278,5 +300,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("toggle-pass").addEventListener("click", togglePassword);
   document.getElementById("auth-form").addEventListener("submit", handleLaunch);
-  document.getElementById("telegram-btn").addEventListener("click", handleTelegramLogin);
+  document.getElementById("telegram-btn")?.addEventListener("click", handleTelegramLogin);
 });

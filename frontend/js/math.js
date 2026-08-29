@@ -131,6 +131,7 @@
   /** Нормализация к школьному виду + маркеры дробей */
   function prepareMathSource(raw) {
     let text = repairBrokenLatex(raw);
+    text = normalizeDegrees(text);
     text = casesToPlain(text);
     text = collapseVerticalJunk(text);
     text = text.replace(/```+/g, "");
@@ -144,11 +145,18 @@
       return `\uE010${i}\uE011`;
     });
 
+    // Вложенные корни: \\sqrt{\\sqrt{x}} — несколько проходов
+    for (let i = 0; i < 4; i += 1) {
+      const next = text
+        .replace(/\\sqrt\{([^{}]+)\}/g, "√($1)")
+        .replace(/\\sqrt\s*([0-9a-zA-Zа-яА-ЯёЁ]+)/g, "√$1");
+      if (next === text) break;
+      text = next;
+    }
+
     text = text
       .replace(/\\dfrac\{([^{}]+)\}\{([^{}]+)\}/g, "[[$1|$2]]")
       .replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, "[[$1|$2]]")
-      .replace(/\\sqrt\{([^{}]+)\}/g, "√($1)")
-      .replace(/\\sqrt\s*([0-9a-zA-Zа-яА-ЯёЁ]+)/g, "√$1")
       .replace(/\\cdot|\\times/g, "·")
       .replace(/\\pm/g, "±")
       .replace(/\\leq|\\leqslant/g, "≤")
@@ -156,10 +164,12 @@
       .replace(/\\neq/g, "≠")
       .replace(/\\infty/g, "∞")
       .replace(/\\cup/g, "∪")
+      .replace(/\\circ/g, "°")
       .replace(/\\left|\\right|\\,/g, "")
       .replace(/\\begin\{[^}]+\}|\\end\{[^}]+\}/g, "")
       .replace(/\\([A-Za-z]+)/g, "$1")
       .replace(/\\/g, "");
+    text = normalizeDegrees(text);
 
     text = caretToSuperscripts(text);
     text = text.replace(/<=/g, "≤").replace(/>=/g, "≥").replace(/!=/g, "≠");
@@ -208,12 +218,61 @@
     return `<span class="math-frac">${inner}</span>`;
   }
 
-  function sqrtHtml(radicand) {
+  function normalizeDegrees(text) {
+    let t = String(text ?? "");
+    // 90^° / 90^\circ / 90°C / 90_C / 90 °C
+    t = t.replace(/(\d+(?:[.,]\d+)?)\s*\^\s*\\?circ\s*([CFКК])?/gi, (_, n, u) =>
+      u ? `${n}°${u.toUpperCase() === "К" || u.toUpperCase() === "K" ? "C" : u.toUpperCase()}` : `${n}°`
+    );
+    t = t.replace(/(\d+(?:[.,]\d+)?)\s*\^\s*[°˚]\s*([CFКК])?/gi, (_, n, u) =>
+      u ? `${n}°${/[кk]/i.test(u) ? "C" : u.toUpperCase()}` : `${n}°`
+    );
+    t = t.replace(/(\d+(?:[.,]\d+)?)\s*_\s*([CFКК])\b/g, (_, n, u) =>
+      `${n}°${/[кk]/i.test(u) ? "C" : u.toUpperCase()}`
+    );
+    t = t.replace(/(\d+(?:[.,]\d+)?)\s*°\s*([CFКК])\b/g, (_, n, u) =>
+      `${n}°${/[кk]/i.test(u) ? "C" : u.toUpperCase()}`
+    );
+    t = t.replace(/\\circ/g, "°");
+    t = t.replace(/\^°/g, "°");
+    return t;
+  }
+
+  function radicandToTex(s) {
+    return String(s || "")
+      .replace(/⁰/g, "^{0}")
+      .replace(/¹/g, "^{1}")
+      .replace(/²/g, "^{2}")
+      .replace(/³/g, "^{3}")
+      .replace(/⁴/g, "^{4}")
+      .replace(/⁵/g, "^{5}")
+      .replace(/⁶/g, "^{6}")
+      .replace(/⁷/g, "^{7}")
+      .replace(/⁸/g, "^{8}")
+      .replace(/⁹/g, "^{9}")
+      .replace(/⁻/g, "^{-}")
+      .replace(/−/g, "-")
+      .replace(/·/g, "\\cdot ")
+      .replace(/°/g, "^\\circ ");
+  }
+
+  function sqrtHtml(radicand, alreadyEscaped) {
     const inner = String(radicand || "").trim();
+    if (!inner) return "";
+    if (hasKatex()) {
+      const texInner = alreadyEscaped
+        ? radicandToTex(inner.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"'))
+        : radicandToTex(inner);
+      const rendered = renderLatex(`\\sqrt{${texInner}}`, false);
+      if (rendered && !rendered.includes("math-fallback")) {
+        return `<span class="math-sqrt is-katex" aria-label="корень">${rendered}</span>`;
+      }
+    }
+    const safe = alreadyEscaped ? inner : escapeHtml(inner);
     return (
       `<span class="math-sqrt" aria-label="корень">` +
       `<span class="math-sqrt-sign">√</span>` +
-      `<span class="math-sqrt-radicand">${inner}</span>` +
+      `<span class="math-sqrt-radicand">${safe}</span>` +
       `</span>`
     );
   }
@@ -221,10 +280,10 @@
   /** После escape: корни с чертой (vinculum) над подкоренным. */
   function wrapSqrtInEscaped(escaped) {
     let t = String(escaped);
-    t = t.replace(/√\(([^)]+)\)/g, (_, inner) => sqrtHtml(inner));
+    t = t.replace(/√\(([^)]+)\)/g, (_, inner) => sqrtHtml(inner, true));
     t = t.replace(
       /√([0-9a-zA-Zа-яА-ЯёЁ]+(?:[²³⁴⁵⁶⁷⁸⁹⁰]*)?)/g,
-      (_, atom) => sqrtHtml(atom)
+      (_, atom) => sqrtHtml(atom, true)
     );
     return t;
   }

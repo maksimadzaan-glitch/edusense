@@ -2,9 +2,10 @@ import hashlib
 import hmac
 import logging
 import os
+import time
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, Header, HTTPException, status
 from pydantic import BaseModel, Field
 from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlalchemy.orm import Session
@@ -18,6 +19,12 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["auth"])
 
 _PBKDF2_ITERATIONS = 100_000
+_SESSION_TTL_SEC = 365 * 24 * 60 * 60
+_SESSION_SECRET = (
+    os.environ.get("EDUSENSE_SESSION_SECRET")
+    or os.environ.get("SECRET_KEY")
+    or "edusense-dev-session-secret-change-me"
+)
 
 
 # ---------------------------------------------------------------------------
@@ -45,6 +52,7 @@ class UserResponse(BaseModel):
     class_code: Optional[str] = None
     class_name: Optional[str] = None
     exam: Optional[str] = None
+    access_token: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -61,7 +69,46 @@ def _classroom_for_student_name(db: Session, full_name: str) -> Optional[EduClas
     return None
 
 
-def _user_response(db: Session, user: User) -> UserResponse:
+def _issue_access_token(user_id: int) -> str:
+    exp = int(time.time()) + _SESSION_TTL_SEC
+    payload = f"{int(user_id)}.{exp}"
+    sig = hmac.new(
+        _SESSION_SECRET.encode("utf-8"),
+        payload.encode("utf-8"),
+        hashlib.sha256,
+    ).hexdigest()[:40]
+    return f"{payload}.{sig}"
+
+
+def _verify_access_token(token: str) -> Optional[int]:
+    raw = str(token or "").strip()
+    if not raw:
+        return None
+    if raw.lower().startswith("bearer "):
+        raw = raw[7:].strip()
+    parts = raw.split(".")
+    if len(parts) != 3:
+        return None
+    uid_s, exp_s, sig = parts
+    try:
+        uid = int(uid_s)
+        exp = int(exp_s)
+    except ValueError:
+        return None
+    if exp < int(time.time()):
+        return None
+    payload = f"{uid}.{exp}"
+    expected = hmac.new(
+        _SESSION_SECRET.encode("utf-8"),
+        payload.encode("utf-8"),
+        hashlib.sha256,
+    ).hexdigest()[:40]
+    if not hmac.compare_digest(expected, sig):
+        return None
+    return uid
+
+
+def _user_response(db: Session, user: User, *, with_token: bool = False) -> UserResponse:
     class_code = None
     class_name = None
     exam = None
@@ -81,7 +128,18 @@ def _user_response(db: Session, user: User) -> UserResponse:
         class_code=class_code,
         class_name=class_name,
         exam=exam,
+        access_token=_issue_access_token(user.id) if with_token else None,
     )
+
+
+def _extract_bearer(
+    authorization: Optional[str] = None, x_edusense_token: Optional[str] = None
+) -> str:
+    if authorization and authorization.strip():
+        return authorization.strip()
+    if x_edusense_token and x_edusense_token.strip():
+        return x_edusense_token.strip()
+    return ""
 
 
 # ---------------------------------------------------------------------------
@@ -125,7 +183,6 @@ def _find_user_by_name(db: Session, full_name: str) -> Optional[User]:
     if not needle:
         return None
 
-    # Быстрый путь: точное совпадение
     exact = db.query(User).filter(User.full_name == full_name.strip()).first()
     if exact:
         return exact
@@ -180,7 +237,7 @@ def register(payload: UserRegister, db: Session = Depends(get_db)):
             detail=detail,
         ) from exc
     db.refresh(user)
-    return _user_response(db, user)
+    return _user_response(db, user, with_token=True)
 
 
 @router.post("/login", response_model=UserResponse)
@@ -191,4 +248,26 @@ def login(payload: UserLogin, db: Session = Depends(get_db)):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Неверное имя или пароль.",
         )
-    return _user_response(db, user)
+    return _user_response(db, user, with_token=True)
+
+
+@router.get("/auth/me", response_model=UserResponse)
+def auth_me(
+    authorization: Optional[str] = Header(default=None),
+    x_edusense_token: Optional[str] = Header(default=None, alias="X-EduSense-Token"),
+    db: Session = Depends(get_db),
+):
+    token = _extract_bearer(authorization, x_edusense_token)
+    user_id = _verify_access_token(token)
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Сессия истекла. Войдите снова.",
+        )
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Пользователь не найден.",
+        )
+    return _user_response(db, user, with_token=True)

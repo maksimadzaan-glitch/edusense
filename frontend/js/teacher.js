@@ -337,6 +337,7 @@ function renderMutatorToggle(g) {
 }
 
 function loadUser() {
+  if (window.EduSenseAuth?.getUser) return window.EduSenseAuth.getUser();
   try {
     return JSON.parse(localStorage.getItem("edusense_user") || "null");
   } catch (_) {
@@ -468,10 +469,14 @@ function showToast(message, type = "info") {
 
 async function api(path, options = {}) {
   let response;
+  const headers = {
+    "Content-Type": "application/json",
+    ...(window.EduSenseAuth?.authHeaders ? window.EduSenseAuth.authHeaders(options.headers || {}) : options.headers || {}),
+  };
   try {
     response = await fetch(`${API_BASE}${path}`, {
-      headers: { "Content-Type": "application/json", ...(options.headers || {}) },
       ...options,
+      headers,
     });
   } catch (_) {
     throw new Error("Не удалось подключиться к серверу.");
@@ -481,6 +486,12 @@ async function api(path, options = {}) {
   try {
     data = await response.json();
   } catch (_) {}
+
+  if (response.status === 401 && !String(path).includes("/auth/me")) {
+    window.EduSenseAuth?.clearSession?.();
+    window.location.href = "/#auth";
+    throw new Error("Сессия истекла. Войдите снова.");
+  }
 
   if (!response.ok) {
     const detail = data?.detail ?? `Ошибка ${response.status}`;
@@ -733,11 +744,14 @@ function stepsBar(active) {
 }
 
 function brandRow() {
+  if (window.EduSenseBrand?.logoHtml) return window.EduSenseBrand.logoHtml({ className: "brand-row" });
   return `
-    <div class="brand-row">
-      <img src="/assets/logo.png" alt="" />
-      <span>EduSense</span>
-      <span class="beta-badge" title="Open beta">Beta</span>
+    <div class="brand-row es-logo">
+      <span class="es-logo-mark" aria-hidden="true">E<span class="es-logo-pulse"></span></span>
+      <span class="es-logo-text">
+        <span class="es-logo-name">EduSense</span>
+        <span class="es-logo-beta">BETA</span>
+      </span>
     </div>
   `;
 }
@@ -1822,7 +1836,7 @@ function renderExportTaskBlocks(tasks, showAnswer, paper) {
     const body = OgeRusUI.mapTasksWithShared(
       tasks || [],
       (t, extras) => `
-      <section class="ep-task">
+      <section class="ep-task pdf-task-card">
         <div class="ep-task-head">
           <span class="ep-num">№${t.num}</span>
           <span class="ep-pill">Ч.${t.part}</span>
@@ -1845,7 +1859,7 @@ function renderExportTaskBlocks(tasks, showAnswer, paper) {
     return MathOgeUI.mapTasks(
       tasks || [],
       (t) => `
-      <section class="ep-task">
+      <section class="ep-task pdf-task-card">
         <div class="ep-task-head">
           <span class="ep-num">№${t.num}</span>
           <span class="ep-pill">Ч.${t.part}</span>
@@ -1868,7 +1882,7 @@ function renderExportTaskBlocks(tasks, showAnswer, paper) {
   return (tasks || [])
     .map(
       (t) => `
-      <section class="ep-task">
+      <section class="ep-task pdf-task-card">
         <div class="ep-task-head">
           <span class="ep-num">№${t.num}</span>
           <span class="ep-pill">Ч.${t.part}</span>
@@ -2259,6 +2273,27 @@ function polishFipiText(raw) {
 function fracCssForPrint() {
   return `
     .katex { font-size: 1.05em; }
+    .math-frac {
+      display: inline-flex; align-items: center; white-space: nowrap;
+      vertical-align: middle; max-width: 100%;
+    }
+    .frac {
+      display: inline-flex; flex-direction: column; align-items: center;
+      vertical-align: middle; margin: 0 0.18em; font-weight: 700; line-height: 1.05;
+      white-space: nowrap;
+    }
+    .frac .num, .frac .den { display: block; padding: 0 0.22em; }
+    .frac .num { border-bottom: 1.6px solid currentColor; padding-bottom: 0.1em; margin-bottom: 0.1em; }
+    .math-sqrt {
+      display: inline-flex; flex-direction: row; flex-wrap: nowrap; align-items: stretch;
+      white-space: nowrap; vertical-align: middle; margin: 0 0.04em; line-height: 1.15;
+    }
+    .math-sqrt.is-katex { display: inline-block; }
+    .math-sqrt-sign { font-size: 1.18em; line-height: 1; padding-right: 0.02em; align-self: center; }
+    .math-sqrt-radicand {
+      border-top: 1.65px solid currentColor; padding: 0.02em 0.14em 0.04em;
+      margin-top: 0.14em; line-height: 1.2;
+    }
     .answer-blank { display:inline-block; font-weight:800; letter-spacing:.04em;
       padding:4px 12px; border:1.5px solid currentColor; border-radius:6px; }
     .answer-math { display:inline-block; max-width:100%; }
@@ -2266,9 +2301,9 @@ function fracCssForPrint() {
     .ep-answer-body { display:block; width:auto; }
     .ep-solution-figure { margin-top:10px; }
     .ep-solution-figure-label { display:block; font-size:.78rem; font-weight:700; opacity:.75; margin-bottom:4px; font-family: "Plus Jakarta Sans", system-ui, sans-serif; }
-    .task-figure { max-width:200px; margin:10px 0; color:inherit; }
+    .task-figure { max-width:200px; margin:10px auto; color:inherit; }
     .task-figure svg { width:100%; height:auto; display:block; }
-    .body { white-space:pre-wrap; font-family:inherit; line-height:1.65; font-size:1.05rem; }
+    .body, .ep-body { white-space:pre-wrap; font-family:inherit; line-height:1.65; font-size:1.05rem; }
   `;
 }
 
@@ -2281,39 +2316,85 @@ function eduSenseMarkUrl() {
 }
 
 function eduSenseBrandHtml(extra) {
-  const src = escapeHtml(eduSenseMarkUrl());
   const tail = extra
     ? `<span class="ep-brand-extra">${escapeHtml(extra)}</span>`
     : "";
-  return `<div class="ep-brand"><img src="${src}" alt=""><span>EduSense</span>${tail}</div>`;
+  return `<div class="ep-brand">
+    <span class="ep-brand-mark" aria-hidden="true">ES</span>
+    <span class="ep-brand-name">EduSense</span>${tail}
+  </div>`;
 }
 
 function eduSenseWatermarkHtml() {
-  return `<div class="ep-watermark" aria-hidden="true"><div class="ep-wm-layer"><span class="ep-wm-text">EduSense</span></div></div>`;
+  return `<div class="ep-watermark" aria-hidden="true"><div class="ep-wm-layer"><span class="ep-wm-text">EDUSENCE · КИМ ОГЭ</span></div></div>`;
+}
+
+function pdfExamHeaderHtml(payload) {
+  const title = payload?.title || "Вариант";
+  const badge = payload?.badge || "";
+  const meta = payload?.meta || "";
+  const dateLabel = new Date().toLocaleDateString("ru-RU", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+  const maxScore = (payload?.tasks || []).reduce(
+    (sum, t) => sum + (Number(t.maxScore) || Number(t.max_score) || 0),
+    0
+  );
+  return `
+    <header class="pdf-exam-header">
+      ${eduSenseBrandHtml()}
+      <div class="pdf-exam-title-row">
+        <div>
+          <div class="ep-badge">${escapeHtml(badge || "КИМ")}</div>
+          <h1 class="pdf-exam-title">${escapeHtml(title)}</h1>
+          <p class="pdf-exam-meta">${escapeHtml(meta)}</p>
+        </div>
+        <div class="pdf-exam-date">${escapeHtml(dateLabel)}</div>
+      </div>
+      <div class="pdf-exam-fields">
+        <div class="pdf-exam-field"><span>Ученик</span><em>____________________</em></div>
+        <div class="pdf-exam-field"><span>Класс</span><em>________</em></div>
+        <div class="pdf-exam-field"><span>Баллы</span><em>____ / ${maxScore || "—"}</em></div>
+      </div>
+    </header>`;
 }
 
 function eduSensePrintWatermarkCss() {
   return `
     .a4-sheet {
       position: relative;
-      overflow: visible;
+      overflow: hidden;
+      page-break-after: always;
+      break-after: page;
     }
-    .a4-sheet::before {
-      content: "EduSense";
+    .ep-watermark {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-30deg);
+      inset: 0;
+      z-index: 0;
       pointer-events: none;
       user-select: none;
-      z-index: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .ep-wm-layer {
+      transform: rotate(-35deg);
+      opacity: 0.06;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ep-wm-text {
       font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
       font-weight: 800;
-      letter-spacing: -0.045em;
-      font-size: 64px;
-      line-height: 1;
-      color: #94a3b8;
-      opacity: 0.06;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 42px;
+      line-height: 1.1;
+      color: #0f172a;
       white-space: nowrap;
     }
     .a4-inner, .print-inner, .ep-sheet {
@@ -2321,13 +2402,57 @@ function eduSensePrintWatermarkCss() {
       z-index: 1;
     }
     .ep-brand {
-      display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
       font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
-      font-size: 1.05rem; font-weight: 800; letter-spacing: -0.045em; text-transform: none; color: #0f172a;
+      font-size: 1.15rem; font-weight: 800; letter-spacing: -0.045em; color: #0f172a;
     }
-    .ep-brand img { width: 22px; height: 22px; object-fit: contain; display: block; }
+    .ep-brand-mark {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 0.92rem; font-weight: 800; letter-spacing: -0.04em; color: #fff;
+      background: linear-gradient(135deg, #06b6d4 0%, #34d399 100%);
+      box-shadow: 0 8px 18px rgba(6, 182, 212, 0.22);
+      flex-shrink: 0;
+    }
+    .ep-brand-name { letter-spacing: -0.04em; }
     .ep-brand-extra { margin-left: 4px; font-size: 0.78rem; font-weight: 650; letter-spacing: 0; color: #64748b; }
     .a4-inner[style*="text-align:center"] .ep-brand { justify-content: center; }
+    .pdf-exam-header {
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .pdf-exam-title-row {
+      display: flex; justify-content: space-between; gap: 16px; align-items: flex-start;
+    }
+    .pdf-exam-title {
+      font-size: 1.28rem; margin: 6px 0 4px; letter-spacing: -0.03em; line-height: 1.25;
+    }
+    .pdf-exam-meta { margin: 0; color: #64748b; font-size: 0.9rem; }
+    .pdf-exam-date {
+      flex-shrink: 0; font-size: 0.82rem; font-weight: 650; color: #475569;
+      padding: 6px 10px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc;
+    }
+    .pdf-exam-fields {
+      display: grid; grid-template-columns: 1.6fr 0.8fr 0.9fr; gap: 10px; margin-top: 14px;
+    }
+    .pdf-exam-field {
+      display: flex; align-items: baseline; gap: 8px;
+      padding: 8px 10px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff;
+      font-size: 0.88rem; color: #334155;
+    }
+    .pdf-exam-field span { font-weight: 700; color: #64748b; white-space: nowrap; }
+    .pdf-exam-field em { font-style: normal; font-weight: 650; letter-spacing: 0.04em; }
+    .pdf-task-card,
+    .ep-task,
+    .key-p2 {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 1.5rem;
+    }
+    .pdf-page-footer {
+      display: none;
+    }
     ${examPrintMediaCss()}
   `;
 }
@@ -2399,13 +2524,15 @@ function brandedExamPrintCss() {
     }
     .a4-sheet {
       position: relative;
-      overflow: visible;
+      overflow: hidden;
       background: #fff;
       color: #0f172a;
+      width: 794px;
       max-width: 794px;
       min-height: 1123px;
-      margin: 16px auto;
-      padding: 36px 40px 44px;
+      height: 1123px;
+      margin: 0 auto 16px;
+      padding: 28px 36px 48px;
       box-shadow: 0 25px 50px -12px rgba(0,0,0,.25);
       border-radius: 2px;
     }
@@ -2415,18 +2542,19 @@ function brandedExamPrintCss() {
       padding: 3px 9px; border: 1px solid #cbd5e1; border-radius: 999px;
       margin-bottom: 10px; color: #334155; background: #f8fafc;
     }
-    h1 { font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif; font-size: 1.35rem; margin: 8px 0 6px; letter-spacing: -0.03em; }
+    h1, .pdf-exam-title { font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif; font-size: 1.28rem; margin: 8px 0 6px; letter-spacing: -0.03em; }
     h2 { font-size: .82rem; margin: 22px 0 10px; letter-spacing: .08em; text-transform: uppercase; color: #64748b; font-weight: 700; }
     .muted { color: #475569; font-size: .9rem; margin: 0 0 16px; }
+    .pdf-task-card,
     .ep-task {
       background: transparent;
       border: 0;
       border-bottom: 1px solid #e2e8f0;
       color: #0f172a;
-      padding: 14px 0;
-      margin: 0;
-      break-inside: avoid;
-      page-break-inside: avoid;
+      padding: 12px 0 16px;
+      margin: 0 0 1.5rem;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
     }
     .ep-task-head { display: flex; flex-wrap: wrap; gap: 6px; font-size: .85rem; color: #475569; margin-bottom: 6px; }
     .ep-num, .ep-pill {
@@ -2442,8 +2570,8 @@ function brandedExamPrintCss() {
     .key-table td.topic { color: #475569; font-size: .85rem; }
     .key-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
     .key-p2 {
-      border: 1px solid #cbd5e1; padding: 12px 14px; margin: 10px 0;
-      break-inside: avoid; page-break-inside: avoid;
+      border: 1px solid #cbd5e1; padding: 12px 14px; margin: 10px 0 1.5rem;
+      page-break-inside: avoid !important; break-inside: avoid !important;
     }
     .key-p2 header { display: flex; gap: 10px; align-items: baseline; margin-bottom: 8px; }
     .key-p2 header b { font-size: 1rem; }
@@ -2453,8 +2581,12 @@ function brandedExamPrintCss() {
     .no-print { display: none !important; }
     @media print {
       html, body { background: #fff !important; }
-      .a4-sheet { box-shadow: none; margin: 0 auto; max-width: none; }
+      .a4-sheet { box-shadow: none; margin: 0 auto; max-width: none; height: auto; min-height: auto; }
       .ep-wm-layer { opacity: 0.055; }
+      .pdf-task-card, .ep-task, .key-p2 {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
       .no-print { display: none !important; }
     }
     @media (max-width: 640px) { .key-grid { grid-template-columns: 1fr; } }
@@ -2695,59 +2827,170 @@ async function downloadHtmlAsPdf(title, innerHtml, css, filename) {
   host.appendChild(body);
   document.body.appendChild(host);
   try {
-    const sheet = host.querySelector(".a4-sheet") || body;
-    sheet.style.maxWidth = "794px";
-    sheet.style.width = "794px";
-    sheet.style.margin = "0";
-    sheet.style.boxShadow = "none";
-    sheet.style.overflow = "visible";
-    sheet.style.minHeight = "auto";
-    sheet.style.height = "auto";
-    sheet.style.boxSizing = "border-box";
-    await waitPdfAssets(sheet);
-    const canvas = await window.html2canvas(sheet, {
-      backgroundColor: "#ffffff",
-      scale: 2,
-      useCORS: true,
-      allowTaint: false,
-      logging: false,
-      width: 794,
-      windowWidth: 794,
-      scrollX: 0,
-      scrollY: 0,
-      onclone: (doc) => {
-        const clonedSheet = doc.querySelector(".a4-sheet");
-        if (!clonedSheet) return;
-        clonedSheet.style.width = "794px";
-        clonedSheet.style.maxWidth = "794px";
-        clonedSheet.style.overflow = "visible";
-        clonedSheet.style.boxSizing = "border-box";
-        clonedSheet.querySelectorAll(".task-figure, .task-media-img, img, svg").forEach((el) => {
-          el.style.maxWidth = "100%";
-          el.style.minWidth = "0";
-          el.style.height = "auto";
-        });
-      },
-    });
+    await waitPdfAssets(host);
+    packPdfSheets(host);
+    const sheets = [...host.querySelectorAll(".a4-sheet")];
+    if (!sheets.length) throw new Error("Пустой бланк PDF");
+
     const pdf = new JsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
     const pageW = pdf.internal.pageSize.getWidth();
     const pageH = pdf.internal.pageSize.getHeight();
-    const marginX = 10;
-    const marginY = 10;
-    const printableW = pageW - marginX * 2;
-    const printableH = pageH - marginY * 2;
-    const imgW = printableW;
-    const imgH = (canvas.height * printableW) / canvas.width;
-    const imgData = canvas.toDataURL("image/png");
-    const pages = Math.max(1, Math.ceil(imgH / printableH - 1e-4));
-    for (let i = 0; i < pages; i += 1) {
+    const total = sheets.length;
+
+    for (let i = 0; i < total; i += 1) {
+      const sheet = sheets[i];
+      sheet.style.width = "794px";
+      sheet.style.maxWidth = "794px";
+      sheet.style.height = "1123px";
+      sheet.style.minHeight = "1123px";
+      sheet.style.margin = "0";
+      sheet.style.boxShadow = "none";
+      sheet.style.overflow = "hidden";
+      sheet.style.boxSizing = "border-box";
+      const canvas = await window.html2canvas(sheet, {
+        backgroundColor: "#ffffff",
+        scale: 2,
+        useCORS: true,
+        allowTaint: false,
+        logging: false,
+        width: 794,
+        height: 1123,
+        windowWidth: 794,
+        scrollX: 0,
+        scrollY: 0,
+        onclone: (doc) => {
+          const cloned = doc.querySelectorAll(".a4-sheet")[i] || doc.querySelector(".a4-sheet");
+          if (!cloned) return;
+          cloned.style.width = "794px";
+          cloned.style.maxWidth = "794px";
+          cloned.style.height = "1123px";
+          cloned.style.overflow = "hidden";
+          cloned.querySelectorAll(".task-figure, .task-media-img, img, svg").forEach((el) => {
+            el.style.maxWidth = "100%";
+            el.style.minWidth = "0";
+            el.style.height = "auto";
+          });
+        },
+      });
       if (i) pdf.addPage();
-      pdf.addImage(imgData, "PNG", marginX, marginY - i * printableH, imgW, imgH, undefined, "FAST");
+      pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, pageW, pageH, undefined, "FAST");
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(8);
+      pdf.setTextColor(100);
+      pdf.text(
+        `Сгенерировано в edusence.ru  |  Страница ${i + 1} из ${total}`,
+        pageW / 2,
+        pageH - 6,
+        { align: "center" }
+      );
     }
     pdf.save(filename);
   } finally {
     host.remove();
   }
+}
+
+/** Раскладывает задания по фиксированным A4-листам без разрыва карточек. */
+function packPdfSheets(host) {
+  const source = host.querySelector(".a4-sheet");
+  if (!source) return;
+  const cards = [
+    ...source.querySelectorAll(".pdf-task-card, .ep-task, .key-p2, .key-table, h2"),
+  ].filter((el) => !el.closest(".pdf-exam-header"));
+  if (!cards.length) {
+    source.style.height = "1123px";
+    source.style.minHeight = "1123px";
+    source.style.overflow = "hidden";
+    if (!source.querySelector(".ep-watermark")) {
+      source.insertAdjacentHTML("afterbegin", eduSenseWatermarkHtml());
+    }
+    return;
+  }
+
+  const header = source.querySelector(".pdf-exam-header");
+  const brandOnly = !header ? source.querySelector(".a4-inner > .ep-brand") : null;
+  const badge = !header ? source.querySelector(".a4-inner > .ep-badge") : null;
+  const title = !header ? source.querySelector(".a4-inner > h1") : null;
+  const muted = !header ? source.querySelector(".a4-inner > .muted") : null;
+
+  const PAGE_H = 1123;
+  const PAD_Y = 28 + 48;
+  const usable = PAGE_H - PAD_Y - 8;
+
+  const pages = [];
+  let current = [];
+  let used = 0;
+  let needHeader = true;
+
+  const headerBlock = document.createElement("div");
+  if (header) headerBlock.appendChild(header.cloneNode(true));
+  else {
+    if (brandOnly) headerBlock.appendChild(brandOnly.cloneNode(true));
+    if (badge) headerBlock.appendChild(badge.cloneNode(true));
+    if (title) headerBlock.appendChild(title.cloneNode(true));
+    if (muted) headerBlock.appendChild(muted.cloneNode(true));
+  }
+  // Measure header
+  const measureHost = document.createElement("div");
+  measureHost.className = "a4-sheet";
+  measureHost.style.cssText =
+    "position:absolute;left:0;top:0;width:794px;visibility:hidden;height:auto;min-height:0;padding:28px 36px 48px;";
+  const measureInner = document.createElement("div");
+  measureInner.className = "a4-inner";
+  measureHost.appendChild(measureInner);
+  host.appendChild(measureHost);
+
+  function measureEl(node) {
+    measureInner.innerHTML = "";
+    measureInner.appendChild(node.cloneNode(true));
+    return measureInner.getBoundingClientRect().height || node.offsetHeight || 80;
+  }
+
+  let headerH = 0;
+  if (headerBlock.childNodes.length) {
+    headerH = measureEl(headerBlock) + 12;
+  }
+
+  cards.forEach((card) => {
+    const h = Math.ceil(measureEl(card) + 10);
+    if (!current.length) {
+      used = needHeader ? headerH : 0;
+    }
+    if (current.length && used + h > usable) {
+      pages.push({ items: current });
+      current = [];
+      used = 0;
+      needHeader = false;
+    }
+    if (!current.length) {
+      used = needHeader ? headerH : 0;
+    }
+    current.push(card.cloneNode(true));
+    used += h;
+    needHeader = false;
+  });
+  if (current.length) pages.push({ items: current });
+  measureHost.remove();
+
+  if (!pages.length) return;
+
+  const parent = source.parentNode;
+  source.remove();
+  pages.forEach((page, idx) => {
+    const sheet = document.createElement("div");
+    sheet.className = "a4-sheet";
+    sheet.innerHTML = eduSenseWatermarkHtml();
+    const inner = document.createElement("div");
+    inner.className = "a4-inner";
+    if (idx === 0 && headerBlock.childNodes.length) {
+      [...headerBlock.childNodes].forEach((n) => inner.appendChild(n.cloneNode(true)));
+    } else if (idx > 0) {
+      inner.insertAdjacentHTML("beforeend", eduSenseBrandHtml());
+    }
+    page.items.forEach((n) => inner.appendChild(n));
+    sheet.appendChild(inner);
+    parent.appendChild(sheet);
+  });
 }
 
 function renderPart1KeysSheet(tasks) {
@@ -7166,9 +7409,11 @@ function renderDashboard() {
       <div class="sidebar-backdrop" id="sidebar-backdrop" hidden></div>
       <aside class="sidebar" id="app-sidebar">
         <div class="sidebar-brand">
-          <img src="/assets/logo.png" alt="" />
-          <span>EduSense</span>
-          <span class="beta-badge" title="Open beta">Beta</span>
+          ${
+            window.EduSenseBrand?.logoHtml
+              ? window.EduSenseBrand.logoHtml({ compact: true })
+              : `<span class="es-logo is-compact"><span class="es-logo-mark" aria-hidden="true">E<span class="es-logo-pulse"></span></span><span class="es-logo-text"><span class="es-logo-name">EduSense</span><span class="es-logo-beta">BETA</span></span></span>`
+          }
         </div>
 
         <div class="class-switch">
@@ -8004,7 +8249,9 @@ function bind() {
     }
   });
   document.getElementById("btn-logout")?.addEventListener("click", () => {
+    window.EduSenseAuth?.clearSession?.();
     localStorage.removeItem("edusense_user");
+    localStorage.removeItem("edusense_token");
     localStorage.removeItem("edusense_classroom");
     window.location.href = "/";
   });
@@ -8771,6 +9018,7 @@ function renderTeacherKeysPrintHtml(payload) {
     .join("");
   const p2Block = p2Cards ? `<h2>Часть 2</h2>${p2Cards}` : "";
   return `<div class="a4-sheet keys-sheet">
+    ${eduSenseWatermarkHtml()}
     <div class="a4-inner">
       ${eduSenseBrandHtml("только для учителя")}
       <div class="ep-badge">Лист ключей</div>
@@ -8791,11 +9039,9 @@ function exportBrandedPdf({ keys = false } = {}) {
   const inner = keys
     ? renderTeacherKeysPrintHtml(payload)
     : `<div class="a4-sheet">
+    ${eduSenseWatermarkHtml()}
     <div class="a4-inner">
-      ${eduSenseBrandHtml()}
-      <div class="ep-badge">${escapeHtml(payload.badge)}</div>
-      <h1>${escapeHtml(payload.title)}</h1>
-      <p class="muted">${escapeHtml(payload.meta)}</p>
+      ${pdfExamHeaderHtml(payload)}
       ${renderExportTaskBlocks(payload.tasks, false, true)}
     </div>
   </div>`;
@@ -8923,9 +9169,14 @@ async function submitCreate() {
 }
 
 async function boot() {
-  const user = loadUser();
+  let user = null;
+  if (window.EduSenseAuth?.restore) {
+    user = await window.EduSenseAuth.restore({ splash: true, requireToken: true });
+  } else {
+    user = loadUser();
+  }
   if (!user || user.role !== "teacher") {
-    window.location.href = "/";
+    window.location.href = "/#auth";
     return;
   }
   installFigureLightbox();

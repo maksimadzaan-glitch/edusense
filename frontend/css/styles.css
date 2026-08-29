@@ -288,12 +288,7 @@ input {
 }
 
 .nav-mark {
-  width: 42px;
-  height: 42px;
-  object-fit: contain;
-  border-radius: 11px;
-  flex: none;
-  background: #070b12;
+  display: none !important;
 }
 
 .mark3d {
