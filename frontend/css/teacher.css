@@ -2997,29 +2997,49 @@ html.is-telegram-miniapp .noise {
   height: auto;
   object-fit: contain;
   display: block;
+  margin: 0 auto;
   border-radius: 0.75rem;
   border: 1px solid rgba(148, 163, 184, 0.28);
   background: #fff;
 }
 
+/* Print / A4 preview only — never on live variant cards */
+.export-preview.is-a4 .ep-print-media,
+.export-preview.is-a4 .task-media {
+  width: 100%;
+  max-width: 100%;
+  margin: 12px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .export-preview.is-a4 .task-media-img,
 .export-preview.is-a4 .ep-body img,
 .export-preview.is-a4 .ep-task img:not(.ep-brand img),
+.export-preview.is-a4 .task-figure,
 .export-preview.is-a4 .task-figure svg,
-.export-preview.is-a4 .task-figure img,
-#export-preview-card .task-media-img,
-#export-preview-card .ep-body img,
-#export-preview-card .ep-task img:not(.ep-brand img),
-#export-preview-card .task-figure svg {
-  max-width: 80%;
-  min-width: 250px;
+.export-preview.is-a4 .task-figure img {
+  max-width: min(100%, 520px);
+  min-width: 0;
   width: auto;
   height: auto;
   object-fit: contain;
-  margin: 12px auto;
+  margin: 0 auto;
   display: block;
   page-break-inside: avoid;
   break-inside: avoid;
+}
+
+.export-preview.is-a4 .task-figure {
+  width: 100%;
+  max-width: min(100%, 560px);
+  cursor: default;
+}
+
+.export-preview.is-a4 .task-figure svg {
+  width: 100%;
+  max-width: 100%;
 }
 
 .btn-issue-done {
@@ -3378,7 +3398,7 @@ html.pdf-export-busy body {
 .task-figure {
   width: min(200px, 100%);
   max-width: 100%;
-  margin: 12px 0 14px;
+  margin: 12px auto 14px;
   padding: 0;
   border-radius: 0.75rem;
   border: 1px solid #111;
@@ -3387,6 +3407,7 @@ html.pdf-export-busy body {
   box-shadow: none;
   cursor: zoom-in;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .ep-solution-figure {
@@ -3411,7 +3432,7 @@ html.pdf-export-busy body {
 .task-figure svg.fipi-fig,
 .task-figure svg {
   width: 100%;
-  max-width: 420px;
+  max-width: 100%;
   height: auto;
   display: block;
   aspect-ratio: auto;
@@ -3423,19 +3444,21 @@ html.pdf-export-busy body {
 .task-figure svg.geo-fig-line,
 .task-figure svg.geo-fig-scheme,
 .task-figure svg.geo-fig-plan {
-  max-width: 520px;
+  max-width: 100%;
 }
 .task-figure svg.geo-fig-match {
-  max-width: 640px;
+  max-width: 100%;
 }
 
 .task-figure:has(svg.geo-fig-plan),
 .task-figure:has(svg.geo-fig-scheme),
 .task-figure:has(svg.geo-fig-line) {
-  width: min(560px, 100%);
+  width: 100%;
+  max-width: min(560px, 100%);
 }
 .task-figure:has(svg.geo-fig-match) {
-  width: min(680px, 100%);
+  width: 100%;
+  max-width: min(680px, 100%);
 }
 
 .figure-lightbox {
@@ -8057,6 +8080,81 @@ html.figure-lightbox-open body {
   .home-live,
   .home-widgets {
     grid-column: auto;
+  }
+
+  .variant-viewer,
+  .task-grid,
+  .task-card,
+  .export-panel,
+  .export-preview-wrap {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .variant-viewer {
+    padding: 14px;
+  }
+
+  .task-figure,
+  .task-figure:has(svg.geo-fig-plan),
+  .task-figure:has(svg.geo-fig-scheme),
+  .task-figure:has(svg.geo-fig-line),
+  .task-figure:has(svg.geo-fig-match) {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .task-figure svg,
+  .task-figure svg.geo-fig-line,
+  .task-figure svg.geo-fig-scheme,
+  .task-figure svg.geo-fig-plan,
+  .task-figure svg.geo-fig-match {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+  }
+
+  .task-media,
+  .task-media-img,
+  .variant-viewer img,
+  .task-card img,
+  .task-text img {
+    max-width: 100% !important;
+    min-width: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .export-preview.is-a4 {
+    max-width: 100%;
+    min-height: auto;
+    padding: 18px 12px;
+    margin: 0 auto;
+  }
+
+  .export-preview-wrap.is-a4-mode {
+    padding: 10px 6px 16px;
+    overflow-x: hidden;
+  }
+
+  .export-preview.is-a4 .task-media-img,
+  .export-preview.is-a4 .task-figure,
+  .export-preview.is-a4 .task-figure svg {
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .oge-exam-match,
+  .kim-table-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 

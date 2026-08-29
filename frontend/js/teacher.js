@@ -1803,6 +1803,15 @@ function formatTeacherTaskText(taskOrText) {
   return typeof formatMathText === "function" ? formatMathText(raw) : escapeHtml(raw);
 }
 
+function exportMediaHtml(task, paper) {
+  const fig = figureHtml(task);
+  const media = payloadImagesHtml(task);
+  const sol = "";
+  const block = `${fig}${media}${sol}`.trim();
+  if (!block) return "";
+  return paper ? `<div class="ep-print-media">${block}</div>` : block;
+}
+
 function renderExportTaskBlocks(tasks, showAnswer, paper) {
   const rus = isTeacherOgeRusExam();
   if (
@@ -1821,7 +1830,7 @@ function renderExportTaskBlocks(tasks, showAnswer, paper) {
         </div>
         <div class="ep-topic">${formatMathText(t.topic)}</div>
         ${extras || `<div class="ep-body">${formatTeacherTaskText(t)}</div>`}
-        ${figureHtml(t)}
+        ${exportMediaHtml(t, paper)}
         ${showAnswer ? solutionFigureHtml(t) : ""}
       </section>`,
       { teacher: true, examBody: true, exam: true, showKey: !!showAnswer, print: !!paper }
@@ -1844,7 +1853,7 @@ function renderExportTaskBlocks(tasks, showAnswer, paper) {
         </div>
         <div class="ep-topic">${formatMathText(t.topic)}</div>
         <div class="ep-body">${formatTeacherTaskText(t)}</div>
-        ${figureHtml(t)}
+        ${exportMediaHtml(t, paper)}
         ${
           showAnswer && Number(t.part) === 1 && t.answer
             ? `<div class="ep-answer"><span>Ключ</span><div class="ep-answer-body">${formatAnswerKey(
@@ -1867,7 +1876,7 @@ function renderExportTaskBlocks(tasks, showAnswer, paper) {
         </div>
         <div class="ep-topic">${formatMathText(t.topic)}</div>
         <div class="ep-body">${formatTeacherTaskText(t)}</div>
-        ${figureHtml(t)}
+        ${exportMediaHtml(t, paper)}
         ${
           showAnswer && Number(t.part) === 1 && t.answer
             ? `<div class="ep-answer"><span>Ключ</span><div class="ep-answer-body">${formatAnswerKey(
@@ -2285,35 +2294,31 @@ function eduSenseWatermarkHtml() {
 
 function eduSensePrintWatermarkCss() {
   return `
-    .a4-sheet, .export-preview.is-a4, #export-preview-card {
+    .a4-sheet {
       position: relative;
+      overflow: visible;
     }
-    .ep-watermark {
+    .a4-sheet::before {
+      content: "EduSense";
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%) rotate(-30deg);
       pointer-events: none;
       user-select: none;
       z-index: 0;
-      overflow: visible;
-    }
-    .ep-wm-layer {
-      transform: rotate(-30deg);
-      opacity: 0.06;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .ep-wm-text {
       font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
       font-weight: 800;
       letter-spacing: -0.045em;
-      text-transform: none;
-      font-size: clamp(48px, 12vw, 72px);
+      font-size: 64px;
       line-height: 1;
       color: #94a3b8;
+      opacity: 0.06;
       white-space: nowrap;
+    }
+    .a4-inner, .print-inner, .ep-sheet {
+      position: relative;
+      z-index: 1;
     }
     .ep-brand {
       display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
@@ -2323,21 +2328,61 @@ function eduSensePrintWatermarkCss() {
     .ep-brand img { width: 22px; height: 22px; object-fit: contain; display: block; }
     .ep-brand-extra { margin-left: 4px; font-size: 0.78rem; font-weight: 650; letter-spacing: 0; color: #64748b; }
     .a4-inner[style*="text-align:center"] .ep-brand { justify-content: center; }
-    .a4-inner, .print-inner, .ep-sheet { position: relative; z-index: 10; }
+    ${examPrintMediaCss()}
+  `;
+}
+
+function examPrintMediaCss() {
+  return `
+    .ep-print-media,
+    .task-media {
+      width: 100%;
+      max-width: 100%;
+      margin: 12px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
     .task-media-img,
     .ep-body img,
     .ep-task img:not(.ep-brand img),
-    .task-figure svg,
+    .task-figure,
     .task-figure img {
-      max-width: 80%;
-      min-width: 250px;
+      display: block;
       width: auto;
+      max-width: min(100%, 520px);
+      min-width: 0;
       height: auto;
       object-fit: contain;
-      margin: 12px auto;
-      display: block;
+      margin: 0 auto;
+      box-sizing: border-box;
       page-break-inside: avoid;
       break-inside: avoid;
+    }
+    .task-figure {
+      width: 100%;
+      max-width: min(100%, 560px);
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      padding: 4px;
+      cursor: default;
+      overflow: hidden;
+    }
+    .task-figure svg {
+      display: block;
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      height: auto !important;
+      margin: 0 auto;
+      background: #fff;
+    }
+    .kim-table-scroll,
+    table {
+      max-width: 100%;
+      overflow: hidden;
     }
   `;
 }
@@ -2354,7 +2399,7 @@ function brandedExamPrintCss() {
     }
     .a4-sheet {
       position: relative;
-      overflow: hidden;
+      overflow: visible;
       background: #fff;
       color: #0f172a;
       max-width: 794px;
@@ -2609,6 +2654,31 @@ function closePdfExportOverlay() {
   document.documentElement.classList.remove("pdf-export-busy");
 }
 
+async function waitPdfAssets(root) {
+  if (document.fonts && document.fonts.ready) {
+    try {
+      await document.fonts.ready;
+    } catch {
+      /* ignore */
+    }
+  }
+  const imgs = [...(root?.querySelectorAll("img") || [])];
+  await Promise.all(
+    imgs.map(
+      (img) =>
+        new Promise((resolve) => {
+          if (img.complete && img.naturalWidth) {
+            resolve();
+            return;
+          }
+          img.addEventListener("load", resolve, { once: true });
+          img.addEventListener("error", resolve, { once: true });
+        })
+    )
+  );
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+}
+
 async function downloadHtmlAsPdf(title, innerHtml, css, filename) {
   await ensurePdfLibs();
   const JsPDF = jsPdfCtor();
@@ -2616,7 +2686,7 @@ async function downloadHtmlAsPdf(title, innerHtml, css, filename) {
   const host = document.createElement("div");
   host.setAttribute("data-pdf-host", "1");
   host.style.cssText =
-    "position:fixed;left:-14000px;top:0;width:794px;background:#fff;z-index:-1;pointer-events:none;";
+    "position:fixed;left:-14000px;top:0;width:794px;max-width:794px;overflow:hidden;background:#fff;z-index:-1;pointer-events:none;";
   const style = document.createElement("style");
   style.textContent = css;
   host.appendChild(style);
@@ -2633,23 +2703,46 @@ async function downloadHtmlAsPdf(title, innerHtml, css, filename) {
     sheet.style.overflow = "visible";
     sheet.style.minHeight = "auto";
     sheet.style.height = "auto";
+    sheet.style.boxSizing = "border-box";
+    await waitPdfAssets(sheet);
     const canvas = await window.html2canvas(sheet, {
       backgroundColor: "#ffffff",
       scale: 2,
       useCORS: true,
+      allowTaint: false,
       logging: false,
+      width: 794,
       windowWidth: 794,
+      scrollX: 0,
+      scrollY: 0,
+      onclone: (doc) => {
+        const clonedSheet = doc.querySelector(".a4-sheet");
+        if (!clonedSheet) return;
+        clonedSheet.style.width = "794px";
+        clonedSheet.style.maxWidth = "794px";
+        clonedSheet.style.overflow = "visible";
+        clonedSheet.style.boxSizing = "border-box";
+        clonedSheet.querySelectorAll(".task-figure, .task-media-img, img, svg").forEach((el) => {
+          el.style.maxWidth = "100%";
+          el.style.minWidth = "0";
+          el.style.height = "auto";
+        });
+      },
     });
     const pdf = new JsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
     const pageW = pdf.internal.pageSize.getWidth();
     const pageH = pdf.internal.pageSize.getHeight();
-    const imgW = pageW;
-    const imgH = (canvas.height * pageW) / canvas.width;
-    const imgData = canvas.toDataURL("image/jpeg", 0.86);
-    const pages = Math.max(1, Math.ceil(imgH / pageH - 1e-6));
+    const marginX = 10;
+    const marginY = 10;
+    const printableW = pageW - marginX * 2;
+    const printableH = pageH - marginY * 2;
+    const imgW = printableW;
+    const imgH = (canvas.height * printableW) / canvas.width;
+    const imgData = canvas.toDataURL("image/png");
+    const pages = Math.max(1, Math.ceil(imgH / printableH - 1e-4));
     for (let i = 0; i < pages; i += 1) {
       if (i) pdf.addPage();
-      pdf.addImage(imgData, "JPEG", 0, -i * pageH, imgW, imgH, undefined, "FAST");
+      pdf.addImage(imgData, "PNG", marginX, marginY - i * printableH, imgW, imgH, undefined, "FAST");
     }
     pdf.save(filename);
   } finally {
@@ -8678,7 +8771,6 @@ function renderTeacherKeysPrintHtml(payload) {
     .join("");
   const p2Block = p2Cards ? `<h2>Часть 2</h2>${p2Cards}` : "";
   return `<div class="a4-sheet keys-sheet">
-    ${eduSenseWatermarkHtml()}
     <div class="a4-inner">
       ${eduSenseBrandHtml("только для учителя")}
       <div class="ep-badge">Лист ключей</div>
@@ -8699,7 +8791,6 @@ function exportBrandedPdf({ keys = false } = {}) {
   const inner = keys
     ? renderTeacherKeysPrintHtml(payload)
     : `<div class="a4-sheet">
-    ${eduSenseWatermarkHtml()}
     <div class="a4-inner">
       ${eduSenseBrandHtml()}
       <div class="ep-badge">${escapeHtml(payload.badge)}</div>

@@ -478,9 +478,11 @@ textarea { min-height: 84px; resize: vertical; font-family: var(--serif); }
   gap: 8px;
 }
 .task-media-img {
-  max-width: min(100%, 420px);
+  max-width: 100%;
+  width: auto;
   height: auto;
   display: block;
+  margin: 0 auto;
   border: 1px solid rgba(148, 163, 184, 0.35);
   background: rgba(255, 255, 255, 0.04);
 }
@@ -556,15 +558,17 @@ textarea { min-height: 84px; resize: vertical; font-family: var(--serif); }
 }
 
 .task-figure {
-  width: 200px;
+  width: min(200px, 100%);
   max-width: 100%;
-  margin: 10px 0 14px;
+  margin: 10px auto 14px;
   padding: 0;
   border-radius: 0;
   border: 1px solid #111;
   background: #fff;
   color: #111;
   cursor: zoom-in;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 .task-figure:focus-visible {
   outline: 2px solid #2563eb;
@@ -572,7 +576,7 @@ textarea { min-height: 84px; resize: vertical; font-family: var(--serif); }
 }
 .task-figure svg {
   width: 100%;
-  max-width: 420px;
+  max-width: 100%;
   height: auto;
   display: block;
   aspect-ratio: auto;
@@ -583,19 +587,16 @@ textarea { min-height: 84px; resize: vertical; font-family: var(--serif); }
 
 .task-figure svg.geo-fig-line,
 .task-figure svg.geo-fig-scheme,
-.task-figure svg.geo-fig-plan {
-  max-width: 520px;
-}
+.task-figure svg.geo-fig-plan,
 .task-figure svg.geo-fig-match {
-  max-width: 640px;
+  max-width: 100%;
 }
 .task-figure:has(svg.geo-fig-plan),
 .task-figure:has(svg.geo-fig-scheme),
-.task-figure:has(svg.geo-fig-line) {
-  width: min(560px, 100%);
-}
+.task-figure:has(svg.geo-fig-line),
 .task-figure:has(svg.geo-fig-match) {
-  width: min(680px, 100%);
+  width: 100%;
+  max-width: min(680px, 100%);
 }
 
 .figure-lightbox {
@@ -2793,6 +2794,27 @@ html.block-copy-exam #app * {
   .student-hero-greet {
     display: block;
     overflow: hidden;
+  }
+
+  .task-figure,
+  .task-figure:has(svg.geo-fig-plan),
+  .task-figure:has(svg.geo-fig-scheme),
+  .task-figure:has(svg.geo-fig-line),
+  .task-figure:has(svg.geo-fig-match) {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .task-figure svg,
+  .task-media-img,
+  .task-text img {
+    max-width: 100% !important;
+    min-width: 0 !important;
+    width: auto !important;
+    height: auto !important;
   }
 }
 
