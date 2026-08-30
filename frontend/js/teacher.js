@@ -495,7 +495,19 @@ async function api(path, options = {}) {
 
   if (!response.ok) {
     const detail = data?.detail ?? `Ошибка ${response.status}`;
-    throw new Error(typeof detail === "string" ? detail : JSON.stringify(detail));
+    let msg;
+    if (typeof detail === "string") msg = detail;
+    else if (Array.isArray(detail) && detail.length) {
+      const first = detail[0];
+      msg =
+        (first && (first.msg || first.message)) ||
+        "Не удалось выполнить запрос. Обновите страницу.";
+    } else if (detail && typeof detail === "object" && detail.message) {
+      msg = String(detail.message);
+    } else {
+      msg = "Не удалось выполнить запрос. Обновите страницу.";
+    }
+    throw new Error(msg);
   }
   return data;
 }

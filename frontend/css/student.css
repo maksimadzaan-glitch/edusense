@@ -2330,6 +2330,61 @@ html.dash-ready .student-hero-glow {
 }
 
 /* Telegram Mini App tweaks */
+/* Telegram Mini App: full usable width, kill nested squeeze */
+html.is-telegram-miniapp,
+html.is-telegram-miniapp body,
+body.is-telegram-miniapp {
+  width: 100% !important;
+  max-width: 100vw !important;
+  overflow-x: hidden;
+}
+
+html.is-telegram-miniapp #app,
+html.is-telegram-miniapp #app.is-work,
+html.is-telegram-miniapp .work-focus,
+html.is-telegram-miniapp .card,
+html.is-telegram-miniapp .card-oge-rus,
+html.is-telegram-miniapp .oge-rus-exam,
+html.is-telegram-miniapp .oge-rus-exam-sheet,
+html.is-telegram-miniapp .main,
+html.is-telegram-miniapp .main-inner,
+html.is-telegram-miniapp .task,
+html.is-telegram-miniapp .task-text,
+html.is-telegram-miniapp .oge-exam-task,
+html.is-telegram-miniapp .oge-exam-stem,
+html.is-telegram-miniapp .oge-rus-shared,
+html.is-telegram-miniapp .oge-rus-shared-body,
+html.is-telegram-miniapp .oge-passage-body {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}
+
+html.is-telegram-miniapp .work-focus,
+html.is-telegram-miniapp .oge-rus-exam-sheet,
+html.is-telegram-miniapp .card-oge-rus,
+html.is-telegram-miniapp .main {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+
+html.is-telegram-miniapp .oge-exam-stem,
+html.is-telegram-miniapp .oge-exam-instruction,
+html.is-telegram-miniapp .oge-exam-opt-text,
+html.is-telegram-miniapp .task-text,
+html.is-telegram-miniapp .oge-rus-shared-body,
+html.is-telegram-miniapp .oge-passage-body,
+html.is-telegram-miniapp .oge-rus-transcript-body {
+  font-size: 1.06rem !important;
+  line-height: 1.7 !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  padding-left: 2px !important;
+  padding-right: 2px !important;
+}
+
 html.is-telegram-miniapp body,
 body.is-telegram-miniapp {
   padding-top: env(safe-area-inset-top);
@@ -2339,7 +2394,6 @@ html.is-telegram-miniapp .noise {
   opacity: 0.55;
 }
 html.is-telegram-miniapp .work-submit-bar {
-  /* MainButton covers submit; keep a compact fallback */
   padding-bottom: max(12px, env(safe-area-inset-bottom));
 }
 html.is-telegram-miniapp.tg-mainbutton-on .work-submit-bar {

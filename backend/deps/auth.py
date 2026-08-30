@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from fastapi import Depends, Header, HTTPException, status
+from fastapi import Depends, Header, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
@@ -94,10 +94,24 @@ def teacher_owns_edu_class(db: Session, user: User, classroom: EduClass) -> bool
 
 
 def require_teacher_class(
-    code: str,
+    request: Request,
     db: Session = Depends(get_db),
     user: User = Depends(require_teacher),
 ) -> EduClass:
+    """Класс из path ({code} / {class_code}) или query (?code=)."""
+    code = (
+        request.path_params.get("class_code")
+        or request.path_params.get("code")
+        or request.query_params.get("class_code")
+        or request.query_params.get("code")
+        or ""
+    )
+    code = str(code).strip()
+    if not code:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Не указан код класса.",
+        )
     classroom = ensure_edu_class(db, class_code=code)
     if not teacher_owns_edu_class(db, user, classroom):
         raise HTTPException(

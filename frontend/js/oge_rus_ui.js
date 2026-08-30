@@ -877,18 +877,63 @@
     syncPauseButtons(scope);
   }
 
+  var _audioSession = {
+    el: null,
+    playing: false,
+    paused: false,
+  };
+
+  function stopAudioSession() {
+    const el = _audioSession.el;
+    if (el) {
+      try {
+        el.pause();
+        el.currentTime = 0;
+      } catch (_) {}
+    }
+    _audioSession.el = null;
+    _audioSession.playing = false;
+    _audioSession.paused = false;
+  }
+
+  function toggleAudioPause(onStatus) {
+    const el = _audioSession.el;
+    if (!el || !_audioSession.playing) return;
+    if (_audioSession.paused) {
+      const p = el.play();
+      if (p && typeof p.catch === "function") p.catch(function () {});
+      _audioSession.paused = false;
+      if (onStatus) onStatus("Продолжаем…");
+    } else {
+      try {
+        el.pause();
+      } catch (_) {}
+      _audioSession.paused = true;
+      if (onStatus) onStatus("Пауза. Нажмите «Продолжить».");
+    }
+    syncPauseButtons(document);
+  }
+
   function syncPauseButtons(root) {
     var scope = root || document;
-    var playing = !!_ttsSession.speaking;
-    var paused = !!_ttsSession.paused;
+    var ttsPlaying = !!_ttsSession.speaking;
+    var ttsPaused = !!_ttsSession.paused;
+    var audioPlaying = !!_audioSession.playing;
+    var audioPaused = !!_audioSession.paused;
+    var playing = ttsPlaying || audioPlaying;
+    var paused = ttsPlaying ? ttsPaused : audioPaused;
     scope.querySelectorAll("[data-oge-tts-pause]").forEach(function (btn) {
       btn.disabled = !playing;
       btn.textContent = paused ? "Продолжить" : "Пауза";
       btn.setAttribute("aria-pressed", paused ? "true" : "false");
     });
-    scope.querySelectorAll("[data-oge-tts]").forEach(function (btn) {
-      if (playing && !paused) btn.textContent = "Стоп";
+    scope.querySelectorAll("[data-oge-play-twice]").forEach(function (btn) {
+      if (audioPlaying && !audioPaused) btn.textContent = "Стоп";
       else btn.textContent = "Прослушать 2 раза";
+    });
+    scope.querySelectorAll("[data-oge-tts]").forEach(function (btn) {
+      if (ttsPlaying && !ttsPaused) btn.textContent = "Стоп";
+      else btn.textContent = "Синтез речи";
     });
   }
 
@@ -907,6 +952,10 @@
   }
 
   function toggleTtsPause(onStatus) {
+    if (_audioSession.playing) {
+      toggleAudioPause(onStatus);
+      return;
+    }
     if (typeof global.speechSynthesis === "undefined") return;
     var synth = global.speechSynthesis;
     if (!_ttsSession.speaking) return;
@@ -931,7 +980,8 @@
       if (onStatus) onStatus("Синтез речи недоступен в этом браузере.");
       return;
     }
-    // Повторный клик по «Прослушать» во время чтения = стоп
+    stopAudioSession();
+    // Повторный клик во время чтения = стоп
     if (_ttsSession.speaking && !_ttsSession.paused) {
       stopTts(onStatus);
       return;
@@ -989,7 +1039,6 @@
           syncPauseButtons(document);
           return;
         }
-        // Без паузы между 1 и 2 — сразу второй раз тем же голосом
         utter(2);
       };
       u.onerror = function () {
@@ -1003,7 +1052,7 @@
     utter(1);
   }
 
-  /** Проиграть <audio> два раза с паузой (как на экзамене). */
+  /** Проиграть <audio> два раза (основная озвучка изложения). */
   function playAudioTwice(audioEl, onStatus, fallbackText) {
     if (!audioEl) {
       if (fallbackText) {
@@ -1013,6 +1062,19 @@
       if (onStatus) onStatus("Аудио не найдено.");
       return;
     }
+    // Стоп при повторном клике
+    if (_audioSession.playing && _audioSession.el === audioEl && !_audioSession.paused) {
+      stopAudioSession();
+      if (onStatus) onStatus("Остановлено.");
+      syncPauseButtons(document);
+      return;
+    }
+    if (_audioSession.playing && _audioSession.el === audioEl && _audioSession.paused) {
+      toggleAudioPause(onStatus);
+      return;
+    }
+    stopTts(null);
+    stopAudioSession();
     try {
       audioEl.pause();
     } catch (_) {}
@@ -1021,8 +1083,18 @@
       audioEl.removeEventListener("ended", onEnded);
       audioEl.removeEventListener("error", onErr);
     };
+    const finish = function (msg) {
+      cleanup();
+      _audioSession.playing = false;
+      _audioSession.paused = false;
+      if (onStatus) onStatus(msg);
+      syncPauseButtons(document);
+    };
     const useFallback = function (msg) {
       cleanup();
+      _audioSession.playing = false;
+      _audioSession.paused = false;
+      syncPauseButtons(document);
       if (fallbackText) {
         if (onStatus) onStatus(msg || "Запись недоступна — синтез речи.");
         speakTwice(fallbackText, onStatus);
@@ -1051,32 +1123,32 @@
     };
     const onEnded = function () {
       if (round >= 2) {
-        cleanup();
-        if (onStatus) onStatus("Прослушивание завершено (2 раза).");
+        finish("Прослушивание завершено (2 раза).");
         return;
       }
       round = 2;
-      if (onStatus) onStatus("Пауза… сейчас повтор");
-      setTimeout(function () {
-        if (onStatus) onStatus("Прослушивание 2 из 2…");
-        try {
-          audioEl.playbackRate = getTtsRate();
-          audioEl.currentTime = 0;
-          const p = audioEl.play();
-          if (p && typeof p.catch === "function") {
-            p.catch(function () {
-              useFallback("Не удалось запустить повтор.");
-            });
-          }
-        } catch (_) {
-          useFallback("Не удалось запустить повтор.");
+      if (onStatus) onStatus("Прослушивание 2 из 2…");
+      try {
+        audioEl.playbackRate = getTtsRate();
+        audioEl.currentTime = 0;
+        const p = audioEl.play();
+        if (p && typeof p.catch === "function") {
+          p.catch(function () {
+            useFallback("Не удалось запустить повтор.");
+          });
         }
-      }, 200);
+      } catch (_) {
+        useFallback("Не удалось запустить повтор.");
+      }
     };
     cleanup();
     audioEl.addEventListener("ended", onEnded);
     audioEl.addEventListener("error", onErr);
+    _audioSession.el = audioEl;
+    _audioSession.playing = true;
+    _audioSession.paused = false;
     if (onStatus) onStatus("Прослушивание 1 из 2…");
+    syncPauseButtons(document);
     try {
       audioEl.playbackRate = getTtsRate();
       audioEl.currentTime = 0;
@@ -1192,22 +1264,26 @@
     }
 
     let playerHtml = "";
-    // Основная озвучка — нейроголос браузера; голос выбирается один раз и не меняется между 1 и 2.
-    const ttsBtn =
-      '<button type="button" class="oge-rus-play-twice oge-rus-tts" data-oge-tts="' +
-      escapeHtml(num) +
-      '" ' +
-      (script ? "" : "disabled") +
-      ">Прослушать 2 раза</button>";
+    // Основная озвучка — MP3 (нормальный нейроголос). Синтез браузера — запасной.
+    const playBtn = audioUrl
+      ? '<button type="button" class="oge-rus-play-twice" data-oge-play-twice="' +
+        escapeHtml(num) +
+        '">Прослушать 2 раза</button>'
+      : '<button type="button" class="oge-rus-play-twice oge-rus-tts" data-oge-tts="' +
+        escapeHtml(num) +
+        '" ' +
+        (script ? "" : "disabled") +
+        ">Прослушать 2 раза</button>";
     const pauseBtn =
       '<button type="button" class="oge-rus-pause-btn" data-oge-tts-pause="' +
       escapeHtml(num) +
       '" disabled>Пауза</button>';
-    const mp3Btn = audioUrl
-      ? '<button type="button" class="oge-rus-play-mp3" data-oge-play-twice="' +
-        escapeHtml(num) +
-        '">Запись MP3</button>'
-      : "";
+    const synthBtn =
+      audioUrl && script
+        ? '<button type="button" class="oge-rus-play-mp3 oge-rus-tts" data-oge-tts="' +
+          escapeHtml(num) +
+          '">Синтез речи</button>'
+        : "";
     playerHtml =
       '<div class="oge-rus-audio-player" data-oge-audio-player="' +
       escapeHtml(num) +
@@ -1221,15 +1297,15 @@
           '"></audio></div>'
         : "") +
       '<div class="oge-rus-audio-actions">' +
-      ttsBtn +
+      playBtn +
       pauseBtn +
-      mp3Btn +
+      synthBtn +
       "</div>" +
-      ttsControlsHtml(num) +
+      (script ? ttsControlsHtml(num) : "") +
       '<span class="oge-rus-tts-status" data-oge-tts-status="' +
       escapeHtml(num) +
       '"></span>' +
-      '<p class="oge-rus-audio-note">Выберите голос один раз — он останется на оба прослушивания. Можно поставить на паузу.</p>' +
+      '<p class="oge-rus-audio-note">Основная запись — нейроозвучка. Пауза работает. «Синтез речи» — запасной голос браузера (Мужской/Женский).</p>' +
       "</div>";
 
     if (!script && !audioUrl) {

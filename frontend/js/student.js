@@ -1213,7 +1213,11 @@ function detailMessage(data, fallback) {
   if (Array.isArray(d) && d.length) {
     const first = d[0];
     if (typeof first === "string") return first;
-    if (first && first.msg) return String(first.msg);
+    if (first && (first.msg || first.message)) {
+      const raw = String(first.msg || first.message);
+      if (/field required/i.test(raw)) return "Не хватает данных для запроса. Обновите страницу.";
+      return raw;
+    }
   }
   if (data && data.message) return String(data.message);
   return fallback;
