@@ -1474,7 +1474,8 @@ html.dash-ready .student-hero-glow {
 .main-inner {
   position: relative;
   z-index: 1;
-  max-width: 1080px;
+  width: 100%;
+  max-width: 80rem; /* ~max-w-7xl */
   margin: 0 auto;
   animation: riseIn 0.5s var(--ease);
 }
@@ -4446,5 +4447,265 @@ body.has-focus-player .main {
 
   .work-submit-spacer {
     height: 110px;
+  }
+}
+
+/* =========================================================
+   Responsive: Mobile / Tablet / Desktop
+   Mobile <768 · Tablet 768–1024 · Desktop >1024
+   ========================================================= */
+
+.bottom-nav {
+  display: none;
+}
+
+/* —— Mobile < 768px —— */
+@media (max-width: 767px) {
+  .dash {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: min(288px, 86vw);
+    height: 100vh;
+    height: 100dvh;
+    z-index: 120 !important;
+    transform: translateX(-105%);
+    transition: transform 0.28s var(--ease);
+  }
+
+  .dash.is-nav-open .sidebar {
+    transform: translateX(0);
+  }
+
+  .nav-toggle {
+    display: inline-flex !important;
+  }
+
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    gap: 2px;
+    padding: 6px 8px max(6px, env(safe-area-inset-bottom));
+    background: rgba(7, 11, 18, 0.96);
+    border-top: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+  }
+
+  .bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-height: 52px;
+    padding: 6px 4px;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 650;
+    cursor: pointer;
+  }
+
+  .bottom-nav-item svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .bottom-nav-item.is-active {
+    color: var(--accent, #5eead4);
+    background: rgba(94, 234, 212, 0.1);
+  }
+
+  .main {
+    width: 100%;
+    padding: 12px 12px max(88px, calc(72px + env(safe-area-inset-bottom)));
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .main-inner {
+    width: 100%;
+    max-width: none;
+    padding: 0;
+  }
+
+  .bento,
+  .stats-bento,
+  .stats-row,
+  .dash-list,
+  .task-mod-grid,
+  .home-widgets,
+  .home-split,
+  .student-home .task-mod-grid,
+  .student-home .dash-list {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  .dash-card .btn,
+  .task-mod .btn,
+  .work-submit-bar .btn,
+  .answer-panel .btn,
+  .oge-rus-play-twice,
+  .oge-rus-pause-btn,
+  .oge-rus-play-mp3 {
+    width: 100%;
+    text-align: center;
+    min-height: 48px;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .oge-rus-audio-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .oge-exam-stem,
+  .oge-exam-instruction,
+  .oge-exam-opt-text,
+  .oge-rus-exam .oge-rus-shared-body,
+  .oge-rus-exam .oge-passage-body,
+  .oge-rus-transcript-body,
+  .task-text {
+    width: 100%;
+    max-width: 100%;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    box-sizing: border-box;
+  }
+
+  .work-focus,
+  .card-oge-rus,
+  .oge-rus-exam,
+  .oge-rus-exam-sheet {
+    width: 100%;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* —— Tablet 768–1024px —— */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .dash {
+    grid-template-columns: 72px 1fr;
+  }
+
+  .sidebar {
+    width: 72px;
+    padding: 14px 8px;
+    overflow: hidden;
+  }
+
+  .sidebar-brand .es-logo-text,
+  .sidebar-brand .brand-name,
+  .sidebar-brand .beta-badge,
+  .class-switch,
+  .nav-item-label,
+  .nav-item .nav-badge,
+  .user-chip .meta,
+  .sidebar-install,
+  .sidebar-foot .user-chip-exit span {
+    display: none !important;
+  }
+
+  .sidebar-brand {
+    justify-content: center;
+    padding: 4px 0;
+  }
+
+  .nav-item {
+    justify-content: center;
+    padding: 12px 8px;
+  }
+
+  .nav-item svg {
+    margin: 0;
+  }
+
+  .user-chip {
+    justify-content: center;
+    padding: 8px;
+  }
+
+  .user-chip .avatar {
+    margin: 0;
+  }
+
+  .nav-toggle {
+    display: none !important;
+  }
+
+  .bottom-nav {
+    display: none !important;
+  }
+
+  .main-inner {
+    max-width: none;
+  }
+
+  .bento,
+  .stats-bento,
+  .dash-list,
+  .task-mod-grid,
+  .home-widgets,
+  .home-split,
+  .student-home .task-mod-grid,
+  .student-home .dash-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* —— Desktop > 1024px —— */
+@media (min-width: 1025px) {
+  .dash {
+    grid-template-columns: 16rem 1fr; /* w-64 */
+  }
+
+  .sidebar {
+    width: 16rem;
+    flex-shrink: 0;
+  }
+
+  .nav-toggle {
+    display: none !important;
+  }
+
+  .bottom-nav {
+    display: none !important;
+  }
+
+  .main-inner {
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .bento,
+  .stats-bento,
+  .dash-list,
+  .task-mod-grid,
+  .home-widgets,
+  .home-split,
+  .student-home .task-mod-grid,
+  .student-home .dash-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   }
 }

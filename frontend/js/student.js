@@ -2705,6 +2705,27 @@ function renderCabinetShell(mainHtml) {
           ${mainHtml}
         </div>
       </main>
+      <nav class="bottom-nav" aria-label="Нижнее меню">
+        ${NAV.map((item) => {
+          const hook = item.action
+            ? `data-nav-action="${item.action}"`
+            : `data-tab="${item.id}"`;
+          const active = !item.action && state.tab === item.id ? " is-active" : "";
+          const short =
+            item.id === "home"
+              ? "Главная"
+              : item.id === "progress"
+                ? "Прогресс"
+                : item.id === "live"
+                  ? "Live"
+                  : "Бонус";
+          return `
+            <button type="button" class="bottom-nav-item${active}" ${hook}>
+              ${icon(item.icon)}
+              <span>${short}</span>
+            </button>`;
+        }).join("")}
+      </nav>
       ${renderInviteModal()}
       ${renderLiveModal()}
     </div>

@@ -723,7 +723,16 @@
   }
 
   var TTS_RATE_KEY = "edusense_tts_rate";
+  var TTS_VOICE_KEY = "edusense_tts_voice_pref"; // male | female
   var TTS_RATES = [0.8, 1, 1.25];
+  var _ttsSession = {
+    speaking: false,
+    paused: false,
+    voiceURI: "",
+    round: 0,
+    text: "",
+    onStatus: null,
+  };
 
   function getTtsRate() {
     try {
@@ -742,36 +751,65 @@
     return r;
   }
 
-  function voiceScore(v) {
-    var n = String((v && v.name) || "") + " " + String((v && v.voiceURI) || "");
-    var lang = String((v && v.lang) || "");
-    var s = 0;
-    if (/^ru(-|$)/i.test(lang) || /russian/i.test(n)) s += 20;
-    if (/dmitry/i.test(n) && /neural|online/i.test(n)) s += 100;
-    if (/svetlana/i.test(n) && /neural|online/i.test(n)) s += 95;
-    if (/google/i.test(n) && /ru/i.test(n + lang)) s += 90;
-    if (/microsoft/i.test(n) && /dmitry|irina|pavel/i.test(n) && /online|neural/i.test(n)) s += 88;
-    if (/yandex|edge/i.test(n)) s += 80;
-    if (/neural/i.test(n)) s += 40;
-    if (/online/i.test(n)) s += 20;
-    if (v && v.localService === false) s += 10;
-    return s;
+  function getVoicePref() {
+    try {
+      var p = String((global.localStorage && localStorage.getItem(TTS_VOICE_KEY)) || "");
+      if (p === "male" || p === "female") return p;
+    } catch (_) {}
+    return "male";
   }
 
-  function pickRussianVoice() {
-    if (typeof global.speechSynthesis === "undefined") return null;
+  function setVoicePref(pref) {
+    var p = pref === "female" ? "female" : "male";
+    try {
+      if (global.localStorage) localStorage.setItem(TTS_VOICE_KEY, p);
+    } catch (_) {}
+    return p;
+  }
+
+  function listRuVoices() {
+    if (typeof global.speechSynthesis === "undefined") return [];
     var voices = global.speechSynthesis.getVoices() || [];
-    var ru = voices.filter(function (v) {
+    return voices.filter(function (v) {
       var lang = String((v && v.lang) || "");
       var name = String((v && v.name) || "");
       return /^ru(-|$)/i.test(lang) || /russian/i.test(name);
     });
-    var pool = ru.length ? ru : voices;
+  }
+
+  function voiceScoreForPref(v, pref) {
+    var n = String((v && v.name) || "") + " " + String((v && v.voiceURI) || "");
+    var lang = String((v && v.lang) || "");
+    var s = 0;
+    if (/^ru(-|$)/i.test(lang) || /russian/i.test(n)) s += 20;
+    if (/neural|online/i.test(n)) s += 50;
+    if (/google|microsoft|edge|yandex/i.test(n)) s += 25;
+    if (v && v.localService === false) s += 10;
+    if (pref === "female") {
+      if (/svetlana|irina|milena|katya|elena|anna|female|жен/i.test(n)) s += 120;
+      if (/dmitry|pavel|male|муж/i.test(n)) s -= 80;
+    } else {
+      if (/dmitry|pavel|male|муж/i.test(n)) s += 120;
+      if (/svetlana|irina|milena|katya|elena|anna|female|жен/i.test(n)) s -= 80;
+    }
+    return s;
+  }
+
+  function resolveVoice(pref) {
+    var want = pref === "female" ? "female" : "male";
+    var pool = listRuVoices();
+    if (!pool.length && typeof global.speechSynthesis !== "undefined") {
+      pool = global.speechSynthesis.getVoices() || [];
+    }
     if (!pool.length) return null;
-    pool.sort(function (a, b) {
-      return voiceScore(b) - voiceScore(a);
+    pool = pool.slice().sort(function (a, b) {
+      return voiceScoreForPref(b, want) - voiceScoreForPref(a, want);
     });
     return pool[0] || null;
+  }
+
+  function pickRussianVoice() {
+    return resolveVoice(getVoicePref());
   }
 
   if (typeof global.speechSynthesis !== "undefined") {
@@ -783,10 +821,11 @@
     } catch (_) {}
   }
 
-  function ttsRateHtml(num) {
+  function ttsControlsHtml(num) {
     var cur = getTtsRate();
+    var pref = getVoicePref();
     var labels = ["0.8×", "1.0×", "1.25×"];
-    var btns = TTS_RATES.map(function (r, i) {
+    var rateBtns = TTS_RATES.map(function (r, i) {
       return (
         '<button type="button" class="oge-rus-speed-btn' +
         (r === cur ? " is-active" : "") +
@@ -798,15 +837,31 @@
       );
     });
     return (
-      '<div class="oge-rus-speed" role="group" aria-label="Скорость чтения">' +
+      '<div class="oge-rus-tts-toolbar">' +
+      '<div class="oge-rus-voice" role="group" aria-label="Голос">' +
+      '<span class="oge-rus-speed-label">Голос</span>' +
+      '<button type="button" class="oge-rus-voice-btn' +
+      (pref === "male" ? " is-active" : "") +
+      '" data-oge-tts-voice="male">Мужской</button>' +
+      '<button type="button" class="oge-rus-voice-btn' +
+      (pref === "female" ? " is-active" : "") +
+      '" data-oge-tts-voice="female">Женский</button>' +
+      "</div>" +
+      '<div class="oge-rus-speed" role="group" aria-label="Скорость">' +
       '<span class="oge-rus-speed-label">Скорость</span>' +
-      btns.join("") +
+      rateBtns.join("") +
+      "</div>" +
       "</div>"
     );
   }
 
+  function ttsRateHtml(num) {
+    return ttsControlsHtml(num);
+  }
+
   function applyPlaybackRate(root) {
     var rate = getTtsRate();
+    var pref = getVoicePref();
     var scope = root || document;
     scope.querySelectorAll("audio.oge-rus-audio").forEach(function (el) {
       try {
@@ -816,6 +871,59 @@
     scope.querySelectorAll("[data-oge-tts-rate]").forEach(function (btn) {
       btn.classList.toggle("is-active", Number(btn.getAttribute("data-oge-tts-rate")) === rate);
     });
+    scope.querySelectorAll("[data-oge-tts-voice]").forEach(function (btn) {
+      btn.classList.toggle("is-active", btn.getAttribute("data-oge-tts-voice") === pref);
+    });
+    syncPauseButtons(scope);
+  }
+
+  function syncPauseButtons(root) {
+    var scope = root || document;
+    var playing = !!_ttsSession.speaking;
+    var paused = !!_ttsSession.paused;
+    scope.querySelectorAll("[data-oge-tts-pause]").forEach(function (btn) {
+      btn.disabled = !playing;
+      btn.textContent = paused ? "Продолжить" : "Пауза";
+      btn.setAttribute("aria-pressed", paused ? "true" : "false");
+    });
+    scope.querySelectorAll("[data-oge-tts]").forEach(function (btn) {
+      if (playing && !paused) btn.textContent = "Стоп";
+      else btn.textContent = "Прослушать 2 раза";
+    });
+  }
+
+  function stopTts(onStatus) {
+    _ttsSession.speaking = false;
+    _ttsSession.paused = false;
+    _ttsSession.round = 0;
+    _ttsSession.text = "";
+    if (typeof global.speechSynthesis !== "undefined") {
+      try {
+        global.speechSynthesis.cancel();
+      } catch (_) {}
+    }
+    if (onStatus) onStatus("Остановлено.");
+    syncPauseButtons(document);
+  }
+
+  function toggleTtsPause(onStatus) {
+    if (typeof global.speechSynthesis === "undefined") return;
+    var synth = global.speechSynthesis;
+    if (!_ttsSession.speaking) return;
+    if (_ttsSession.paused) {
+      try {
+        synth.resume();
+      } catch (_) {}
+      _ttsSession.paused = false;
+      if (onStatus) onStatus("Прослушивание " + _ttsSession.round + " из 2…");
+    } else {
+      try {
+        synth.pause();
+      } catch (_) {}
+      _ttsSession.paused = true;
+      if (onStatus) onStatus("Пауза. Нажмите «Продолжить».");
+    }
+    syncPauseButtons(document);
   }
 
   function speakTwice(text, onStatus) {
@@ -823,37 +931,75 @@
       if (onStatus) onStatus("Синтез речи недоступен в этом браузере.");
       return;
     }
-    const synth = global.speechSynthesis;
-    synth.cancel();
-    const rate = getTtsRate();
-    const utter = (round) => {
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = "ru-RU";
-      u.rate = rate;
-      const voice = pickRussianVoice();
-      if (voice) {
-        u.voice = voice;
-        if (voice.lang) u.lang = voice.lang;
-      }
-      u.onstart = () => onStatus && onStatus("Прослушивание " + round + " из 2…");
-      u.onend = () => {
-        if (round >= 2) {
-          onStatus && onStatus("Прослушивание завершено.");
-          return;
-        }
-        onStatus && onStatus("Пауза… повтор через мгновение");
-        setTimeout(() => utter(2), 1100);
-      };
-      u.onerror = () => onStatus && onStatus("Ошибка воспроизведения.");
-      synth.speak(u);
-    };
-    const voices = synth.getVoices();
-    if (!voices || !voices.length) {
-      setTimeout(function () {
-        utter(1);
-      }, 250);
+    // Повторный клик по «Прослушать» во время чтения = стоп
+    if (_ttsSession.speaking && !_ttsSession.paused) {
+      stopTts(onStatus);
       return;
     }
+    if (_ttsSession.speaking && _ttsSession.paused) {
+      toggleTtsPause(onStatus);
+      return;
+    }
+
+    const synth = global.speechSynthesis;
+    try {
+      synth.cancel();
+    } catch (_) {}
+
+    const rate = getTtsRate();
+    const pref = getVoicePref();
+    // Один голос на оба прохода — выбираем ДО старта и не меняем
+    let lockedVoice = resolveVoice(pref);
+    if (!lockedVoice) {
+      const voicesNow = synth.getVoices() || [];
+      if (!voicesNow.length) {
+        setTimeout(function () {
+          speakTwice(text, onStatus);
+        }, 280);
+        return;
+      }
+      lockedVoice = resolveVoice(pref);
+    }
+
+    _ttsSession.speaking = true;
+    _ttsSession.paused = false;
+    _ttsSession.text = text;
+    _ttsSession.onStatus = onStatus;
+    _ttsSession.voiceURI = lockedVoice ? lockedVoice.voiceURI || lockedVoice.name : "";
+    syncPauseButtons(document);
+
+    const utter = (round) => {
+      if (!_ttsSession.speaking) return;
+      _ttsSession.round = round;
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = (lockedVoice && lockedVoice.lang) || "ru-RU";
+      u.rate = rate;
+      if (lockedVoice) u.voice = lockedVoice;
+      u.onstart = function () {
+        _ttsSession.paused = false;
+        if (onStatus) onStatus("Прослушивание " + round + " из 2…");
+        syncPauseButtons(document);
+      };
+      u.onend = function () {
+        if (!_ttsSession.speaking) return;
+        if (round >= 2) {
+          _ttsSession.speaking = false;
+          _ttsSession.paused = false;
+          if (onStatus) onStatus("Прослушивание завершено.");
+          syncPauseButtons(document);
+          return;
+        }
+        // Без паузы между 1 и 2 — сразу второй раз тем же голосом
+        utter(2);
+      };
+      u.onerror = function () {
+        _ttsSession.speaking = false;
+        _ttsSession.paused = false;
+        if (onStatus) onStatus("Ошибка воспроизведения.");
+        syncPauseButtons(document);
+      };
+      synth.speak(u);
+    };
     utter(1);
   }
 
@@ -925,7 +1071,7 @@
         } catch (_) {
           useFallback("Не удалось запустить повтор.");
         }
-      }, 1200);
+      }, 200);
     };
     cleanup();
     audioEl.addEventListener("ended", onEnded);
@@ -1046,13 +1192,17 @@
     }
 
     let playerHtml = "";
-    // Основная озвучка — нейроголос браузера (MP3 на сервере часто старый/робот).
+    // Основная озвучка — нейроголос браузера; голос выбирается один раз и не меняется между 1 и 2.
     const ttsBtn =
       '<button type="button" class="oge-rus-play-twice oge-rus-tts" data-oge-tts="' +
       escapeHtml(num) +
       '" ' +
       (script ? "" : "disabled") +
       ">Прослушать 2 раза</button>";
+    const pauseBtn =
+      '<button type="button" class="oge-rus-pause-btn" data-oge-tts-pause="' +
+      escapeHtml(num) +
+      '" disabled>Пауза</button>';
     const mp3Btn = audioUrl
       ? '<button type="button" class="oge-rus-play-mp3" data-oge-play-twice="' +
         escapeHtml(num) +
@@ -1072,13 +1222,14 @@
         : "") +
       '<div class="oge-rus-audio-actions">' +
       ttsBtn +
+      pauseBtn +
       mp3Btn +
-      ttsRateHtml(num) +
+      "</div>" +
+      ttsControlsHtml(num) +
       '<span class="oge-rus-tts-status" data-oge-tts-status="' +
       escapeHtml(num) +
       '"></span>' +
-      "</div>" +
-      '<p class="oge-rus-audio-note">Читает нейроголос браузера (Microsoft/Google). Скорость можно замедлить для записи. «Запись MP3» — запасной файл с сервера.</p>' +
+      '<p class="oge-rus-audio-note">Выберите голос один раз — он останется на оба прослушивания. Можно поставить на паузу.</p>' +
       "</div>";
 
     if (!script && !audioUrl) {
@@ -1911,6 +2062,28 @@
         applyPlaybackRate(root);
       });
     });
+
+    root.querySelectorAll("[data-oge-tts-voice]").forEach(function (btn) {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = "1";
+      btn.addEventListener("click", function () {
+        setVoicePref(btn.getAttribute("data-oge-tts-voice"));
+        applyPlaybackRate(root);
+      });
+    });
+
+    root.querySelectorAll("[data-oge-tts-pause]").forEach(function (btn) {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = "1";
+      btn.addEventListener("click", function () {
+        const num = btn.getAttribute("data-oge-tts-pause");
+        const status = root.querySelector('[data-oge-tts-status="' + num + '"]');
+        toggleTtsPause(function (msg) {
+          if (status) status.textContent = msg;
+        });
+      });
+    });
+
     applyPlaybackRate(root);
 
     root.querySelectorAll("[data-oge-tts]").forEach(function (btn) {

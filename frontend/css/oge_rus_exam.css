@@ -745,6 +745,53 @@ span.katex-scroll {
   background: rgba(255, 255, 255, 0.08);
 }
 
+.oge-rus-tts-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.oge-rus-voice,
+.oge-rus-speed {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.oge-rus-voice-btn,
+.oge-rus-pause-btn {
+  border: 1px solid var(--oge-rule-strong);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--oge-ink);
+  font-family: var(--oge-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  min-height: 36px;
+}
+
+.oge-rus-voice-btn.is-active {
+  border-color: rgba(94, 234, 212, 0.45);
+  background: var(--oge-accent-soft);
+  color: var(--oge-accent);
+}
+
+.oge-rus-pause-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.oge-rus-tts-status {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.82rem;
+  color: var(--oge-muted);
+}
+
 .oge-rus-exam .oge-rus-tts-status {
   color: var(--oge-muted);
   font-size: 0.84rem;
