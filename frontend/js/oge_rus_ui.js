@@ -1046,50 +1046,44 @@
     }
 
     let playerHtml = "";
-    if (audioUrl) {
-      playerHtml =
-        '<div class="oge-rus-audio-player" data-oge-audio-player="' +
+    // Основная озвучка — нейроголос браузера (MP3 на сервере часто старый/робот).
+    const ttsBtn =
+      '<button type="button" class="oge-rus-play-twice oge-rus-tts" data-oge-tts="' +
+      escapeHtml(num) +
+      '" ' +
+      (script ? "" : "disabled") +
+      ">Прослушать 2 раза</button>";
+    const mp3Btn = audioUrl
+      ? '<button type="button" class="oge-rus-play-mp3" data-oge-play-twice="' +
         escapeHtml(num) +
-        '">' +
-        '<div class="oge-rus-audio-bar">' +
-        '<audio class="oge-rus-audio" controls preload="metadata" src="' +
-        escapeHtml(audioUrl) +
-        '" data-oge-audio-srcs="' +
-        escapeHtml(srcs.join("|")) +
-        '"></audio>' +
-        "</div>" +
-        '<div class="oge-rus-audio-actions">' +
-        '<button type="button" class="oge-rus-play-twice" data-oge-play-twice="' +
-        escapeHtml(num) +
-        '">Прослушать 2 раза</button>' +
-        ttsRateHtml(num) +
-        '<span class="oge-rus-tts-status" data-oge-tts-status="' +
-        escapeHtml(num) +
-        '"></span>' +
-        "</div>" +
-        '<p class="oge-rus-audio-note">На экзамене текст звучит <strong>два раза</strong> с небольшой паузой. Учебная нейросеть-запись (не аудио ФИПИ).</p>' +
-        "</div>";
-    } else {
-      playerHtml =
-        '<p class="oge-rus-listen-fallback"><strong>Прослушайте текст 2 раза</strong>. ' +
-        "Официальное аудио ФИПИ нельзя распространять — используйте синтез речи ниже.</p>" +
-        '<div class="oge-rus-audio-actions">' +
-        '<button type="button" class="oge-rus-play-twice oge-rus-tts" data-oge-tts="' +
-        escapeHtml(num) +
-        '" ' +
-        (script ? "" : "disabled") +
-        ">Прослушать 2 раза</button>" +
-        ttsRateHtml(num) +
-        '<span class="oge-rus-tts-status" data-oge-tts-status="' +
-        escapeHtml(num) +
-        '"></span></div>';
-    }
+        '">Запись MP3</button>'
+      : "";
+    playerHtml =
+      '<div class="oge-rus-audio-player" data-oge-audio-player="' +
+      escapeHtml(num) +
+      '">' +
+      (audioUrl
+        ? '<div class="oge-rus-audio-bar" hidden>' +
+          '<audio class="oge-rus-audio" preload="metadata" src="' +
+          escapeHtml(audioUrl) +
+          '" data-oge-audio-srcs="' +
+          escapeHtml(srcs.join("|")) +
+          '"></audio></div>'
+        : "") +
+      '<div class="oge-rus-audio-actions">' +
+      ttsBtn +
+      mp3Btn +
+      ttsRateHtml(num) +
+      '<span class="oge-rus-tts-status" data-oge-tts-status="' +
+      escapeHtml(num) +
+      '"></span>' +
+      "</div>" +
+      '<p class="oge-rus-audio-note">Читает нейроголос браузера (Microsoft/Google). Скорость можно замедлить для записи. «Запись MP3» — запасной файл с сервера.</p>' +
+      "</div>";
 
-    if (script) {
-      playerHtml +=
-        '<button type="button" class="oge-rus-tts-link oge-rus-tts" data-oge-tts="' +
-        escapeHtml(num) +
-        '">Запасной синтез речи браузера</button>';
+    if (!script && !audioUrl) {
+      playerHtml =
+        '<p class="oge-rus-listen-fallback"><strong>Текст для прослушивания не загружен.</strong></p>';
     }
 
     const transcript = script
@@ -1109,6 +1103,8 @@
     return (
       '<div class="oge-rus-listen" data-oge-listen="' +
       escapeHtml(num) +
+      '" data-oge-listen-text="' +
+      escapeHtml(script) +
       '"><p class="oge-rus-listen-hint">Задание 1 · сжатое изложение. На экзамене текст звучит дважды. Объём — не менее ' +
       essayMinWords(p, 70) +
       " слов.</p>" +
@@ -1925,7 +1921,9 @@
         const host = root.querySelector('[data-oge-listen="' + num + '"]');
         const status = root.querySelector('[data-oge-tts-status="' + num + '"]');
         const body = host && host.querySelector(".oge-rus-transcript-body");
-        const text = body ? body.innerText || body.textContent || "" : "";
+        const fromBody = body ? body.innerText || body.textContent || "" : "";
+        const fromAttr = host ? host.getAttribute("data-oge-listen-text") || "" : "";
+        const text = String(fromBody || fromAttr || "").trim();
         speakTwice(text, function (msg) {
           if (status) status.textContent = msg;
         });

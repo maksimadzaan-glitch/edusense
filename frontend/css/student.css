@@ -1075,10 +1075,12 @@ html.figure-lightbox-open body {
 /* When exam sheet is active, suppress generic dark-card chrome for OGE rus */
 .card-oge-rus {
   width: 100%;
-  max-width: 56rem;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
   box-sizing: border-box;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 .card-oge-rus > .oge-rus-exam {
   margin-left: 0;
@@ -1091,7 +1093,7 @@ html.figure-lightbox-open body {
 }
 #app.is-work:has(.oge-rus-exam) .work-focus {
   width: 100%;
-  max-width: 56rem;
+  max-width: none;
 }
 
 /* --- Student cabinet shell (teacher-like) --- */
@@ -2069,10 +2071,10 @@ html.dash-ready .student-hero-glow {
 .work-focus {
   min-height: 100vh;
   width: 100%;
-  max-width: 56rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 18px 1rem 28px;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+  padding: 12px 10px 28px;
   box-sizing: border-box;
   animation: riseIn 0.45s var(--ease-out) both;
 }
