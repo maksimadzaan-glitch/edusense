@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
+from backend.deps.auth import require_teacher
 from backend.models import ClassRoom, User
 
 router = APIRouter(prefix="/api", tags=["classes"])
@@ -43,10 +44,13 @@ def _generate_code(db: Session) -> str:
 
 
 @router.post("/classes", response_model=ClassResponse, status_code=status.HTTP_201_CREATED)
-def create_class(payload: ClassCreate, db: Session = Depends(get_db)):
-    teacher = db.query(User).filter(User.id == payload.teacher_id).first()
-    if not teacher or teacher.role != "teacher":
-        raise HTTPException(status_code=403, detail="Только учитель может создать класс.")
+def create_class(
+    payload: ClassCreate,
+    db: Session = Depends(get_db),
+    user: User = Depends(require_teacher),
+):
+    if payload.teacher_id != user.id:
+        raise HTTPException(status_code=403, detail="Нельзя создать класс от чужого имени.")
 
     classroom = ClassRoom(
         name=payload.name.strip(),
@@ -54,7 +58,7 @@ def create_class(payload: ClassCreate, db: Session = Depends(get_db)):
         exam_type=payload.exam_type,
         grade=(payload.grade.strip() if payload.grade else None),
         subject=payload.subject.strip(),
-        teacher_id=teacher.id,
+        teacher_id=user.id,
     )
     db.add(classroom)
     db.commit()
@@ -63,10 +67,16 @@ def create_class(payload: ClassCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/classes/by-teacher/{teacher_id}", response_model=List[ClassResponse])
-def list_teacher_classes(teacher_id: int, db: Session = Depends(get_db)):
+def list_teacher_classes(
+    teacher_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(require_teacher),
+):
+    if teacher_id != user.id:
+        raise HTTPException(status_code=403, detail="Нет доступа к классам другого учителя.")
     return (
         db.query(ClassRoom)
-        .filter(ClassRoom.teacher_id == teacher_id)
+        .filter(ClassRoom.teacher_id == user.id)
         .order_by(ClassRoom.id.desc())
         .all()
     )

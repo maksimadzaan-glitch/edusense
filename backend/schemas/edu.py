@@ -311,6 +311,7 @@ class AnswerItemIn(BaseModel):
 
 class SubmissionCreateRequest(BaseModel):
     student_name: str = Field(..., min_length=2, max_length=120)
+    student_id: str = Field(..., min_length=8, max_length=64)
     answers: List[AnswerItemIn] = Field(..., min_length=1)
     started_at: Optional[datetime] = None
 

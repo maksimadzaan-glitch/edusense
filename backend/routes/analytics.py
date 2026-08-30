@@ -12,7 +12,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
-from backend.models import Assignment, ClassStudent, Submission
+from backend.deps.auth import require_teacher_class
+from backend.models import Assignment, ClassStudent, EduClass, Submission
 from backend.schemas.edu import (
     AssignmentOut,
     ClassAnalyticsOut,
@@ -596,12 +597,20 @@ def _remediation_gate(
 
 @router.get("/{code}/analytics", response_model=ClassAnalyticsOut)
 def class_analytics(
-    code: str,
+    classroom=Depends(require_teacher_class),
     assignment_code: Optional[str] = Query(None),
     student: Optional[str] = Query(None),
     db: Session = Depends(get_db),
 ):
-    classroom = ensure_edu_class(db, class_code=code)
+    return _compute_class_analytics(classroom, assignment_code, student, db)
+
+
+def _compute_class_analytics(
+    classroom: EduClass,
+    assignment_code: Optional[str],
+    student: Optional[str],
+    db: Session,
+):
     subject = getattr(classroom, "subject", None)
     roster_rows = (
         db.query(ClassStudent)
@@ -987,20 +996,19 @@ def class_analytics(
     status_code=201,
 )
 def create_remediation_assignment(
-    code: str,
     payload: RemediationRequest,
+    classroom=Depends(require_teacher_class),
     db: Session = Depends(get_db),
 ):
     """Создать «Работу над ошибками» — слабые слоты, по возможности другие прототипы."""
     from backend.routes.assignments import _assignment_out
 
-    classroom = ensure_edu_class(db, class_code=code)
     assert_can_issue_variant(db, classroom.id)
-    analytics = class_analytics(
-        code=classroom.code,
-        assignment_code=payload.assignment_code,
-        student=payload.student,
-        db=db,
+    analytics = _compute_class_analytics(
+        classroom,
+        payload.assignment_code,
+        payload.student,
+        db,
     )
     if not analytics.selected_assignment_code:
         raise HTTPException(status_code=400, detail="Нет работ для анализа")
@@ -1093,17 +1101,16 @@ def create_remediation_assignment(
     response_model=RnoPreviewOut,
 )
 def preview_rno_assignment(
-    code: str,
     payload: RnoPreviewRequest,
+    classroom=Depends(require_teacher_class),
     db: Session = Depends(get_db),
 ):
     """Собрать предпросмотр «Работы над ошибками» без публикации задания."""
-    classroom = ensure_edu_class(db, class_code=code)
-    analytics = class_analytics(
-        code=classroom.code,
-        assignment_code=payload.assignment_code,
-        student=payload.student,
-        db=db,
+    analytics = _compute_class_analytics(
+        classroom,
+        payload.assignment_code,
+        payload.student,
+        db,
     )
     if not analytics.selected_assignment_code:
         raise HTTPException(status_code=400, detail="Нет работ для анализа")

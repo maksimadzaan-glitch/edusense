@@ -722,6 +722,102 @@
     };
   }
 
+  var TTS_RATE_KEY = "edusense_tts_rate";
+  var TTS_RATES = [0.8, 1, 1.25];
+
+  function getTtsRate() {
+    try {
+      var r = Number(global.localStorage && localStorage.getItem(TTS_RATE_KEY));
+      if (TTS_RATES.indexOf(r) >= 0) return r;
+    } catch (_) {}
+    return 1;
+  }
+
+  function setTtsRate(rate) {
+    var r = Number(rate);
+    if (TTS_RATES.indexOf(r) < 0) r = 1;
+    try {
+      if (global.localStorage) localStorage.setItem(TTS_RATE_KEY, String(r));
+    } catch (_) {}
+    return r;
+  }
+
+  function voiceScore(v) {
+    var n = String((v && v.name) || "") + " " + String((v && v.voiceURI) || "");
+    var lang = String((v && v.lang) || "");
+    var s = 0;
+    if (/^ru(-|$)/i.test(lang) || /russian/i.test(n)) s += 20;
+    if (/dmitry/i.test(n) && /neural|online/i.test(n)) s += 100;
+    if (/svetlana/i.test(n) && /neural|online/i.test(n)) s += 95;
+    if (/google/i.test(n) && /ru/i.test(n + lang)) s += 90;
+    if (/microsoft/i.test(n) && /dmitry|irina|pavel/i.test(n) && /online|neural/i.test(n)) s += 88;
+    if (/yandex|edge/i.test(n)) s += 80;
+    if (/neural/i.test(n)) s += 40;
+    if (/online/i.test(n)) s += 20;
+    if (v && v.localService === false) s += 10;
+    return s;
+  }
+
+  function pickRussianVoice() {
+    if (typeof global.speechSynthesis === "undefined") return null;
+    var voices = global.speechSynthesis.getVoices() || [];
+    var ru = voices.filter(function (v) {
+      var lang = String((v && v.lang) || "");
+      var name = String((v && v.name) || "");
+      return /^ru(-|$)/i.test(lang) || /russian/i.test(name);
+    });
+    var pool = ru.length ? ru : voices;
+    if (!pool.length) return null;
+    pool.sort(function (a, b) {
+      return voiceScore(b) - voiceScore(a);
+    });
+    return pool[0] || null;
+  }
+
+  if (typeof global.speechSynthesis !== "undefined") {
+    try {
+      global.speechSynthesis.getVoices();
+      global.speechSynthesis.addEventListener("voiceschanged", function () {
+        global.speechSynthesis.getVoices();
+      });
+    } catch (_) {}
+  }
+
+  function ttsRateHtml(num) {
+    var cur = getTtsRate();
+    var labels = ["0.8×", "1.0×", "1.25×"];
+    var btns = TTS_RATES.map(function (r, i) {
+      return (
+        '<button type="button" class="oge-rus-speed-btn' +
+        (r === cur ? " is-active" : "") +
+        '" data-oge-tts-rate="' +
+        r +
+        '">' +
+        labels[i] +
+        "</button>"
+      );
+    });
+    return (
+      '<div class="oge-rus-speed" role="group" aria-label="Скорость чтения">' +
+      '<span class="oge-rus-speed-label">Скорость</span>' +
+      btns.join("") +
+      "</div>"
+    );
+  }
+
+  function applyPlaybackRate(root) {
+    var rate = getTtsRate();
+    var scope = root || document;
+    scope.querySelectorAll("audio.oge-rus-audio").forEach(function (el) {
+      try {
+        el.playbackRate = rate;
+      } catch (_) {}
+    });
+    scope.querySelectorAll("[data-oge-tts-rate]").forEach(function (btn) {
+      btn.classList.toggle("is-active", Number(btn.getAttribute("data-oge-tts-rate")) === rate);
+    });
+  }
+
   function speakTwice(text, onStatus) {
     if (!text || typeof global.speechSynthesis === "undefined") {
       if (onStatus) onStatus("Синтез речи недоступен в этом браузере.");
@@ -729,10 +825,16 @@
     }
     const synth = global.speechSynthesis;
     synth.cancel();
+    const rate = getTtsRate();
     const utter = (round) => {
       const u = new SpeechSynthesisUtterance(text);
       u.lang = "ru-RU";
-      u.rate = 0.92;
+      u.rate = rate;
+      const voice = pickRussianVoice();
+      if (voice) {
+        u.voice = voice;
+        if (voice.lang) u.lang = voice.lang;
+      }
       u.onstart = () => onStatus && onStatus("Прослушивание " + round + " из 2…");
       u.onend = () => {
         if (round >= 2) {
@@ -745,6 +847,13 @@
       u.onerror = () => onStatus && onStatus("Ошибка воспроизведения.");
       synth.speak(u);
     };
+    const voices = synth.getVoices();
+    if (!voices || !voices.length) {
+      setTimeout(function () {
+        utter(1);
+      }, 250);
+      return;
+    }
     utter(1);
   }
 
@@ -781,6 +890,7 @@
         try {
           audioEl.src = nxt;
           audioEl.load();
+          audioEl.playbackRate = getTtsRate();
           audioEl.currentTime = 0;
           const p2 = audioEl.play();
           if (p2 && typeof p2.catch === "function") {
@@ -804,6 +914,7 @@
       setTimeout(function () {
         if (onStatus) onStatus("Прослушивание 2 из 2…");
         try {
+          audioEl.playbackRate = getTtsRate();
           audioEl.currentTime = 0;
           const p = audioEl.play();
           if (p && typeof p.catch === "function") {
@@ -821,6 +932,7 @@
     audioEl.addEventListener("error", onErr);
     if (onStatus) onStatus("Прослушивание 1 из 2…");
     try {
+      audioEl.playbackRate = getTtsRate();
       audioEl.currentTime = 0;
       const p = audioEl.play();
       if (p && typeof p.catch === "function") {
@@ -950,6 +1062,7 @@
         '<button type="button" class="oge-rus-play-twice" data-oge-play-twice="' +
         escapeHtml(num) +
         '">Прослушать 2 раза</button>' +
+        ttsRateHtml(num) +
         '<span class="oge-rus-tts-status" data-oge-tts-status="' +
         escapeHtml(num) +
         '"></span>' +
@@ -966,6 +1079,7 @@
         '" ' +
         (script ? "" : "disabled") +
         ">Прослушать 2 раза</button>" +
+        ttsRateHtml(num) +
         '<span class="oge-rus-tts-status" data-oge-tts-status="' +
         escapeHtml(num) +
         '"></span></div>';
@@ -1432,16 +1546,22 @@
     const p = payloadOf(task) || {};
     const urls = Array.isArray(p.image_urls) ? p.image_urls : [];
     if (!urls.length) return "";
+    const num = task && task.num != null ? task.num : "";
     return (
       '<div class="task-media" aria-label="Рисунок к заданию">' +
       urls
         .map(function (u) {
           const src = String(u || "").trim();
           if (!src || /^javascript:/i.test(src)) return "";
+          if (typeof global.edusenseTaskImgHtml === "function") {
+            return global.edusenseTaskImgHtml(src, num, "Рисунок");
+          }
           return (
             '<img class="task-media-img" src="' +
             escapeHtml(src) +
-            '" alt="Рисунок" loading="lazy" />'
+            '" alt="Рисунок" loading="lazy" data-task-num="' +
+            escapeHtml(num) +
+            '" />'
           );
         })
         .filter(Boolean)
@@ -1782,7 +1902,20 @@
 
     root.querySelectorAll("audio.oge-rus-audio").forEach(function (el) {
       bindAudioSrcFallback(el);
+      try {
+        el.playbackRate = getTtsRate();
+      } catch (_) {}
     });
+
+    root.querySelectorAll("[data-oge-tts-rate]").forEach(function (btn) {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = "1";
+      btn.addEventListener("click", function () {
+        setTtsRate(btn.getAttribute("data-oge-tts-rate"));
+        applyPlaybackRate(root);
+      });
+    });
+    applyPlaybackRate(root);
 
     root.querySelectorAll("[data-oge-tts]").forEach(function (btn) {
       if (btn.dataset.bound) return;

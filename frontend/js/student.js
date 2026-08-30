@@ -283,6 +283,7 @@ const state = {
   timerPromptShown: false,
   timerPausedRemaining: null, // ms left after leaving work (pause)
   _timerTickId: null,
+  _progressSaveId: null,
   lastSavedAt: null, // ms when local autosave fired
   showInvite: false,
   showLive: false,
@@ -1058,13 +1059,17 @@ function payloadImagesHtml(q) {
   const p = q?.payload || {};
   const urls = Array.isArray(p.image_urls) ? p.image_urls : [];
   if (!urls.length) return "";
+  const num = q?.num != null ? q.num : "";
   return (
     `<div class="task-media" aria-label="Рисунок к заданию">` +
     urls
       .map((u) => {
         const src = String(u || "").trim();
         if (!src || /^javascript:/i.test(src)) return "";
-        return `<img class="task-media-img" src="${escapeHtml(src)}" alt="Рисунок" loading="lazy" />`;
+        if (typeof edusenseTaskImgHtml === "function") {
+          return edusenseTaskImgHtml(src, num, "Рисунок");
+        }
+        return `<img class="task-media-img" src="${escapeHtml(src)}" alt="Рисунок" loading="lazy" data-task-num="${escapeHtml(String(num))}" />`;
       })
       .filter(Boolean)
       .join("") +
@@ -1185,6 +1190,13 @@ async function api(path, options = {}) {
     headers,
   });
   const data = await res.json().catch(() => ({}));
+  if (res.status === 401 && !String(path).includes("/auth/me")) {
+    window.EduSenseAuth?.clearSession?.({ forgetAccount: false });
+    window.location.href = "/?leave=1#auth";
+    const err = new Error("Сессия истекла. Войдите снова.");
+    err.status = 401;
+    throw err;
+  }
   if (!res.ok) {
     const err = new Error(detailMessage(data, "Ошибка запроса"));
     err.status = res.status;
@@ -1258,6 +1270,38 @@ function navigateStudent(path, { replace = false } = {}) {
   else history.pushState(null, "", url);
 }
 
+function pathWorkCode() {
+  const path = (location.pathname || "").replace(/\/+$/, "") || "/";
+  const m = path.match(/\/student\/work\/([^/]+)$/i);
+  if (!m) return "";
+  return normalizeJoinCode(decodeURIComponent(m[1] || ""));
+}
+
+function stopProgressAutosave() {
+  if (state._progressSaveId) {
+    clearInterval(state._progressSaveId);
+    state._progressSaveId = null;
+  }
+}
+
+function startProgressAutosave() {
+  stopProgressAutosave();
+  if (state.step !== "work" || !state.assignment) return;
+  state._progressSaveId = setInterval(() => {
+    if (state.step !== "work" || !state.assignment) {
+      stopProgressAutosave();
+      return;
+    }
+    saveLocalProgress(state.assignment.code, state.answers, state.startedAt);
+  }, 5000);
+}
+
+function flushProgressSave() {
+  if (state.step === "work" && state.assignment) {
+    saveLocalProgress(state.assignment.code, state.answers, state.startedAt);
+  }
+}
+
 function pathWantsDashboard() {
   const path = (location.pathname || "").replace(/\/+$/, "") || "/";
   const params = new URLSearchParams(location.search);
@@ -1280,6 +1324,7 @@ function enterWork() {
   state.step = "work";
   if (state.assignment.code) {
     saveLocalProgress(state.assignment.code, state.answers, state.startedAt);
+    navigateStudent("/student/work/" + encodeURIComponent(state.assignment.code), { replace: true });
   }
 }
 
@@ -3355,6 +3400,8 @@ function render() {
   if (typeof EduSensePWA !== "undefined") EduSensePWA.sync();
   scheduleFocusPlayer({ visible: state.step === "dashboard" && !state.loading });
   markDashboardReady();
+  if (state.step === "work") startProgressAutosave();
+  else stopProgressAutosave();
 }
 
 function logoutToStart() {
@@ -3420,10 +3467,11 @@ async function loadDashboard({ navigate = true } = {}) {
     state.loading = true;
     render();
     try {
+      const sid = encodeURIComponent(String(state.studentId || "").trim());
       const data = await api(
         `/api/student/tasks?class_code=${encodeURIComponent(state.classCode)}&student_name=${encodeURIComponent(
           state.name
-        )}`
+        )}&student_id=${sid}`
       );
       state.dashboard = data;
       state.className = data.class_name || state.className;
@@ -4007,10 +4055,9 @@ async function joinStudent(useSavedName = false) {
     state.closed = false;
     state.codeError = "";
     // после join по коду работы — сразу открыть её с дашборда
-    state.pendingAssignmentCode =
-      data.join_kind === "assignment" && data.assignment && data.assignment.code
-        ? data.assignment.code
-        : null;
+    if (data.join_kind === "assignment" && data.assignment && data.assignment.code) {
+      state.pendingAssignmentCode = data.assignment.code;
+    }
     await loadDashboard({ navigate: true });
   } catch (err) {
     const closed = closedDetail(err.data);
@@ -4064,6 +4111,7 @@ async function submitWork() {
     const startedAt = state.startedAt || new Date().toISOString();
     const body = {
       student_name: String(state.name || "").trim(),
+      student_id: String(state.studentId || "").trim(),
       answers,
       started_at: startedAt,
     };
@@ -4107,6 +4155,10 @@ async function submitWork() {
 async function boot() {
   installFigureLightbox();
   installCopyGuard();
+  window.addEventListener("pagehide", flushProgressSave);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") flushProgressSave();
+  });
   window.addEventListener("popstate", () => {
     if (state.step === "work" || state.step === "review" || state.step === "done") return;
     if (pathWantsJoin() && !hasCabinetSession()) {
@@ -4196,6 +4248,9 @@ async function boot() {
     render();
     return;
   }
+
+  const workCode = pathWorkCode();
+  if (workCode) state.pendingAssignmentCode = workCode;
 
   // Есть класс — сразу на главную кабинета (даже если в URL остался ?code=)
   if (hasCabinetSession() && !pathWantsJoin()) {

@@ -22,19 +22,61 @@
       .replace(/^\s*\$+|\$+\s*$/g, "")
       .trim();
     if (!clean) return "";
+    let html;
     if (!hasKatex()) {
-      return `<span class="math-fallback">${escapeHtml(clean)}</span>`;
+      html = `<span class="math-fallback">${escapeHtml(clean)}</span>`;
+    } else {
+      try {
+        html = global.katex.renderToString(clean, {
+          throwOnError: false,
+          displayMode: !!displayMode,
+          strict: "ignore",
+          output: "html",
+        });
+      } catch (_) {
+        html = `<span class="math-fallback">${escapeHtml(clean)}</span>`;
+      }
     }
-    try {
-      return global.katex.renderToString(clean, {
-        throwOnError: false,
-        displayMode: !!displayMode,
-        strict: "ignore",
-        output: "html",
-      });
-    } catch (_) {
-      return `<span class="math-fallback">${escapeHtml(clean)}</span>`;
+    if (displayMode) {
+      return `<div class="katex-scroll overflow-x-auto py-1">${html}</div>`;
     }
+    return `<span class="katex-scroll overflow-x-auto">${html}</span>`;
+  }
+
+  function taskImgHtml(src, taskNum, altText) {
+    const s = String(src || "").trim();
+    if (!s || /^javascript:/i.test(s)) return "";
+    const n = taskNum != null && taskNum !== "" ? String(taskNum) : "";
+    const alt = altText || (n ? `Изображение к заданию №${n}` : "Изображение к заданию");
+    return (
+      `<img class="task-media-img" src="${escapeHtml(s)}" alt="${escapeHtml(alt)}" ` +
+      `loading="lazy" data-task-num="${escapeHtml(n)}" />`
+    );
+  }
+
+  function imgFallbackEl(img) {
+    if (!img || img.dataset.fallback === "1") return;
+    img.dataset.fallback = "1";
+    const n = String(img.getAttribute("data-task-num") || "").trim();
+    const ph = document.createElement("div");
+    ph.className = "task-media-fallback";
+    ph.setAttribute("role", "img");
+    ph.textContent = n ? `[Изображение к заданию №${n}]` : "[Изображение к заданию]";
+    if (img.parentNode) img.replaceWith(ph);
+  }
+
+  if (typeof document !== "undefined" && !global.__edusenseImgErrorBound) {
+    global.__edusenseImgErrorBound = true;
+    document.addEventListener(
+      "error",
+      function (e) {
+        const t = e.target;
+        if (!t || t.tagName !== "IMG") return;
+        if (!t.classList || !t.classList.contains("task-media-img")) return;
+        imgFallbackEl(t);
+      },
+      true
+    );
   }
 
   function repairBrokenLatex(text) {
@@ -423,4 +465,6 @@
   global.formatAnswerKey = formatAnswerKey;
   global.prepareMathSource = prepareMathSource;
   global.coerceMathDecimalInput = coerceMathDecimalInput;
+  global.edusenseTaskImgHtml = taskImgHtml;
+  global.__edusenseImgError = imgFallbackEl;
 })(typeof window !== "undefined" ? window : globalThis);

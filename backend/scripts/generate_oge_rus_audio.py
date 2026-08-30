@@ -28,8 +28,8 @@ if str(_ROOT) not in sys.path:
 AUDIO_DIR = _ROOT / "frontend" / "audio" / "oge_rus"
 CTX_DIR = _ROOT / "backend" / "universal" / "packs" / "oge_rus" / "context_blocks"
 IMPORTS_DIR = _ROOT / "backend" / "universal" / "packs" / "oge_rus" / "imports"
-VOICE = "ru-RU-SvetlanaNeural"
-# Альтернатива: ru-RU-DmitryNeural
+VOICE = "ru-RU-DmitryNeural"
+# Альтернатива: ru-RU-SvetlanaNeural
 
 
 def _slug(cid: str) -> str:

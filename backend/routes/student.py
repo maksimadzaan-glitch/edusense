@@ -11,7 +11,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
-from backend.models import Assignment, ClassStudent, EduClass, Submission
+from backend.deps.auth import assert_student_name_matches_user, get_optional_user
+from backend.models import Assignment, ClassStudent, EduClass, Submission, User
 from backend.schemas.edu import (
     StudentJoinAssignmentOut,
     StudentJoinOut,
@@ -27,6 +28,7 @@ from backend.routes.assignments import (
     _student_allowed,
 )
 from backend.services.classroom import ensure_edu_class, normalize_student_name
+from backend.services.student_roster import ensure_roster_student, verify_roster_student
 from backend.services.deadlines import utc_aware
 from backend.services.grade_calculator import result_from_review
 
@@ -174,16 +176,7 @@ def _find_class_or_assignment(
 
 
 def _ensure_roster(db: Session, classroom: EduClass, name: str) -> ClassStudent:
-    """Добавить ученика в ростер, если ещё нет (сопоставление без учёта регистра)."""
-    key = normalize_student_name(name).casefold()
-    rows = db.query(ClassStudent).filter(ClassStudent.class_id == classroom.id).all()
-    for row in rows:
-        if normalize_student_name(row.name).casefold() == key:
-            return row
-    row = ClassStudent(class_id=classroom.id, name=normalize_student_name(name))
-    db.add(row)
-    db.flush()
-    return row
+    return ensure_roster_student(db, classroom, name)
 
 
 def _assignment_brief(row: Assignment, classroom: EduClass) -> StudentJoinAssignmentOut:
@@ -280,10 +273,18 @@ def _class_leaderboard(classroom: EduClass, subs: list[Submission], you_name: st
 
 
 @router.post("/join", response_model=StudentJoinOut, status_code=status.HTTP_200_OK)
-def student_join(payload: StudentJoinRequest, db: Session = Depends(get_db)):
+def student_join(
+    payload: StudentJoinRequest,
+    db: Session = Depends(get_db),
+    auth_user: Optional[User] = Depends(get_optional_user),
+):
     name = normalize_student_name(payload.name)
     if len(name) < 2:
         raise HTTPException(status_code=400, detail="Укажите имя и фамилию")
+    if auth_user:
+        if auth_user.role != "student":
+            raise HTTPException(status_code=403, detail="Войти как ученик может только аккаунт ученика.")
+        assert_student_name_matches_user(auth_user, name)
 
     classroom, assignment, join_kind = _find_class_or_assignment(db, payload.code)
 
@@ -300,12 +301,11 @@ def student_join(payload: StudentJoinRequest, db: Session = Depends(get_db)):
             },
         )
 
-    _ensure_roster(db, classroom, name)
+    roster_row = _ensure_roster(db, classroom, name)
     db.commit()
 
-    student_id = str(uuid.uuid4())
     return StudentJoinOut(
-        student_id=student_id,
+        student_id=roster_row.student_uuid or "",
         student_name=name,
         class_code=classroom.code,
         class_name=classroom.name,
@@ -320,14 +320,27 @@ def student_join(payload: StudentJoinRequest, db: Session = Depends(get_db)):
 def student_tasks(
     class_code: str = Query(..., min_length=3, max_length=32),
     student_name: str = Query(..., min_length=2, max_length=120),
+    student_id: str = Query(..., min_length=8, max_length=64),
     db: Session = Depends(get_db),
+    auth_user: Optional[User] = Depends(get_optional_user),
 ):
     name = normalize_student_name(student_name)
     name_key = name.casefold()
     if len(name) < 2:
         raise HTTPException(status_code=400, detail="Укажите имя ученика")
+    if auth_user:
+        if auth_user.role != "student":
+            raise HTTPException(status_code=403, detail="Доступ только для ученика.")
+        assert_student_name_matches_user(auth_user, name)
 
     classroom = ensure_edu_class(db, class_code=class_code)
+    try:
+        verify_roster_student(db, classroom, name, student_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=403,
+            detail="Неверный идентификатор ученика. Войдите в класс заново.",
+        ) from None
     db.commit()
 
     assignments = (

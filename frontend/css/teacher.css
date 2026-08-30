@@ -2997,8 +2997,8 @@ html.is-telegram-miniapp .noise {
   height: auto;
   object-fit: contain;
   display: block;
-  margin: 0 auto;
-  border-radius: 0.75rem;
+  margin: 0.75rem auto;
+  border-radius: 0.5rem;
   border: 1px solid rgba(148, 163, 184, 0.28);
   background: #fff;
 }
@@ -3218,6 +3218,42 @@ html.pdf-export-busy body {
   white-space: nowrap;
   max-width: 100%;
   vertical-align: middle;
+}
+
+.katex-scroll,
+.task-text .katex-display,
+.ep-body .katex-display,
+.overflow-x-auto {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding: 0.25rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+div.katex-scroll,
+.task-text .katex-display,
+.ep-body .katex-display {
+  display: block;
+}
+span.katex-scroll {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.task-media-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.75rem auto;
+  padding: 14px 16px;
+  max-width: 100%;
+  box-sizing: border-box;
+  border: 1px dashed rgba(148, 163, 184, 0.45);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: #8b97ab;
+  font-size: 0.9rem;
+  text-align: center;
 }
 
 /* Дроби и корни — не рвать на переносе (мобильный) */
@@ -3840,9 +3876,13 @@ html.figure-lightbox-open body {
 }
 
 .variant-viewer {
-  padding: 22px;
+  width: 100%;
+  max-width: 56rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 22px 1rem;
+  box-sizing: border-box;
   overflow-x: hidden;
-  max-width: 100%;
 }
 
 /* Tables / images / text in KIM preview (incl. paper mode) */

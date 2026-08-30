@@ -225,11 +225,15 @@
     var url = String(context.figure_url || "").trim();
     if (!url && /^https?:\/\//i.test(id)) url = id;
     if (url && /^https?:\/\//i.test(url) && !/^javascript:/i.test(url)) {
+      var img =
+        typeof global.edusenseTaskImgHtml === "function"
+          ? global.edusenseTaskImgHtml(url, "1–5", "Чертёж к заданиям 1–5")
+          : '<img class="task-media-img" src="' +
+            escapeHtml(url) +
+            '" alt="Чертёж к заданиям 1–5" loading="lazy" data-task-num="1–5" />';
       return (
         '<div class="task-figure math-oge-asset" data-figure="img" role="button" tabindex="0" title="Увеличить чертёж" aria-label="Увеличить чертёж">' +
-        '<img class="task-media-img" src="' +
-        escapeHtml(url) +
-        '" alt="Чертёж к заданиям 1–5" loading="lazy" />' +
+        img +
         "</div>"
       );
     }

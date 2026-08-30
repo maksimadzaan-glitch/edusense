@@ -43,7 +43,11 @@ def ensure_sqlite_columns() -> None:
             ("difficulty", "VARCHAR(20)"),
             ("settings_json", "TEXT"),
         ],
+        "class_students": [
+            ("student_uuid", "VARCHAR(36)"),
+        ],
         "submissions": [
+            ("student_uuid", "VARCHAR(36)"),
             ("started_at", "DATETIME"),
             ("teacher_score", "REAL"),
             ("teacher_comment", "TEXT"),

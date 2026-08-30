@@ -87,6 +87,7 @@ class ClassStudent(Base):
     id = Column(Integer, primary_key=True, index=True)
     class_id = Column(Integer, ForeignKey("edu_classes.id"), nullable=False, index=True)
     name = Column(String, nullable=False)
+    student_uuid = Column(String(36), nullable=True, index=True)
     created_at = Column(DateTime, nullable=False, server_default=func.now())
 
     classroom = relationship("EduClass", back_populates="roster")
@@ -129,6 +130,7 @@ class Submission(Base):
     id = Column(Integer, primary_key=True, index=True)
     assignment_id = Column(Integer, ForeignKey("assignments.id"), nullable=False, index=True)
     student_name = Column(String, nullable=False)
+    student_uuid = Column(String(36), nullable=True, index=True)
     score = Column(Float, nullable=True)
     status = Column(String, nullable=False, default="pending")
     # pending | ai_reviewed | approved | graded

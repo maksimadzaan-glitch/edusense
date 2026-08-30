@@ -4,8 +4,11 @@ from __future__ import annotations
 
 from typing import Any, Literal, Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
+
+from backend.deps.auth import require_teacher_or_student
+from backend.models import User
 
 from backend.services.part2_grader import fipi_rubric_for, grade_part2_task, write_math_solution
 from backend.services.rus_grader import grade_izlozhenie, grade_sochinenie
@@ -86,7 +89,10 @@ def _pick(*vals: Any) -> str:
 
 
 @router.post("/api/v1/grade-part2", response_model=GradePart2Out)
-async def grade_part2(payload: GradePart2Request):
+async def grade_part2(
+    payload: GradePart2Request,
+    _user: User = Depends(require_teacher_or_student),
+):
     num = payload.taskNum if payload.taskNum is not None else payload.task_num
     try:
         task_num = int(num or 0)
@@ -111,7 +117,10 @@ async def grade_part2(payload: GradePart2Request):
 
 
 @router.post("/api/v1/grade-rus", response_model=GradeRusOut)
-async def grade_rus(payload: GradeRusRequest):
+async def grade_rus(
+    payload: GradeRusRequest,
+    _user: User = Depends(require_teacher_or_student),
+):
     """Проверка сжатого изложения (№1) или сочинения (№13). Сочинение за ученика не пишется."""
     kwargs = {
         "task_text": _pick(payload.taskText, payload.task_text),
@@ -141,7 +150,10 @@ async def grade_rus(payload: GradeRusRequest):
 
 
 @router.post("/api/v1/math-solution", response_model=MathSolutionOut)
-async def math_solution(payload: MathSolutionRequest):
+async def math_solution(
+    payload: MathSolutionRequest,
+    _user: User = Depends(require_teacher_or_student),
+):
     """Полный ход решения — только математика, для учителя и разбора после сдачи."""
     num = payload.taskNum if payload.taskNum is not None else payload.task_num
     try:

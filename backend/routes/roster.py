@@ -13,6 +13,7 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from backend.database import SessionLocal, get_db
+from backend.deps.auth import require_teacher_class
 from backend.models import Assignment, ClassStudent, Submission
 from backend.schemas.edu import (
     RosterEntryOut,
@@ -156,8 +157,10 @@ def _roster_payload(classroom, rows: list[ClassStudent]) -> RosterOut:
 
 
 @router.get("/{code}/roster", response_model=RosterOut)
-def get_roster(code: str, db: Session = Depends(get_db)):
-    classroom = ensure_edu_class(db, class_code=code)
+def get_roster(
+    classroom=Depends(require_teacher_class),
+    db: Session = Depends(get_db),
+):
     rows = (
         db.query(ClassStudent)
         .filter(ClassStudent.class_id == classroom.id)
@@ -169,8 +172,11 @@ def get_roster(code: str, db: Session = Depends(get_db)):
 
 
 @router.put("/{code}/roster", response_model=RosterOut)
-def put_roster(code: str, payload: RosterPutRequest, db: Session = Depends(get_db)):
-    classroom = ensure_edu_class(db, class_code=code)
+def put_roster(
+    payload: RosterPutRequest,
+    classroom=Depends(require_teacher_class),
+    db: Session = Depends(get_db),
+):
     names = _parse_names(payload.names or [])
     wanted_keys = {name.casefold() for name in names}
 
@@ -208,8 +214,10 @@ def put_roster(code: str, payload: RosterPutRequest, db: Session = Depends(get_d
 
 
 @router.get("/{code}/students", response_model=StudentsListOut)
-def list_students(code: str, db: Session = Depends(get_db)):
-    classroom = ensure_edu_class(db, class_code=code)
+def list_students(
+    classroom=Depends(require_teacher_class),
+    db: Session = Depends(get_db),
+):
     roster_rows = (
         db.query(ClassStudent)
         .filter(ClassStudent.class_id == classroom.id)
@@ -308,8 +316,9 @@ def list_students(code: str, db: Session = Depends(get_db)):
 
 
 @router.get("/{code}/live")
-async def live_class_roster(code: str):
+async def live_class_roster(classroom=Depends(require_teacher_class)):
     """SSE: имена учеников, как только кто-то ввёл код на телефоне."""
+    code = classroom.code
 
     def _snapshot() -> str:
         db = SessionLocal()

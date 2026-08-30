@@ -470,21 +470,45 @@ textarea { min-height: 84px; resize: vertical; font-family: var(--serif); }
   line-height: 1.7;
   margin-bottom: 12px;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 .task-media {
   margin: 0 0 12px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
+  max-width: 100%;
 }
 .task-media-img {
   max-width: 100%;
   width: auto;
   height: auto;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  margin: 0.75rem auto;
   display: block;
-  margin: 0 auto;
   border: 1px solid rgba(148, 163, 184, 0.35);
   background: rgba(255, 255, 255, 0.04);
+}
+.task-media-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.75rem auto;
+  padding: 14px 16px;
+  max-width: 100%;
+  box-sizing: border-box;
+  border: 1px dashed rgba(148, 163, 184, 0.45);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted, #8b97ab);
+  font-size: 0.9rem;
+  text-align: center;
 }
 .etalon-badge {
   display: inline-block;
@@ -554,6 +578,24 @@ textarea { min-height: 84px; resize: vertical; font-family: var(--serif); }
   display: inline-block;
   white-space: nowrap;
   max-width: 100%;
+  vertical-align: middle;
+}
+.katex-scroll,
+.task-text .katex-display,
+.oge-exam-stem .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding: 0.25rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+div.katex-scroll,
+.task-text .katex-display,
+.oge-exam-stem .katex-display {
+  display: block;
+}
+span.katex-scroll {
+  display: inline-block;
   vertical-align: middle;
 }
 
@@ -1032,17 +1074,24 @@ html.figure-lightbox-open body {
 
 /* When exam sheet is active, suppress generic dark-card chrome for OGE rus */
 .card-oge-rus {
-  max-width: none;
+  width: 100%;
+  max-width: 56rem;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
 }
 .card-oge-rus > .oge-rus-exam {
-  margin-left: -4px;
-  margin-right: -4px;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
 }
 #app:has(.oge-rus-exam) {
   max-width: none;
 }
 #app.is-work:has(.oge-rus-exam) .work-focus {
-  max-width: 940px;
+  width: 100%;
+  max-width: 56rem;
 }
 
 /* --- Student cabinet shell (teacher-like) --- */
@@ -2019,9 +2068,12 @@ html.dash-ready .student-hero-glow {
 /* Work / review focus (full-width, no sidebar) */
 .work-focus {
   min-height: 100vh;
-  padding: 18px 18px 28px;
-  max-width: 940px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 56rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 18px 1rem 28px;
+  box-sizing: border-box;
   animation: riseIn 0.45s var(--ease-out) both;
 }
 
@@ -4360,19 +4412,24 @@ body.has-focus-player .main {
   .task-text,
   .exam-sheet,
   .work-card,
-  .math-block,
+  .math-block {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .katex-scroll,
   .katex-display {
     overflow-x: auto;
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     max-width: 100%;
   }
 
-  .katex,
-  .katex-display,
   .frac,
   .math-frac,
   .math-sqrt {
-    max-width: none;
+    max-width: 100%;
   }
 
   .main-head-tools .head-logout {

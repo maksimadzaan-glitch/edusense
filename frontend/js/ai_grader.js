@@ -100,6 +100,14 @@
       return clampInt(raw, 0, 2);
     }
 
+    function authJsonHeaders(extra) {
+      var base = { "Content-Type": "application/json" };
+      if (global.EduSenseAuth && global.EduSenseAuth.authHeaders) {
+        return global.EduSenseAuth.authHeaders(Object.assign(base, extra || {}));
+      }
+      return Object.assign(base, extra || {});
+    }
+
     async function gradePart2Task(taskData) {
       var data = taskData || {};
       var body = {
@@ -116,7 +124,7 @@
       try {
         response = await fetch("/api/v1/grade-part2", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: authJsonHeaders(),
           body: JSON.stringify(body),
         });
       } catch (_) {
@@ -154,7 +162,7 @@
       try {
         response = await fetch("/api/v1/grade-rus", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: authJsonHeaders(),
           body: JSON.stringify(body),
         });
       } catch (_) {
@@ -194,7 +202,7 @@
     try {
       response = await fetch("/api/v1/math-solution", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: authJsonHeaders(),
         body: JSON.stringify(body),
       });
     } catch (_) {

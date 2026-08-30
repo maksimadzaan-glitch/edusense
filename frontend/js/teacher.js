@@ -488,7 +488,7 @@ async function api(path, options = {}) {
   } catch (_) {}
 
   if (response.status === 401 && !String(path).includes("/auth/me")) {
-    window.EduSenseAuth?.clearSession?.();
+    window.EduSenseAuth?.clearSession?.({ forgetAccount: false });
     window.location.href = "/#auth";
     throw new Error("Сессия истекла. Войдите снова.");
   }
@@ -1612,13 +1612,17 @@ function payloadImagesHtml(task) {
   const p = task?.payload || {};
   const urls = Array.isArray(p.image_urls) ? p.image_urls : [];
   if (!urls.length) return "";
+  const num = task?.num != null ? task.num : "";
   return (
     `<div class="task-media" aria-label="Рисунок к заданию">` +
     urls
       .map((u) => {
         const src = String(u || "").trim();
         if (!src || /^javascript:/i.test(src)) return "";
-        return `<img class="task-media-img" src="${escapeHtml(src)}" alt="Рисунок" loading="lazy" />`;
+        if (typeof edusenseTaskImgHtml === "function") {
+          return edusenseTaskImgHtml(src, num, "Рисунок");
+        }
+        return `<img class="task-media-img" src="${escapeHtml(src)}" alt="Рисунок" loading="lazy" data-task-num="${escapeHtml(String(num))}" />`;
       })
       .filter(Boolean)
       .join("") +

@@ -5,6 +5,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
+from backend.deps.auth import require_teacher, require_teacher_or_student
+from backend.models import User
 from backend.db.pg import is_postgres_configured
 from backend.schemas.edu import AiGenerateRequest, AiGenerateResponse, QuestionOut
 from backend.services.bank import bank_stats, ensure_bank_seeded
@@ -34,6 +36,7 @@ def ai_bank_stats(db: Session = Depends(get_db)):
 async def ai_enrich(
     payload: dict[str, Any],
     db: Session = Depends(get_db),
+    _user: User = Depends(require_teacher),
 ):
     """Внутреннее пополнение банка кандидатами LLM (без «банк» в UI)."""
     exam = str(payload.get("exam") or "")
@@ -69,7 +72,10 @@ def _user_message(filled: int, requested: int) -> str:
 
 
 @router.post("/generate", response_model=AiGenerateResponse)
-async def ai_generate(payload: AiGenerateRequest):
+async def ai_generate(
+    payload: AiGenerateRequest,
+    _user: User = Depends(require_teacher),
+):
     """Сборка варианта только из PostgreSQL-шаблонов (SQLite-банк не используется).
 
     AI = опциональная лёгкая вариация формулировок (`vary`, по умолчанию false).

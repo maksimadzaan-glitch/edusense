@@ -3,8 +3,9 @@ import os
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from backend.database import Base, SessionLocal, engine, ensure_sqlite_columns
@@ -25,9 +26,12 @@ from backend.routes import (
     universal,
 )
 from backend.services.bank import ensure_bank_seeded
+from backend.services.session_tokens import warn_if_insecure_secret
 
 # Optional: reserved for Telegram WebApp initData validation (not required for UI)
 TELEGRAM_BOT_TOKEN = (os.getenv("TELEGRAM_BOT_TOKEN") or "").strip()
+
+warn_if_insecure_secret()
 
 # Create tables (legacy + EduSense core + bank_tasks)
 Base.metadata.create_all(bind=engine)
@@ -147,10 +151,25 @@ def serve_teacher():
     return FileResponse(FRONTEND_DIR / "teacher.html")
 
 
+@app.get("/teacher/{rest:path}")
+def serve_teacher_spa(rest: str):
+    return FileResponse(FRONTEND_DIR / "teacher.html")
+
+
 @app.get("/student")
 @app.get("/student/join")
 @app.get("/student/dashboard")
 def serve_student():
+    return FileResponse(FRONTEND_DIR / "student.html")
+
+
+@app.get("/student/work/{code}")
+def serve_student_work(code: str):
+    return FileResponse(FRONTEND_DIR / "student.html")
+
+
+@app.get("/student/{rest:path}")
+def serve_student_spa(rest: str):
     return FileResponse(FRONTEND_DIR / "student.html")
 
 
@@ -178,3 +197,39 @@ app.mount("/audio", StaticFiles(directory=_AUDIO_DIR), name="audio")
 # Pack assets (OGE math part2 figures и т.п.): /packs/oge_math/assets/...
 if PACKS_DIR.is_dir():
     app.mount("/packs", StaticFiles(directory=PACKS_DIR), name="packs")
+
+_SPA_SKIP_PREFIXES = (
+    "/api/",
+    "/css/",
+    "/js/",
+    "/assets/",
+    "/audio/",
+    "/packs/",
+    "/docs",
+    "/redoc",
+    "/openapi.json",
+)
+
+
+@app.exception_handler(StarletteHTTPException)
+async def spa_http_exception(request: Request, exc: StarletteHTTPException):
+    """HTML fallback: reload /student/work/... must not return JSON 404."""
+    if exc.status_code != 404:
+        return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
+    path = request.url.path or ""
+    if any(path.startswith(p) for p in _SPA_SKIP_PREFIXES):
+        return JSONResponse({"detail": "Not Found"}, status_code=404)
+    if request.method not in ("GET", "HEAD"):
+        return JSONResponse({"detail": "Not Found"}, status_code=404)
+    accept = (request.headers.get("accept") or "").lower()
+    if "text/html" not in accept and "*/*" not in accept and accept:
+        return JSONResponse({"detail": "Not Found"}, status_code=404)
+    if path.startswith("/teacher"):
+        page = FRONTEND_DIR / "teacher.html"
+    elif path.startswith("/student"):
+        page = FRONTEND_DIR / "student.html"
+    else:
+        page = FRONTEND_DIR / "index.html"
+    if page.is_file():
+        return FileResponse(page)
+    return JSONResponse({"detail": "Not Found"}, status_code=404)

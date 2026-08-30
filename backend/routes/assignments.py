@@ -7,7 +7,15 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
-from backend.models import Assignment, ClassStudent, EduClass, Submission
+from backend.deps.auth import (
+    assert_student_name_matches_user,
+    get_optional_user,
+    require_teacher,
+    require_teacher_class,
+    require_teacher_classroom_by_assignment,
+    teacher_owns_edu_class,
+)
+from backend.models import Assignment, ClassStudent, EduClass, Submission, User
 from backend.schemas.edu import (
     AssignmentListItem,
     AssignmentOut,
@@ -31,6 +39,7 @@ from backend.services.math_mutator import personalize_questions
 from backend.services.part2_draft import grade_submission_draft
 from backend.services.rus_grader import payload_source
 from backend.services.beta_limits import assert_can_issue_variant
+from backend.services.student_roster import ensure_roster_student, verify_roster_student
 
 router = APIRouter(prefix="/api/assignments", tags=["assignments"])
 
@@ -794,8 +803,14 @@ def _get_assignment_row(db: Session, code: str, *, for_student: bool = False) ->
 
 
 @router.post("/publish", response_model=AssignmentOut, status_code=status.HTTP_201_CREATED)
-def publish_assignment(payload: AssignmentPublishRequest, db: Session = Depends(get_db)):
+def publish_assignment(
+    payload: AssignmentPublishRequest,
+    db: Session = Depends(get_db),
+    user: User = Depends(require_teacher),
+):
     classroom = ensure_edu_class(db, class_id=payload.class_id, class_code=payload.class_code)
+    if not teacher_owns_edu_class(db, user, classroom):
+        raise HTTPException(status_code=403, detail="Нет доступа к этому классу.")
     assert_can_issue_variant(db, classroom.id)
 
     questions: list[dict[str, Any]] = []
@@ -856,9 +871,14 @@ def publish_assignment(payload: AssignmentPublishRequest, db: Session = Depends(
 
 
 @router.patch("/{code}", response_model=AssignmentOut)
-def patch_assignment(code: str, payload: AssignmentPatchRequest, db: Session = Depends(get_db)):
+def patch_assignment(
+    code: str,
+    payload: AssignmentPatchRequest,
+    db: Session = Depends(get_db),
+    user: User = Depends(require_teacher),
+):
     row = _get_assignment_row(db, code, for_student=False)
-    classroom = db.query(EduClass).filter(EduClass.id == row.class_id).first()
+    classroom = require_teacher_classroom_by_assignment(row, db, user)
 
     deadline = utc_naive(_resolve_deadline(payload))
     if deadline is not None:
@@ -899,9 +919,11 @@ def patch_assignment(code: str, payload: AssignmentPatchRequest, db: Session = D
 
 
 @router.get("/by-class/{class_code}", response_model=list[AssignmentListItem])
-def list_assignments_by_class(class_code: str, db: Session = Depends(get_db)):
+def list_assignments_by_class(
+    classroom=Depends(require_teacher_class),
+    db: Session = Depends(get_db),
+):
     """Список выданных работ класса для экрана «Задания» у учителя."""
-    classroom = ensure_edu_class(db, class_id=None, class_code=class_code)
     db.commit()  # сохранить мост legacy→EduClass, если создали
 
     counts = dict(
@@ -981,10 +1003,14 @@ def list_assignments_by_class(class_code: str, db: Session = Depends(get_db)):
 
 
 @router.get("/{code}/submissions", response_model=list[SubmissionListItem])
-def list_assignment_submissions(code: str, db: Session = Depends(get_db)):
+def list_assignment_submissions(
+    code: str,
+    db: Session = Depends(get_db),
+    user: User = Depends(require_teacher),
+):
     """Сдачи по коду работы — одна строка на ученика (последняя по id)."""
     row = _get_assignment_row(db, code, for_student=False)
-    classroom = db.query(EduClass).filter(EduClass.id == row.class_id).first()
+    classroom = require_teacher_classroom_by_assignment(row, db, user)
 
     submissions = (
         db.query(Submission)
@@ -1011,9 +1037,14 @@ def list_assignment_submissions(code: str, db: Session = Depends(get_db)):
 
 
 @router.get("/{code}/answer-key", response_model=list[AnswerKeyItem])
-def get_assignment_answer_key(code: str, db: Session = Depends(get_db)):
+def get_assignment_answer_key(
+    code: str,
+    db: Session = Depends(get_db),
+    user: User = Depends(require_teacher),
+):
     """Мастер-ключ варианта для учителя (без персонализации)."""
     row = _get_assignment_row(db, code, for_student=False)
+    require_teacher_classroom_by_assignment(row, db, user)
     items: list[AnswerKeyItem] = []
     for q in _raw_questions(row):
         if not isinstance(q, dict):
@@ -1053,9 +1084,11 @@ def patch_submission_grade(
     submission_id: int,
     payload: SubmissionGradePatch,
     db: Session = Depends(get_db),
+    user: User = Depends(require_teacher),
 ):
     """Ручная оценка и комментарий учителя по сдаче."""
     assignment_row = _get_assignment_row(db, code, for_student=False)
+    require_teacher_classroom_by_assignment(assignment_row, db, user)
     sub = (
         db.query(Submission)
         .filter(Submission.id == submission_id, Submission.assignment_id == assignment_row.id)
@@ -1241,6 +1274,7 @@ def submit_assignment(
     response: Response,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
+    auth_user: Optional[User] = Depends(get_optional_user),
 ):
     """Принять работу. Повторная сдача тем же ФИО не открывает новую попытку."""
     assignment_row = _get_assignment_row(db, code, for_student=True)
@@ -1254,10 +1288,26 @@ def submit_assignment(
     student_name = normalize_student_name(payload.student_name)
     if len(student_name) < 2:
         raise HTTPException(status_code=400, detail="Укажите имя и фамилию")
+    if auth_user:
+        if auth_user.role != "student":
+            raise HTTPException(status_code=403, detail="Сдать работу может только ученик.")
+        assert_student_name_matches_user(auth_user, student_name)
     if not _student_allowed(assignment_row, student_name):
         raise HTTPException(status_code=403, detail="Эта работа выдана другим ученикам")
 
     classroom = db.query(EduClass).filter(EduClass.id == assignment_row.class_id).first()
+    if classroom is None:
+        raise HTTPException(status_code=404, detail="Класс не найден")
+    try:
+        roster_row = verify_roster_student(
+            db, classroom, student_name, payload.student_id
+        )
+    except ValueError:
+        raise HTTPException(
+            status_code=403,
+            detail="Неверный идентификатор ученика. Войдите в класс заново.",
+        ) from None
+    student_uuid = roster_row.student_uuid or payload.student_id
     raw_questions, _n = _personalized_question_list(assignment_row, classroom, student_name)
     subject = getattr(classroom, "subject", None) if classroom is not None else None
     prev = _latest_named_submission(db, assignment_row.id, student_name)
@@ -1315,18 +1365,13 @@ def submit_assignment(
     subject = getattr(classroom, "subject", None) if classroom is not None else None
     review = attach_to_review(review, subject, score=earned)
 
-    # синхронизируем ростер класса (как при join), чтобы «кто не сдал» совпадал по ФИО
-    name_key = student_name.casefold()
-    if classroom is not None:
-        roster_rows = (
-            db.query(ClassStudent).filter(ClassStudent.class_id == classroom.id).all()
-        )
-        if not any(normalize_student_name(r.name).casefold() == name_key for r in roster_rows):
-            db.add(ClassStudent(class_id=classroom.id, name=student_name))
+    # синхронизируем ростер класса
+    ensure_roster_student(db, classroom, student_name)
 
     row = Submission(
         assignment_id=assignment_row.id,
         student_name=student_name,
+        student_uuid=student_uuid,
         score=earned,
         status=status_val,
         answers_json=json.dumps({"items": answers}, ensure_ascii=False),

@@ -22,9 +22,19 @@
   margin-top: 12px;
   color: var(--oge-ink);
   font-family: var(--oge-sans);
+  width: 100%;
+  max-width: 56rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  box-sizing: border-box;
 }
 
 .oge-rus-exam-sheet {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   background:
     radial-gradient(90% 55% at 12% 0%, rgba(94, 234, 212, 0.1), transparent 55%),
     radial-gradient(70% 45% at 88% 8%, rgba(232, 168, 124, 0.07), transparent 50%),
@@ -32,7 +42,7 @@
   color: var(--oge-ink);
   border: 1px solid var(--oge-rule);
   border-radius: var(--oge-radius);
-  padding: 22px 20px 28px;
+  padding: 22px 1rem 28px;
   box-shadow:
     0 10px 40px rgba(0, 0, 0, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
@@ -135,6 +145,20 @@
 }
 
 .oge-rus-exam .oge-rus-shared-body,
+.oge-rus-exam .oge-passage-body,
+.oge-rus-exam .oge-exam-stem,
+.oge-rus-exam .oge-exam-instruction,
+.oge-rus-exam .oge-exam-opt-text,
+.oge-rus-exam .oge-fmt-p,
+.oge-rus-exam .oge-passage-p,
+.oge-rus-exam .oge-rus-transcript-body,
+.oge-rus-exam .oge-rus-essay-stmt {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
+}
+
+.oge-rus-exam .oge-rus-shared-body,
 .oge-rus-exam .oge-passage-body {
   font-family: var(--oge-serif);
   font-size: 1.05rem;
@@ -142,7 +166,7 @@
   white-space: normal;
   color: var(--oge-ink);
   word-wrap: break-word;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
 .oge-rus-exam .oge-passage-p,
@@ -601,6 +625,86 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 10px 14px;
+}
+
+.oge-rus-speed {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.oge-rus-speed-label {
+  font-size: 0.78rem;
+  color: var(--oge-muted);
+  margin-right: 2px;
+}
+
+.oge-rus-speed-btn {
+  border: 1px solid var(--oge-rule-strong);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--oge-ink);
+  font-family: var(--oge-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  min-height: 36px;
+}
+
+.oge-rus-speed-btn.is-active {
+  border-color: rgba(94, 234, 212, 0.45);
+  background: var(--oge-accent-soft);
+  color: var(--oge-accent);
+}
+
+.katex-scroll,
+.overflow-x-auto {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+div.katex-scroll {
+  display: block;
+}
+
+span.katex-scroll {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.oge-rus-exam img.task-media-img,
+.oge-rus-exam .task-media-img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  margin: 0.75rem auto;
+  display: block;
+}
+
+.task-media-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.75rem auto;
+  padding: 14px 16px;
+  max-width: 100%;
+  box-sizing: border-box;
+  border: 1px dashed rgba(148, 163, 184, 0.45);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--oge-muted, #8b97ab);
+  font-size: 0.9rem;
+  text-align: center;
 }
 
 .oge-rus-exam .oge-rus-play-twice {
