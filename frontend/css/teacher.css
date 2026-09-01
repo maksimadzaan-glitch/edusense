@@ -2374,16 +2374,21 @@ html.is-telegram-miniapp .noise {
   --gen-accent: #5eead4;
   --gen-accent-rgb: 94, 234, 212;
   --gen-step-ms: 1400ms;
-  position: relative;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
   overflow: hidden;
-  min-height: 560px;
+  min-height: 100vh;
   padding: 48px 28px 44px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
   isolation: isolate;
-  background: linear-gradient(165deg, rgba(18, 24, 40, 0.98), rgba(10, 14, 22, 0.96));
+  background: #0f172a !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   animation: genCardIn 0.55s var(--ease-out) both;
 }
 
@@ -3058,9 +3063,9 @@ html.is-telegram-miniapp .noise {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(2, 6, 23, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: #0f172a !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   animation: fadeIn 0.25s ease;
 }
 
@@ -3847,10 +3852,13 @@ html.figure-lightbox-open body {
 }
 
 .gen-loading-overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  z-index: 5;
-  border-radius: var(--radius);
+  z-index: 9999;
+  border-radius: 0;
+  background: #0f172a !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .gen-empty h2,

@@ -1711,19 +1711,22 @@ function _safeFigureSvg(kind, svg) {
 
 function payloadImagesHtml(task) {
   const p = task?.payload || {};
-  const urls = Array.isArray(p.image_urls) ? p.image_urls : [];
+  const urls = Array.isArray(p.image_urls) ? p.image_urls.slice() : [];
+  const single = p.image_url || p.figure_url || task?.imageUrl || task?.image_url;
+  if (single && !urls.includes(single)) urls.unshift(single);
   if (!urls.length) return "";
   const num = task?.num != null ? task.num : "";
   return (
     `<div class="task-media" aria-label="Рисунок к заданию">` +
     urls
       .map((u) => {
-        const src = String(u || "").trim();
+        let src = String(u || "").trim();
         if (!src || /^javascript:/i.test(src)) return "";
+        if (typeof absolutizeMediaUrl === "function") src = absolutizeMediaUrl(src);
         if (typeof edusenseTaskImgHtml === "function") {
           return edusenseTaskImgHtml(src, num, "Рисунок");
         }
-        return `<img class="task-media-img" src="${escapeHtml(src)}" alt="Рисунок" loading="lazy" data-task-num="${escapeHtml(String(num))}" />`;
+        return `<img class="task-media-img" src="${escapeHtml(src)}" alt="Рисунок" loading="lazy" crossorigin="anonymous" data-task-num="${escapeHtml(String(num))}" />`;
       })
       .filter(Boolean)
       .join("") +
@@ -2665,7 +2668,7 @@ function brandedExamPrintCss() {
       page-break-inside: avoid !important;
       break-inside: avoid !important;
     }
-    .oge-rus-shared, .es-print-text-frame {
+    .oge-rus-shared, .es-print-text-frame, .passage-box, .reading-passage-box {
       border: 1px solid #000 !important;
       padding: 12px !important;
       margin: 0 0 15px !important;
@@ -2674,6 +2677,7 @@ function brandedExamPrintCss() {
       background: #fff !important;
       color: #000 !important;
       orphans: 3; widows: 3;
+      page-break-inside: avoid;
     }
     .es-print-answer-line {
       margin: 8px 0 2px; padding: 8px 10px; border: 1px solid #000; font-size: 11pt;
@@ -3900,7 +3904,7 @@ function renderGeneratingStage() {
     "Отправка варианта",
   ];
   return `
-    <div class="gen-loading glass" id="gen-loading" data-step="0" aria-live="polite" aria-busy="true">
+    <div class="gen-loading" id="gen-loading" data-step="0" aria-live="polite" aria-busy="true">
       <div class="gen-loading-bg" aria-hidden="true"></div>
       <div class="gen-particles" aria-hidden="true">
         <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
@@ -3973,7 +3977,6 @@ function renderTests() {
 
   return `
     <div class="gen-layout">
-      ${g.generating ? `<div class="gen-loading-overlay">${renderGeneratingStage()}</div>` : ""}
       <section class="variant-viewer glass reveal">
         <div class="variant-toolbar">
           <div class="variant-toolbar-meta">

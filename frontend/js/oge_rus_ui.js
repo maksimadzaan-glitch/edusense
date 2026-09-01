@@ -1418,12 +1418,154 @@
     );
   }
 
+  function coerceSharedText(val) {
+    if (val == null) return "";
+    if (typeof val === "string") return val.trim();
+    if (typeof val === "object") {
+      const c =
+        val.content ||
+        val.text ||
+        val.audio_script ||
+        val.passage ||
+        val.body ||
+        "";
+      return String(c || "").trim();
+    }
+    return String(val).trim();
+  }
+
   function findSharedText(list, key) {
     for (let i = 0; i < list.length; i++) {
       const p = payloadOf(list[i]) || {};
-      if (p[key]) return String(p[key]);
+      const t = coerceSharedText(p[key]);
+      if (t) return t;
     }
     return "";
+  }
+
+  /**
+   * Собирает все тексты варианта: listening / grammar / reading / payload.passages.
+   * @returns {{id:string,title:string,content:string,targetTaskNumbers:number[],kind:string}[]}
+   */
+  function collectPassages(tasks) {
+    const list = Array.isArray(tasks) ? tasks : [];
+    const out = [];
+    const seen = new Set();
+
+    function pushPassage(id, title, content, targets, kind) {
+      const text = coerceSharedText(content);
+      if (!text) return;
+      const key = kind + "::" + text.slice(0, 80);
+      if (seen.has(key)) return;
+      seen.add(key);
+      out.push({
+        id: id || kind + "-" + out.length,
+        title: title || "",
+        content: text,
+        targetTaskNumbers: (targets || []).map(Number).filter(function (n) {
+          return n > 0;
+        }),
+        kind: kind || "passage",
+      });
+    }
+
+    // Явный массив passages на любом задании / варианте
+    for (let i = 0; i < list.length; i++) {
+      const p = payloadOf(list[i]) || {};
+      const arr = Array.isArray(p.passages)
+        ? p.passages
+        : Array.isArray(list[i] && list[i].passages)
+        ? list[i].passages
+        : null;
+      if (!arr) continue;
+      arr.forEach(function (item, idx) {
+        if (!item) return;
+        const targets = Array.isArray(item.targetTaskNumbers)
+          ? item.targetTaskNumbers
+          : Array.isArray(item.tasks)
+          ? item.tasks
+          : [];
+        pushPassage(
+          item.id || "p-" + idx,
+          item.title || item.heading || "",
+          item.content || item.text || item,
+          targets,
+          item.kind || "passage"
+        );
+      });
+    }
+
+    const listening = findSharedText(list, "listening_text");
+    const grammar = findSharedText(list, "grammar_text");
+    const reading = findSharedText(list, "reading_text");
+    pushPassage("listening-1", "Текст для изложения (задание 1)", listening, [1], "listening");
+    pushPassage(
+      "grammar-2-3",
+      "ПОЯСНИТЕЛЬНЫЙ ТЕКСТ К ЗАДАНИЯМ №2–3",
+      grammar,
+      [2, 3],
+      "grammar"
+    );
+    pushPassage(
+      "reading-10-12",
+      "ПОЯСНИТЕЛЬНЫЙ ТЕКСТ К ЗАДАНИЯМ №10–12",
+      reading,
+      [10, 11, 12],
+      "reading"
+    );
+
+    return out;
+  }
+
+  function renderPassageBox(passage, opts) {
+    const options = opts || {};
+    const kind = passage.kind || "passage";
+    const title =
+      passage.title ||
+      (kind === "grammar"
+        ? "ПОЯСНИТЕЛЬНЫЙ ТЕКСТ К ЗАДАНИЯМ №2–3"
+        : kind === "reading"
+        ? "ПОЯСНИТЕЛЬНЫЙ ТЕКСТ К ЗАДАНИЯМ №10–12"
+        : "Текст");
+    // listening остаётся в renderListeningBlock — здесь только рамки для чтения
+    if (kind === "listening") return "";
+    const body =
+      kind === "reading"
+        ? (function () {
+            const parts = splitReadingPassage(passage.content);
+            return (
+              (parts.author
+                ? '<p class="oge-passage-author">' + escapeHtml(parts.author) + "</p>"
+                : "") +
+              '<div class="oge-rus-shared-body oge-passage-body">' +
+              formatPassageHtml(parts.body || passage.content) +
+              "</div>" +
+              (parts.note
+                ? '<p class="oge-passage-note">' + escapeHtml(parts.note) + "</p>"
+                : "")
+            );
+          })()
+        : '<div class="oge-rus-shared-body oge-passage-body">' +
+          formatPassageHtml(passage.content) +
+          "</div>";
+    const frameClass =
+      "passage-box reading-passage-box oge-rus-shared" +
+      (options.print ? " is-print es-print-text-frame" : "") +
+      (kind === "reading" ? " is-reading" : " is-grammar");
+    return (
+      '<aside class="' +
+      frameClass +
+      '" data-oge-shared="' +
+      escapeHtml(kind) +
+      '" data-passage-id="' +
+      escapeHtml(passage.id || "") +
+      '">' +
+      '<div class="oge-rus-shared-head"><h4 class="oge-rus-shared-title">' +
+      escapeHtml(title) +
+      "</h4></div>" +
+      body +
+      "</aside>"
+    );
   }
 
   function renderMatching(task) {
@@ -1771,22 +1913,27 @@
 
   function payloadImagesHtml(task) {
     const p = payloadOf(task) || {};
-    const urls = Array.isArray(p.image_urls) ? p.image_urls : [];
+    const urls = Array.isArray(p.image_urls) ? p.image_urls.slice() : [];
+    const single = p.image_url || p.figure_url || task.imageUrl || task.image_url;
+    if (single && urls.indexOf(single) < 0) urls.unshift(single);
     if (!urls.length) return "";
     const num = task && task.num != null ? task.num : "";
     return (
       '<div class="task-media" aria-label="Рисунок к заданию">' +
       urls
         .map(function (u) {
-          const src = String(u || "").trim();
+          let src = String(u || "").trim();
           if (!src || /^javascript:/i.test(src)) return "";
+          if (typeof global.absolutizeMediaUrl === "function") {
+            src = global.absolutizeMediaUrl(src);
+          }
           if (typeof global.edusenseTaskImgHtml === "function") {
             return global.edusenseTaskImgHtml(src, num, "Рисунок");
           }
           return (
             '<img class="task-media-img" src="' +
             escapeHtml(src) +
-            '" alt="Рисунок" loading="lazy" data-task-num="' +
+            '" alt="Рисунок" loading="lazy" crossorigin="anonymous" data-task-num="' +
             escapeHtml(num) +
             '" />'
           );
@@ -1915,12 +2062,12 @@
   function mapTasksWithShared(tasks, renderCard, opts) {
     const options = opts || {};
     const out = [];
-    let grammarShown = false;
-    let readingShown = false;
     const list = Array.isArray(tasks) ? tasks : [];
     const examMode = options.exam !== false && isOgeRusList(list);
+    const passages = collectPassages(list);
     const grammarFallback = findSharedText(list, "grammar_text");
     const readingFallback = findSharedText(list, "reading_text");
+    const shownPassageIds = Object.create(null);
 
     if (examMode) {
       if (!renderCard) {
@@ -1959,48 +2106,42 @@
       );
     }
 
+    function emitPassagesForTask(kim) {
+      const n = Number(kim);
+      passages.forEach(function (passage) {
+        if (shownPassageIds[passage.id]) return;
+        const targets = passage.targetTaskNumbers || [];
+        if (!targets.length) return;
+        const first = Math.min.apply(null, targets.map(Number));
+        if (n !== first) return;
+        if (passage.kind === "listening") return;
+        if (examMode && !renderCard && passage.kind === "grammar") {
+          out.push('<p class="oge-section-label">Часть 1 · задания 2–9</p>');
+        }
+        if (examMode && !renderCard && passage.kind === "reading") {
+          out.push('<p class="oge-section-label">Текст и задания 10–12</p>');
+        }
+        out.push(renderPassageBox(passage, { print: !!options.print }));
+        shownPassageIds[passage.id] = true;
+      });
+    }
+
     for (let ti = 0; ti < list.length; ti++) {
       const task = list[ti];
       const p = payloadOf(task) || {};
       const kim = kimTypeOf(task);
-      const grammarText = p.grammar_text || (kim === 2 || kim === 3 ? grammarFallback : "");
-      const readingText = p.reading_text || (kim >= 10 && kim <= 12 ? readingFallback : "");
 
-      // Один блок текста перед парой 2–3 (как в КИМ / Решу ОГЭ)
-      if (
-        !grammarShown &&
-        grammarText &&
-        (p.show_shared === "grammar" || kim === 2 || kim === 3)
-      ) {
-        if (examMode && !renderCard && (kim === 2 || kim === 3)) {
-          out.push('<p class="oge-section-label">Часть 1 · задания 2–9</p>');
-        }
-        out.push(
-          renderSharedBlock("grammar", grammarText, {
-            uid: "g-" + (task.num != null ? task.num : ti),
-            collapsed: false,
-            print: !!options.print,
-          })
-        );
-        grammarShown = true;
+      // Проставляем тексты в payload, если потеряны при сборке
+      if ((kim === 2 || kim === 3) && !coerceSharedText(p.grammar_text) && grammarFallback) {
+        p.grammar_text = grammarFallback;
+        task.payload = p;
       }
-      if (
-        !readingShown &&
-        readingText &&
-        (p.show_shared === "reading" || kim === 10)
-      ) {
-        if (examMode && !renderCard) {
-          out.push('<p class="oge-section-label">Текст и задания 10–12</p>');
-        }
-        out.push(
-          renderSharedBlock("reading", readingText, {
-            uid: "r-" + (task.num != null ? task.num : ti),
-            collapsed: false,
-            print: !!options.print,
-          })
-        );
-        readingShown = true;
+      if (kim >= 10 && kim <= 13 && !coerceSharedText(p.reading_text) && readingFallback) {
+        p.reading_text = readingFallback;
+        task.payload = p;
       }
+
+      emitPassagesForTask(kim);
 
       if (examMode && typeof renderCard === "function") {
         let extras = "";
@@ -2027,7 +2168,7 @@
         if (kim === 1) out.push('<p class="oge-section-label">Задание 1 · изложение</p>');
         if (kim === 13) out.push('<p class="oge-section-label">Задание 13 · сочинение</p>');
         const taskForBody =
-          kim === 13 && readingFallback && !p.reading_text
+          kim === 13 && readingFallback && !coerceSharedText(p.reading_text)
             ? Object.assign({}, task, {
                 payload: Object.assign({}, p, { reading_text: readingFallback }),
               })
@@ -2264,6 +2405,8 @@
     renderExamTaskArticle: renderExamTaskArticle,
     renderExamVariant: renderExamVariant,
     mapTasksWithShared: mapTasksWithShared,
+    collectPassages: collectPassages,
+    coerceSharedText: coerceSharedText,
     collectMatchingAnswer: collectMatchingAnswer,
     collectMultiAnswer: collectMultiAnswer,
     collectEssayPrefix: collectEssayPrefix,

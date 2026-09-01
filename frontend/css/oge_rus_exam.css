@@ -345,17 +345,50 @@
 .oge-exam-match-table,
 .oge-rus-exam .oge-rus-match-cols {
   display: grid !important;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  grid-template-columns: minmax(140px, 1fr) minmax(140px, 1.15fr);
   gap: 0;
   border: 1px solid var(--oge-rule-strong);
   border-radius: 12px;
   overflow: hidden;
   background: rgba(0, 0, 0, 0.18);
+  width: 100% !important;
+  min-width: 100% !important;
 }
 
 .oge-exam-match-col {
   padding: 0;
-  min-width: 0;
+  min-width: 140px;
+}
+
+.oge-rus-exam .kim-table-scroll,
+.oge-exam-match .kim-table-scroll {
+  width: 100% !important;
+  min-width: 100% !important;
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.passage-box,
+.reading-passage-box {
+  border: 1.5px solid #1e293b;
+  padding: 14px 18px;
+  margin: 16px 0;
+  background-color: #f8fafc;
+  border-radius: 6px;
+  font-size: 11pt;
+  line-height: 1.5;
+  page-break-inside: avoid;
+  orphans: 3;
+  widows: 3;
+  color: #0f172a;
+}
+
+.oge-rus-exam:not(.is-paper) .passage-box,
+.oge-rus-exam:not(.is-paper) .reading-passage-box {
+  background-color: rgba(15, 23, 42, 0.55);
+  border-color: rgba(148, 163, 184, 0.35);
+  color: inherit;
 }
 
 .oge-exam-match-col + .oge-exam-match-col {
@@ -452,11 +485,21 @@
 @media (max-width: 720px) {
   .oge-exam-match-table,
   .oge-rus-exam .oge-rus-match-cols {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: minmax(140px, 1fr) minmax(140px, 1fr) !important;
+    min-width: 320px;
+  }
+  .oge-exam-match-col {
+    min-width: 140px !important;
   }
   .oge-exam-match-col + .oge-exam-match-col {
-    border-left: 0;
-    border-top: 1px solid var(--oge-rule);
+    border-left: 1px solid var(--oge-rule);
+    border-top: 0;
+  }
+  .oge-exam-match .kim-table-scroll {
+    width: 100% !important;
+    min-width: 100% !important;
+    display: block;
+    overflow-x: auto !important;
   }
 }
 

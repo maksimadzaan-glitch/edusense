@@ -1126,19 +1126,22 @@ function formatTaskHtml(raw, task) {
 
 function payloadImagesHtml(q) {
   const p = q?.payload || {};
-  const urls = Array.isArray(p.image_urls) ? p.image_urls : [];
+  const urls = Array.isArray(p.image_urls) ? p.image_urls.slice() : [];
+  const single = p.image_url || p.figure_url || q?.imageUrl || q?.image_url;
+  if (single && !urls.includes(single)) urls.unshift(single);
   if (!urls.length) return "";
   const num = q?.num != null ? q.num : "";
   return (
     `<div class="task-media" aria-label="Рисунок к заданию">` +
     urls
       .map((u) => {
-        const src = String(u || "").trim();
+        let src = String(u || "").trim();
         if (!src || /^javascript:/i.test(src)) return "";
+        if (typeof absolutizeMediaUrl === "function") src = absolutizeMediaUrl(src);
         if (typeof edusenseTaskImgHtml === "function") {
           return edusenseTaskImgHtml(src, num, "Рисунок");
         }
-        return `<img class="task-media-img" src="${escapeHtml(src)}" alt="Рисунок" loading="lazy" data-task-num="${escapeHtml(String(num))}" />`;
+        return `<img class="task-media-img" src="${escapeHtml(src)}" alt="Рисунок" loading="lazy" crossorigin="anonymous" data-task-num="${escapeHtml(String(num))}" />`;
       })
       .filter(Boolean)
       .join("") +

@@ -224,7 +224,13 @@
     var id = String(assetId || context.asset_id || "").trim();
     var url = String(context.figure_url || "").trim();
     if (!url && /^https?:\/\//i.test(id)) url = id;
-    if (url && /^https?:\/\//i.test(url) && !/^javascript:/i.test(url)) {
+    if (!url && id && (id.startsWith("/") || id.startsWith("media/") || id.startsWith("packs/"))) {
+      url = id;
+    }
+    if (url && typeof global.absolutizeMediaUrl === "function") {
+      url = global.absolutizeMediaUrl(url);
+    }
+    if (url && (/^https?:\/\//i.test(url) || url.startsWith("/")) && !/^javascript:/i.test(url)) {
       var img =
         typeof global.edusenseTaskImgHtml === "function"
           ? global.edusenseTaskImgHtml(url, "1–5", "Чертёж к заданиям 1–5")
@@ -258,7 +264,25 @@
     for (i = 0; i < list.length; i++) {
       var p = payloadOf(list[i]) || {};
       if (p.math_context && typeof p.math_context === "object") {
-        return p.math_context;
+        var ctx = Object.assign({}, p.math_context);
+        if (!ctx.figure_url) {
+          ctx.figure_url =
+            p.figure_url ||
+            p.image_url ||
+            (Array.isArray(p.image_urls) && p.image_urls[0]) ||
+            ctx.figure_url ||
+            null;
+        }
+        if (ctx.figure_url && typeof global.absolutizeMediaUrl === "function") {
+          ctx.figure_url = global.absolutizeMediaUrl(ctx.figure_url);
+        }
+        if (ctx.asset_id && typeof global.absolutizeMediaUrl === "function") {
+          var aid = String(ctx.asset_id);
+          if (aid.startsWith("/") || /^https?:/i.test(aid)) {
+            ctx.figure_url = ctx.figure_url || global.absolutizeMediaUrl(aid);
+          }
+        }
+        return ctx;
       }
     }
     var group = list.filter(function (t) {
@@ -268,7 +292,19 @@
     if (!group.length) return null;
     var p0 = payloadOf(group[0]) || {};
     if (!p0.shared_story && !p0.asset_id && !group[0].figureSvg && !group[0].figure_svg) {
-      return null;
+      var hasImg =
+        (Array.isArray(p0.image_urls) && p0.image_urls.length) ||
+        p0.figure_url ||
+        p0.image_url;
+      if (!hasImg) return null;
+    }
+    var figureUrl =
+      p0.figure_url ||
+      p0.image_url ||
+      (Array.isArray(p0.image_urls) && p0.image_urls[0]) ||
+      null;
+    if (figureUrl && typeof global.absolutizeMediaUrl === "function") {
+      figureUrl = global.absolutizeMediaUrl(figureUrl);
     }
     return {
       group_id: p0.context_id || "math_oge_1_5",
@@ -278,7 +314,7 @@
       base_vars: p0.base_vars || {},
       figure_kind: group[0].figureKind || group[0].figure_kind || "scheme",
       figure_svg: group[0].figureSvg || group[0].figure_svg || null,
-      figure_url: null,
+      figure_url: figureUrl,
     };
   }
 

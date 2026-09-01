@@ -555,6 +555,18 @@ def _fill_questions_oge_rus_from_contexts(
         )
 
 
+def _coerce_oge_rus_shared_field(val: Any) -> str:
+    if val is None:
+        return ""
+    if isinstance(val, dict):
+        for key in ("content", "text", "audio_script", "passage", "body"):
+            chunk = val.get(key)
+            if chunk:
+                return str(chunk).strip()
+        return ""
+    return str(val).strip()
+
+
 def _enrich_questions_oge_rus_shared(questions: list[dict[str, Any]]) -> None:
     from backend.universal.variant_builder import _resolve_oge_rus_audio_url
 
@@ -568,12 +580,12 @@ def _enrich_questions_oge_rus_shared(questions: list[dict[str, Any]]) -> None:
         except (TypeError, ValueError):
             num = 0
         p = q.get("payload") if isinstance(q.get("payload"), dict) else {}
-        if num in (2, 3) and not grammar and p.get("grammar_text"):
-            grammar = str(p["grammar_text"])
-        if num in (10, 11, 12, 13) and not reading and p.get("reading_text"):
-            reading = str(p["reading_text"])
-        if num == 1 and not listening and p.get("listening_text"):
-            listening = str(p["listening_text"])
+        if num in (2, 3) and not grammar:
+            grammar = _coerce_oge_rus_shared_field(p.get("grammar_text"))
+        if num in (10, 11, 12, 13) and not reading:
+            reading = _coerce_oge_rus_shared_field(p.get("reading_text"))
+        if num == 1 and not listening:
+            listening = _coerce_oge_rus_shared_field(p.get("listening_text"))
         if num == 1 and not audio_url and p.get("audio_url"):
             audio_url = str(p["audio_url"])
     for q in questions:
@@ -600,9 +612,43 @@ def _enrich_questions_oge_rus_shared(questions: list[dict[str, Any]]) -> None:
             if num == 2:
                 p.setdefault("show_shared", "grammar")
         if num in (10, 11, 12, 13) and reading:
-            p.setdefault("reading_text", reading)
+            p["reading_text"] = reading
             if num == 10:
                 p.setdefault("show_shared", "reading")
+        # Массив passages для фронта (все тексты варианта)
+        passages: list[dict[str, Any]] = []
+        if listening:
+            passages.append(
+                {
+                    "id": "listening-1",
+                    "title": "Текст для изложения (задание 1)",
+                    "content": listening,
+                    "targetTaskNumbers": [1],
+                    "kind": "listening",
+                }
+            )
+        if grammar:
+            passages.append(
+                {
+                    "id": "grammar-2-3",
+                    "title": "ПОЯСНИТЕЛЬНЫЙ ТЕКСТ К ЗАДАНИЯМ №2–3",
+                    "content": grammar,
+                    "targetTaskNumbers": [2, 3],
+                    "kind": "grammar",
+                }
+            )
+        if reading:
+            passages.append(
+                {
+                    "id": "reading-10-12",
+                    "title": "ПОЯСНИТЕЛЬНЫЙ ТЕКСТ К ЗАДАНИЯМ №10–12",
+                    "content": reading,
+                    "targetTaskNumbers": [10, 11, 12],
+                    "kind": "reading",
+                }
+            )
+        if passages:
+            p["passages"] = passages
         if p:
             q["payload"] = p
 

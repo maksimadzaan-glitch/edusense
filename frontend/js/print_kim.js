@@ -78,7 +78,9 @@ html, body {
 /* Shared reading / grammar texts */
 .es-print-text-frame,
 .oge-rus-shared.is-print,
-.a4-sheet .oge-rus-shared {
+.a4-sheet .oge-rus-shared,
+.passage-box,
+.reading-passage-box {
   border: 1px solid #000 !important;
   padding: 12px !important;
   margin: 0 0 15px !important;
@@ -91,7 +93,9 @@ html, body {
   page-break-inside: auto;
 }
 .es-print-text-frame p,
-.oge-rus-shared.is-print p {
+.oge-rus-shared.is-print p,
+.passage-box p,
+.reading-passage-box p {
   margin: 0 0 0.55em;
   orphans: 3;
   widows: 3;

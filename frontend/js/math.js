@@ -43,14 +43,31 @@
     return `<span class="katex-scroll overflow-x-auto">${html}</span>`;
   }
 
-  function taskImgHtml(src, taskNum, altText) {
+  /** Relative /media|/packs|/assets → absolute URL (PDF/html2canvas need full URL). */
+  function absolutizeMediaUrl(src) {
     const s = String(src || "").trim();
+    if (!s || /^javascript:/i.test(s) || /^data:/i.test(s) || /^blob:/i.test(s)) return s;
+    if (/^https?:\/\//i.test(s)) return s;
+    try {
+      const origin =
+        (typeof global.location !== "undefined" && global.location.origin) ||
+        "https://edusence.ru";
+      if (s.startsWith("//")) return (global.location?.protocol || "https:") + s;
+      return new URL(s, origin.endsWith("/") ? origin : origin + "/").href;
+    } catch (_) {
+      const base = "https://edusence.ru";
+      return s.startsWith("/") ? base + s : base + "/" + s;
+    }
+  }
+
+  function taskImgHtml(src, taskNum, altText) {
+    const s = absolutizeMediaUrl(src);
     if (!s || /^javascript:/i.test(s)) return "";
     const n = taskNum != null && taskNum !== "" ? String(taskNum) : "";
     const alt = altText || (n ? `Изображение к заданию №${n}` : "Изображение к заданию");
     return (
       `<img class="task-media-img" src="${escapeHtml(s)}" alt="${escapeHtml(alt)}" ` +
-      `loading="lazy" data-task-num="${escapeHtml(n)}" />`
+      `loading="lazy" crossorigin="anonymous" data-task-num="${escapeHtml(n)}" />`
     );
   }
 
@@ -170,18 +187,31 @@
       .replace(/\^(-?\d+)/g, (_, d) => sup(d));
   }
 
-  /** Нормализация к школьному виду + маркеры дробей */
+  /** Нормализация к школьному виду + маркеры дробей. Не трогает \uE400/\uE500 маркеры. */
   function prepareMathSource(raw) {
     let text = repairBrokenLatex(raw);
     text = normalizeDegrees(text);
+    text = normalizeSubscripts(text);
     text = casesToPlain(text);
     text = collapseVerticalJunk(text);
     text = text.replace(/```+/g, "");
+    // Одиночные $ уже вырезаны в stashDollarLatex; остатки убираем
     text = text.replace(/\$\$/g, " ").replace(/\$/g, " ");
 
     // Не трогаем уже готовые [[числ|знам]] правилами «x 2» → x² (ломали «x − 2»)
     const stashed = [];
     text = text.replace(/\[\[[\s\S]*?\]\]/g, (m) => {
+      const i = stashed.length;
+      stashed.push(m);
+      return `\uE010${i}\uE011`;
+    });
+    // Не трогаем KaTeX/subscript маркеры
+    text = text.replace(/\uE400\d+\uE401/g, (m) => {
+      const i = stashed.length;
+      stashed.push(m);
+      return `\uE010${i}\uE011`;
+    });
+    text = text.replace(/\uE500[^|]+\|[^\uE501]+\uE501/g, (m) => {
       const i = stashed.length;
       stashed.push(m);
       return `\uE010${i}\uE011`;
@@ -262,6 +292,10 @@
 
   function normalizeDegrees(text) {
     let t = String(text ?? "");
+    t = t.replace(/градусах\s+Цельсия/gi, "°C");
+    t = t.replace(/градуса[х]?\s+Цельсия/gi, "°C");
+    t = t.replace(/градус(?:ах|а|ов)?\s+по\s+Цельсию/gi, "°C");
+    t = t.replace(/\bdegC\b/gi, "°C");
     // 90^° / 90^\circ / 90°C / 90_C / 90 °C
     t = t.replace(/(\d+(?:[.,]\d+)?)\s*\^\s*\\?circ\s*([CFКК])?/gi, (_, n, u) =>
       u ? `${n}°${u.toUpperCase() === "К" || u.toUpperCase() === "K" ? "C" : u.toUpperCase()}` : `${n}°`
@@ -277,7 +311,56 @@
     );
     t = t.replace(/\\circ/g, "°");
     t = t.replace(/\^°/g, "°");
+    t = t.replace(/°\s*C\b/g, "°C");
     return t;
+  }
+
+  /** t_C / t_{C} → маркеры подстрочного индекса (не путать с 90_C → °C). */
+  function normalizeSubscripts(text) {
+    let t = String(text ?? "");
+    t = t.replace(/\b([A-Za-zА-Яа-яЁё])_\{([A-Za-zА-Яа-яЁё0-9]+)\}/g, (_, base, sub) => {
+      return `\uE500${base}|${sub}\uE501`;
+    });
+    t = t.replace(/\b([A-Za-zА-Яа-яЁё])_([A-Za-zА-Яа-яЁё])\b/g, (_, base, sub) => {
+      return `\uE500${base}|${sub}\uE501`;
+    });
+    return t;
+  }
+
+  function expandSubscriptMarkers(escaped) {
+    return String(escaped).replace(/\uE500([^|]+)\|([^\uE501]+)\uE501/g, (_, base, sub) => {
+      if (hasKatex()) {
+        const rendered = renderLatex(`${base}_{${sub}}`, false);
+        if (rendered && !rendered.includes("math-fallback")) return rendered;
+      }
+      return `${base}<sub>${sub}</sub>`;
+    });
+  }
+
+  /** Вырезаем $...$ / $$...$$ до нормализации, рендерим через KaTeX. */
+  function stashDollarLatex(text) {
+    const chunks = [];
+    let t = String(text ?? "");
+    t = t.replace(/\$\$([\s\S]+?)\$\$/g, (_, tex) => {
+      const i = chunks.length;
+      chunks.push({ display: true, tex: String(tex).trim() });
+      return `\uE400${i}\uE401`;
+    });
+    t = t.replace(/\$([^$\n]+?)\$/g, (_, tex) => {
+      const i = chunks.length;
+      chunks.push({ display: false, tex: String(tex).trim() });
+      return `\uE400${i}\uE401`;
+    });
+    return { text: t, chunks };
+  }
+
+  function expandDollarMarkers(html, chunks) {
+    if (!chunks || !chunks.length) return html;
+    return String(html).replace(/\uE400(\d+)\uE401/g, (_, i) => {
+      const c = chunks[Number(i)];
+      if (!c) return "";
+      return renderLatex(c.tex, c.display);
+    });
   }
 
   function radicandToTex(s) {
@@ -358,8 +441,9 @@
   }
 
   function formatMathInline(raw) {
-    const source = prepareMathSource(raw);
-    if (!source) return "";
+    const dollars = stashDollarLatex(raw);
+    const source = prepareMathSource(dollars.text);
+    if (!source && !dollars.chunks.length) return "";
     const placeholders = [];
     let t = source;
     for (let guard = 0; guard < 24; guard++) {
@@ -371,23 +455,31 @@
       if (next === t) break;
       t = next;
     }
-    const parts = t.split(/(\uE200\d+\uE201)/g);
+    const parts = t.split(/(\uE200\d+\uE201|\uE400\d+\uE401|\uE500[^|]+\|[^\uE501]+\uE501)/g);
     let html = "";
     for (const part of parts) {
       if (!part) continue;
       const m = part.match(/^\uE200(\d+)\uE201$/);
-      if (m) html += placeholders[Number(m[1])] || "";
-      else html += wrapSqrtInEscaped(escapeHtml(part));
+      if (m) {
+        html += placeholders[Number(m[1])] || "";
+        continue;
+      }
+      if (/^\uE400\d+\uE401$/.test(part) || /^\uE500/.test(part)) {
+        html += expandSubscriptMarkers(expandDollarMarkers(part, dollars.chunks));
+        continue;
+      }
+      html += expandSubscriptMarkers(wrapSqrtInEscaped(escapeHtml(part)));
     }
-    return html;
+    return expandDollarMarkers(html, dollars.chunks);
   }
 
   /**
-   * Главный хелпер: HTML без видимых $ и без вертикального развала.
+   * Главный хелпер: KaTeX для $...$, корни/дроби, без вертикального развала.
    */
   function formatMathText(raw) {
-    const prepared = prepareMathSource(raw);
-    if (!prepared) return "";
+    const dollars = stashDollarLatex(raw);
+    const prepared = prepareMathSource(dollars.text);
+    if (!prepared && !dollars.chunks.length) return "";
     const { text, systems } = stashEquationSystems(prepared);
     const placeholders = [];
     let t = text;
@@ -401,7 +493,7 @@
       t = next;
     }
 
-    const parts = t.split(/(\uE200\d+\uE201|\uE300\d+\uE301)/g);
+    const parts = t.split(/(\uE200\d+\uE201|\uE300\d+\uE301|\uE400\d+\uE401|\uE500[^|]+\|[^\uE501]+\uE501)/g);
     let html = "";
     for (const part of parts) {
       if (!part) continue;
@@ -415,9 +507,13 @@
         html += systemHtml(systems[Number(sys[1])] || []);
         continue;
       }
-      html += wrapSqrtInEscaped(escapeHtml(part)).replace(/\n/g, "<br>");
+      if (/^\uE400\d+\uE401$/.test(part) || /^\uE500/.test(part)) {
+        html += expandSubscriptMarkers(expandDollarMarkers(part, dollars.chunks));
+        continue;
+      }
+      html += expandSubscriptMarkers(wrapSqrtInEscaped(escapeHtml(part))).replace(/\n/g, "<br>");
     }
-    return html;
+    return expandDollarMarkers(html, dollars.chunks);
   }
 
   function formatAnswerKey(raw, part = 1) {
@@ -466,5 +562,6 @@
   global.prepareMathSource = prepareMathSource;
   global.coerceMathDecimalInput = coerceMathDecimalInput;
   global.edusenseTaskImgHtml = taskImgHtml;
+  global.absolutizeMediaUrl = absolutizeMediaUrl;
   global.__edusenseImgError = imgFallbackEl;
 })(typeof window !== "undefined" ? window : globalThis);
