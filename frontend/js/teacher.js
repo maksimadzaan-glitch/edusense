@@ -1537,7 +1537,12 @@ function renderHome() {
           <div id="home-weak-body">${homeWeakTopicsInner()}</div>
         </section>
       </div>
-    ${renderQrProjectorn renderShellScreen({ title, lead, note, extraHtml = "", kicker = "В продуктовой карте" }) {
+    </div>
+    ${renderQrProjector(c.access_code)}
+  `;
+}
+
+function renderShellScreen({ title, lead, note, extraHtml = "", kicker = "В продуктовой карте" }) {
   return `
     <div class="bento">
       <section class="glass shell-screen reveal">
