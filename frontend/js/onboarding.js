@@ -16,6 +16,9 @@ const els = {
   roleTeacher: () => document.getElementById("role-teacher"),
   roleStudent: () => document.getElementById("role-student"),
   toastRoot: () => document.getElementById("toast-root"),
+  modeLabel: () => document.getElementById("auth-mode-label"),
+  switchText: () => document.getElementById("auth-switch-text"),
+  switchBtn: () => document.getElementById("auth-switch-btn"),
 };
 
 function showToast(message, type = "info") {
@@ -69,130 +72,8 @@ function persistAuthUser(user) {
   try {
     localStorage.setItem("edusense_user", JSON.stringify(user));
     if (user?.access_token) localStorage.setItem("edusense_token", user.access_token);
-    if (user?.full_name) {
-      localStorage.setItem(
-        "edusense_last_account",
-        JSON.stringify({
-          id: user.id,
-          full_name: user.full_name,
-          role: user.role === "student" ? "student" : "teacher",
-        })
-      );
-    }
   } catch (_) {}
   return user;
-}
-
-function readLastAccount() {
-  if (window.EduSenseAuth?.getLastAccount) return window.EduSenseAuth.getLastAccount();
-  try {
-    const last = JSON.parse(localStorage.getItem("edusense_last_account") || "null");
-    if (last && last.full_name) return last;
-  } catch (_) {}
-  return readStoredUser();
-}
-
-function initialsFromName(name) {
-  const parts = String(name || "")
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-  if (!parts.length) return "?";
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
-
-function roleLabel(role) {
-  return role === "student" ? "Ученик" : "Учитель";
-}
-
-function applySavedAccount(account, { focusPassword = true } = {}) {
-  if (!account) return;
-  selectRole(account.role === "student" ? "student" : "teacher");
-  setAuthMode("login");
-  const name = els.nameInput();
-  const pass = els.passwordInput();
-  if (name) name.value = account.full_name || "";
-  if (pass) {
-    pass.value = "";
-    if (focusPassword) {
-      requestAnimationFrame(() => pass.focus());
-    }
-  }
-}
-
-function hideSavedAccountCard() {
-  const root = document.getElementById("saved-account");
-  if (root) {
-    root.hidden = true;
-    root.innerHTML = "";
-  }
-}
-
-function renderSavedAccountCard(account) {
-  const root = document.getElementById("saved-account");
-  if (!root || !account?.full_name) {
-    hideSavedAccountCard();
-    return;
-  }
-  const hasToken = !!(window.EduSenseAuth?.getToken?.() || "");
-  root.hidden = false;
-  root.innerHTML = `
-    <div class="saved-account-row">
-      <span class="saved-account-avatar" aria-hidden="true">${initialsFromName(account.full_name)}</span>
-      <div class="saved-account-meta">
-        <span class="saved-account-name">${escapeHtml(account.full_name)}</span>
-        <span class="saved-account-role">${roleLabel(account.role)} · сохранённый аккаунт</span>
-      </div>
-    </div>
-    <div class="saved-account-actions">
-      <button type="button" class="btn btn-primary" id="saved-continue">
-        ${hasToken ? "Продолжить" : "Войти снова"}
-      </button>
-      <button type="button" class="btn btn-ghost" id="saved-fill">Подставить имя</button>
-    </div>
-    <button type="button" class="saved-account-forget" id="saved-forget">Это не я — забыть аккаунт</button>
-  `;
-
-  document.getElementById("saved-continue")?.addEventListener("click", async () => {
-    if (hasToken && window.EduSenseAuth?.restore) {
-      const user = await window.EduSenseAuth.restore({ splash: true, requireToken: true });
-      if (user && user.role) {
-        window.location.href = studentDestForUser(user);
-        return;
-      }
-    }
-    applySavedAccount(account, { focusPassword: true });
-    showToast("Введите пароль, чтобы войти", "info");
-  });
-
-  document.getElementById("saved-fill")?.addEventListener("click", () => {
-    applySavedAccount(account, { focusPassword: true });
-  });
-
-  document.getElementById("saved-forget")?.addEventListener("click", () => {
-    window.EduSenseAuth?.forgetAccount?.();
-    window.EduSenseAuth?.clearSession?.({ forgetAccount: true });
-    try {
-      localStorage.removeItem("edusense_last_account");
-      localStorage.removeItem("edusense_user");
-      localStorage.removeItem("edusense_token");
-    } catch (_) {}
-    hideSavedAccountCard();
-    const name = els.nameInput();
-    const pass = els.passwordInput();
-    if (name) name.value = "";
-    if (pass) pass.value = "";
-    showToast("Сохранённый аккаунт удалён", "info");
-  });
-}
-
-function escapeHtml(str) {
-  return String(str || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 function selectRole(role) {
@@ -206,38 +87,67 @@ function selectRole(role) {
   student.setAttribute("aria-pressed", role === "student" ? "true" : "false");
   const seg = teacher.closest(".seg");
   if (seg) seg.dataset.role = role;
-  if (!els.launchBtn().disabled) els.launchLabel().textContent = launchLabelText();
+  if (!els.launchBtn()?.disabled && els.launchLabel()) {
+    els.launchLabel().textContent = launchLabelText();
+  }
 }
 
-function moveTabIndicator() {
-  const indicator = els.tabIndicator();
-  const active = authMode === "login" ? els.tabLogin() : els.tabRegister();
-  if (!indicator || !active) return;
-  indicator.style.width = `${active.offsetWidth}px`;
-  indicator.style.transform = `translateX(${active.offsetLeft}px)`;
+function syncAuthChrome() {
+  const modeLabel = els.modeLabel();
+  const switchText = els.switchText();
+  const switchBtn = els.switchBtn();
+  const roleSeg = document.querySelector(".seg[data-role], .card.auth .seg");
+  if (modeLabel) {
+    modeLabel.textContent = authMode === "login" ? "Вход в EduSense" : "Регистрация";
+  }
+  if (switchText && switchBtn) {
+    if (authMode === "login") {
+      switchText.textContent = "Нет аккаунта?";
+      switchBtn.textContent = "Зарегистрироваться";
+    } else {
+      switchText.textContent = "Уже есть аккаунт?";
+      switchBtn.textContent = "Войти";
+    }
+  }
+  if (roleSeg) {
+    roleSeg.hidden = authMode === "login";
+    roleSeg.style.display = authMode === "login" ? "none" : "";
+  }
+  const name = els.nameInput();
+  if (name) {
+    name.placeholder =
+      authMode === "register" ? "Имя и фамилия" : "Логин, email или телефон";
+    const lab = document.querySelector('label[for="full-name"]');
+    if (lab) {
+      lab.textContent =
+        authMode === "register" ? "Имя и фамилия" : "Логин / Email / Телефон";
+    }
+  }
 }
 
 function setAuthMode(mode) {
-  authMode = mode;
-  els.tabLogin().classList.toggle("active", mode === "login");
-  els.tabRegister().classList.toggle("active", mode === "register");
-  els.tabLogin().setAttribute("aria-selected", mode === "login" ? "true" : "false");
-  els.tabRegister().setAttribute("aria-selected", mode === "register" ? "true" : "false");
-  moveTabIndicator();
+  authMode = mode === "register" ? "register" : "login";
+  els.tabLogin()?.classList.toggle("active", authMode === "login");
+  els.tabRegister()?.classList.toggle("active", authMode === "register");
+  els.tabLogin()?.setAttribute("aria-selected", authMode === "login" ? "true" : "false");
+  els.tabRegister()?.setAttribute("aria-selected", authMode === "register" ? "true" : "false");
 
   const btn = els.launchBtn();
-  btn.classList.remove("is-success");
-  els.launchLabel().textContent = launchLabelText();
+  if (btn) btn.classList.remove("is-success");
+  if (els.launchLabel()) els.launchLabel().textContent = launchLabelText();
   const pass = els.passwordInput();
   if (pass) {
-    pass.minLength = mode === "register" ? 8 : 4;
-    pass.placeholder = mode === "register" ? "Пароль · от 8 символов" : "Пароль";
+    pass.minLength = authMode === "register" ? 8 : 4;
+    pass.placeholder = authMode === "register" ? "Пароль · от 8 символов" : "Пароль";
+    pass.autocomplete = authMode === "register" ? "new-password" : "current-password";
   }
+  syncAuthChrome();
 }
 
 function togglePassword() {
   const input = els.passwordInput();
   const btn = document.getElementById("toggle-pass");
+  if (!input || !btn) return;
   const show = input.type === "password";
   input.type = show ? "text" : "password";
   btn.setAttribute("aria-label", show ? "Скрыть пароль" : "Показать пароль");
@@ -273,6 +183,7 @@ async function apiRequest(path, body) {
 function setLaunchLoading(loading) {
   const btn = els.launchBtn();
   const label = els.launchLabel();
+  if (!btn || !label) return;
   if (loading) {
     btn.disabled = true;
     btn.classList.remove("is-success");
@@ -285,9 +196,10 @@ function setLaunchLoading(loading) {
 
 function setLaunchSuccess() {
   const btn = els.launchBtn();
+  if (!btn) return;
   btn.classList.add("is-success");
   btn.disabled = true;
-  els.launchLabel().textContent = "Готово";
+  if (els.launchLabel()) els.launchLabel().textContent = "Готово";
 }
 
 async function handleLaunch(event) {
@@ -297,7 +209,7 @@ async function handleLaunch(event) {
   const password = els.passwordInput().value;
 
   if (fullName.length < 2) {
-    showToast("Введите имя и фамилию", "error");
+    showToast(authMode === "register" ? "Введите имя и фамилию" : "Введите логин", "error");
     return;
   }
   if (authMode === "register" && password.length < 8) {
@@ -318,7 +230,6 @@ async function handleLaunch(event) {
         password,
         role: selectedRole,
       });
-      /* Beta: без тура — сразу на главный экран */
       user.needs_onboarding = false;
       try {
         localStorage.removeItem("edusense_needs_tour");
@@ -341,7 +252,7 @@ async function handleLaunch(event) {
 
     setTimeout(() => {
       window.location.href = studentDestForUser(user);
-    }, 600);
+    }, 450);
   } catch (err) {
     showToast(err.message, "error");
     setLaunchLoading(false);
@@ -351,6 +262,21 @@ async function handleLaunch(event) {
 function handleTelegramLogin(event) {
   event.preventDefault();
   showToast("Вход через Telegram скоро будет доступен", "info");
+}
+
+function hardClearSession() {
+  try {
+    window.EduSenseAuth?.clearSession?.({ forgetAccount: true });
+    localStorage.removeItem("edusense_user");
+    localStorage.removeItem("edusense_token");
+    localStorage.removeItem("edusense_last_account");
+    localStorage.removeItem("edusense_student_entry");
+    localStorage.removeItem("student_name");
+    localStorage.removeItem("class_code");
+    localStorage.removeItem("student_id");
+    localStorage.removeItem("edusense_student_meta");
+    localStorage.removeItem("edusense_student_home");
+  } catch (_) {}
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -369,78 +295,52 @@ document.addEventListener("DOMContentLoaded", async () => {
   const path = String(window.location.pathname || "").replace(/\/+$/, "") || "/";
   const onLanding = path === "/" || path.endsWith("/index.html");
   const joinCode = joinCodeFromUrl();
-  const onAuthHash = String(window.location.hash || "") === "#auth";
+  const leaving = params.get("leave") === "1";
 
-  if (!onLanding) {
-    return;
+  if (!onLanding) return;
+
+  if (leaving) {
+    hardClearSession();
+    history.replaceState(null, "", "/#auth");
   }
 
-  if (params.get("leave") === "1") {
-    try {
-      // Soft logout: drop session, keep last account for “continue as”
-      window.EduSenseAuth?.clearSession?.({ forgetAccount: false });
-      localStorage.removeItem("edusense_user");
-      localStorage.removeItem("edusense_token");
-      localStorage.removeItem("edusense_student_entry");
-      localStorage.removeItem("student_name");
-      localStorage.removeItem("class_code");
-      localStorage.removeItem("student_id");
-      localStorage.removeItem("edusense_student_meta");
-      localStorage.removeItem("edusense_student_home");
-    } catch (_) {}
-    history.replaceState(null, "", onAuthHash ? "/#auth" : "/");
-  }
-
-  let stored = null;
-  if (window.EduSenseAuth?.restore) {
-    stored = await window.EduSenseAuth.restore({ splash: !onAuthHash, requireToken: false });
-  } else {
-    stored = readStoredUser();
-  }
-
-  const hasToken = !!(window.EduSenseAuth?.getToken?.() || "");
-
-  if (joinCode && stored && stored.role === "student" && hasToken) {
-    window.location.replace(`/student?code=${encodeURIComponent(joinCode)}`);
-    return;
-  }
-  if (!onAuthHash && !joinCode && stored && stored.role === "student" && hasToken) {
-    window.location.replace("/student/dashboard");
-    return;
-  }
-  if (!onAuthHash && !joinCode && stored && stored.role === "teacher" && hasToken) {
-    window.location.replace("/teacher");
-    return;
-  }
-
-  selectRole(params.get("role") === "student" || joinCode ? "student" : "teacher");
-  setAuthMode(params.get("mode") === "register" ? "register" : "login");
-
-  const last = readLastAccount();
-  if (last?.full_name) {
-    renderSavedAccountCard(last);
-    // Prefill name so password managers / quick re-login work
-    if (authMode === "login") {
-      applySavedAccount(last, { focusPassword: onAuthHash || params.get("leave") === "1" });
+  // Auto-login: valid token → cabinet without showing form
+  const token = window.EduSenseAuth?.getToken?.() || localStorage.getItem("edusense_token") || "";
+  if (token && !leaving) {
+    let stored = null;
+    if (window.EduSenseAuth?.restore) {
+      stored = await window.EduSenseAuth.restore({ splash: true, requireToken: true });
+    } else {
+      stored = readStoredUser();
+    }
+    if (stored && stored.role) {
+      if (joinCode && stored.role === "student") {
+        window.location.replace(`/student?code=${encodeURIComponent(joinCode)}`);
+        return;
+      }
+      window.location.replace(studentDestForUser(stored));
+      return;
     }
   }
 
-  requestAnimationFrame(moveTabIndicator);
-  window.addEventListener("resize", moveTabIndicator);
+  // Clean login form (no "Войти снова" / "Подставить имя")
+  selectRole(params.get("role") === "student" || joinCode ? "student" : "teacher");
+  setAuthMode(params.get("mode") === "register" ? "register" : "login");
 
-  els.roleTeacher().addEventListener("click", () => selectRole("teacher"));
-  els.roleStudent().addEventListener("click", () => selectRole("student"));
-  els.tabLogin().addEventListener("click", () => {
-    setAuthMode("login");
-    const again = readLastAccount();
-    if (again?.full_name) renderSavedAccountCard(again);
+  els.roleTeacher()?.addEventListener("click", () => selectRole("teacher"));
+  els.roleStudent()?.addEventListener("click", () => selectRole("student"));
+  document.getElementById("auth-switch-btn")?.addEventListener("click", () => {
+    setAuthMode(authMode === "login" ? "register" : "login");
   });
-  els.tabRegister().addEventListener("click", () => {
-    setAuthMode("register");
-    hideSavedAccountCard();
+  document.getElementById("forgot-link")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    showToast("Сброс пароля: напишите в поддержку EduSense или учителю класса.", "info");
   });
-
-  document.getElementById("toggle-pass").addEventListener("click", togglePassword);
-  document.getElementById("auth-form").addEventListener("submit", handleLaunch);
+  document.getElementById("toggle-pass")?.addEventListener("click", togglePassword);
+  document.getElementById("auth-form")?.addEventListener("submit", handleLaunch);
   document.getElementById("telegram-btn")?.addEventListener("click", handleTelegramLogin);
+
+  if (String(window.location.hash || "") === "#auth") {
+    document.getElementById("auth")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
 });

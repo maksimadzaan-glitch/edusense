@@ -105,6 +105,8 @@ const state = {
   /** true = комната урока; false = хаб /live */
   liveInRoom: false,
   connectedStudents: [],
+  liveStudents: [],
+  liveSubmittedCount: 0,
   studentsBoard: {
     loading: false,
     loadedFor: null,
@@ -607,7 +609,44 @@ function printClassQr() {
   if (!opened) showToast("Разрешите всплывающие окна для печати QR", "error");
 }
 
+
+function playSoftSubmitChime() {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return;
+    if (!state._audioCtx) state._audioCtx = new Ctx();
+    const ctx = state._audioCtx;
+    if (ctx.state === "suspended") ctx.resume();
+    const t0 = ctx.currentTime;
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = "sine";
+    o.frequency.setValueAtTime(523.25, t0);
+    o.frequency.exponentialRampToValueAtTime(659.25, t0 + 0.12);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(0.08, t0 + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.45);
+    o.connect(g);
+    g.connect(ctx.destination);
+    o.start(t0);
+    o.stop(t0 + 0.5);
+  } catch (_) {}
+}
+
 function liveFeedHtml(names) {
+  const students = state.liveStudents || [];
+  if (students.length) {
+    return students
+      .map((s) => {
+        const name = s.name || "";
+        return `
+      <div class="live-chip live-chip-${escapeHtml(s.badge || "offline")}">
+        <span class="live-avatar">${escapeHtml(initials(name))}</span>
+        <span>${escapeHtml(s.emoji || "")} ${escapeHtml(shortStudentName(name))} — ${escapeHtml(s.label || "")}</span>
+      </div>`;
+      })
+      .join("");
+  }
   if (!names.length) {
     return `<p class="live-empty">Пока никого — пусть ученики введут код на телефоне</p>`;
   }
@@ -616,7 +655,7 @@ function liveFeedHtml(names) {
       (name) => `
       <div class="live-chip">
         <span class="live-avatar">${escapeHtml(initials(name))}</span>
-        <span>${escapeHtml(shortStudentName(name))} подключился</span>
+        <span>🟢 ${escapeHtml(shortStudentName(name))} в сети</span>
       </div>`
     )
     .join("");
@@ -669,18 +708,61 @@ function patchLiveUi() {
   if (pulse) pulse.textContent = homeHeroAccessLine();
 }
 
-function applyLiveNames(names, announce) {
-  const incoming = (names || []).map((n) => String(n || "").trim()).filter(Boolean);
+function applyLivePayload(payload, announce) {
+  const data = payload && typeof payload === "object" ? payload : {};
+  const students = Array.isArray(data.students) ? data.students : [];
+  const names = (data.names || students.map((s) => s.name) || [])
+    .map((n) => String(n || "").trim())
+    .filter(Boolean);
   const prev = new Set((state.connectedStudents || []).map((n) => n.toLowerCase()));
+  const prevSubmitted = Number(state.liveSubmittedCount || 0);
+  const submitted = Number(data.submitted_count || 0);
   if (announce) {
-    incoming.forEach((name) => {
+    names.forEach((name) => {
       if (!prev.has(name.toLowerCase())) {
-        showToast(`${shortStudentName(name)} подключился`, "success");
+        showToast(`${shortStudentName(name)} в сети`, "success");
       }
     });
+    if (submitted > prevSubmitted && prevSubmitted >= 0 && state._liveReady) {
+      const delta = submitted - prevSubmitted;
+      playSoftSubmitChime();
+      showToast(delta === 1 ? "Ученик сдал работу" : `Сдано работ: +${delta}`, "success");
+      // refresh assignments counter without full page reload
+      try {
+        loadAssignmentsBoard(true);
+      } catch (_) {}
+    }
   }
-  state.connectedStudents = incoming;
+  state.connectedStudents = names;
+  state.liveStudents = students;
+  state.liveSubmittedCount = submitted;
+  if (data.active_assignment_code) {
+    state._liveActiveAssignment = data.active_assignment_code;
+  }
+  // mirror submissions progress into board cache when present
+  if (students.length && data.active_assignment_code) {
+    const key = String(data.active_assignment_code).toUpperCase();
+    const items = students
+      .filter((s) => s && s.submitted)
+      .map((s) => ({
+        student_name: s.name,
+        status: "submitted",
+        score: s.score,
+        answers: [],
+        submitted_at: true,
+      }));
+    const prevBox = state.assignmentsBoard.submissions[key] || {};
+    state.assignmentsBoard.submissions[key] = {
+      loading: false,
+      error: null,
+      items: items.length ? items : prevBox.items || [],
+    };
+  }
   patchLiveUi();
+}
+
+function applyLiveNames(names, announce) {
+  applyLivePayload({ names, students: [], submitted_count: state.liveSubmittedCount || 0 }, announce);
 }
 
 function stopLiveRoster() {
@@ -702,11 +784,18 @@ async function pollLiveRoster(announce) {
   const code = state.classroom?.access_code;
   if (!code || !liveRosterActive()) return;
   try {
-    const data = await api(`/api/classes/${encodeURIComponent(code)}/roster`);
+    const data = await api(`/api/classes/${encodeURIComponent(code)}/live-status`);
     const first = !state._liveReady;
     state._liveReady = true;
-    applyLiveNames(data?.names || [], announce && !first);
-  } catch (_) {}
+    applyLivePayload(data || {}, announce && !first);
+  } catch (_) {
+    try {
+      const data = await api(`/api/classes/${encodeURIComponent(code)}/roster`);
+      const first = !state._liveReady;
+      state._liveReady = true;
+      applyLiveNames(data?.names || [], announce && !first);
+    } catch (__) {}
+  }
 }
 
 function startLiveRoster() {
@@ -715,35 +804,14 @@ function startLiveRoster() {
     stopLiveRoster();
     return;
   }
-  if (state._liveFor === code && (state._liveEs || state._liveTimer)) return;
+  if (state._liveFor === code && state._liveTimer) return;
 
   stopLiveRoster();
   state._liveFor = code;
+  state._liveReady = false;
   pollLiveRoster(false);
-
-  try {
-    const es = new EventSource(`/api/classes/${encodeURIComponent(code)}/live`);
-    state._liveEs = es;
-    es.onmessage = (ev) => {
-      try {
-        const data = JSON.parse(ev.data || "{}");
-        const first = !state._liveReady;
-        state._liveReady = true;
-        applyLiveNames(data.names || [], !first);
-      } catch (_) {}
-    };
-    es.onerror = () => {
-      try {
-        es.close();
-      } catch (_) {}
-      if (state._liveEs === es) state._liveEs = null;
-      if (!state._liveTimer && liveRosterActive()) {
-        state._liveTimer = setInterval(() => pollLiveRoster(true), 2000);
-      }
-    };
-  } catch (_) {
-    state._liveTimer = setInterval(() => pollLiveRoster(true), 2000);
-  }
+  // Authenticated short poll every 4s (EventSource cannot send Bearer token)
+  state._liveTimer = setInterval(() => pollLiveRoster(true), 4000);
 }
 
 function stepsBar(active) {
@@ -1185,6 +1253,11 @@ function homeTaskTotal() {
 
 function homeLivePeople() {
   const byKey = new Map();
+  (state.liveStudents || []).forEach((s) => {
+    if (!s?.name) return;
+    byKey.set(normalizeStudentKey(s.name), { name: s.name, ...s });
+  });
+  if (byKey.size) return [...byKey.values()];
   (state.studentsBoard.students || []).forEach((s) => {
     if (!s?.name) return;
     byKey.set(normalizeStudentKey(s.name), s);
@@ -1207,9 +1280,26 @@ function filledAnswersCount(sub) {
 
 function homeStudentProgress(student, total) {
   const n = Math.max(0, Number(total) || 0);
+  const live = (state.liveStudents || []).find(
+    (s) => normalizeStudentKey(s.name) === normalizeStudentKey(student.name)
+  );
+  if (live) {
+    const done = Math.min(Number(live.filled_answers || 0), n || Number(live.filled_answers || 0));
+    if (live.badge === "submitted") {
+      const grade = live.grade != null ? ` · ${live.grade}` : "";
+      return { done: n || done, total: n, status: `🏁 Сдал${grade}`, cls: "is-done", emoji: "🏁" };
+    }
+    if (live.badge === "working") {
+      return { done, total: n, status: "🟡 Приступил к работе", cls: "is-busy", emoji: "🟡" };
+    }
+    if (live.badge === "online") {
+      return { done, total: n, status: "🟢 В сети", cls: "is-online", emoji: "🟢" };
+    }
+    return { done, total: n, status: "🔴 Не в сети", cls: "is-idle", emoji: "🔴" };
+  }
   const active = homeActiveAssignment();
   if (!active) {
-    return { done: 0, total: n, status: "Ожидает работу", cls: "is-idle" };
+    return { done: 0, total: n, status: "🔴 Не в сети", cls: "is-idle", emoji: "🔴" };
   }
   const key = normalizeStudentKey(student.name);
   const items = state.assignmentsBoard.submissions[String(active.code).toUpperCase()]?.items || [];
@@ -1220,13 +1310,12 @@ function homeStudentProgress(student, total) {
     (sub.submitted_at ||
       ["submitted", "graded", "reviewed", "done"].includes(String(sub.status || "").toLowerCase()))
   );
-  if (filled <= 0) {
-    if (submitted) return { done: 0, total: n, status: "Сдано", cls: "is-empty" };
-    return { done: 0, total: n, status: "Не приступил", cls: "is-idle" };
+  if (submitted) {
+    const sc = sub.score != null ? ` · ${sub.score}` : "";
+    return { done: n || filled, total: n, status: `🏁 Сдал${sc}`, cls: "is-done", emoji: "🏁" };
   }
-  const done = n ? Math.min(filled, n) : filled;
-  if (submitted) return { done, total: n, status: "Сдано", cls: "is-done" };
-  return { done, total: n, status: "В процессе", cls: "is-busy" };
+  if (filled > 0) return { done: Math.min(filled, n || filled), total: n, status: "🟡 Приступил к работе", cls: "is-busy", emoji: "🟡" };
+  return { done: 0, total: n, status: "🔴 Не в сети", cls: "is-idle", emoji: "🔴" };
 }
 
 function homeLiveEmptyHtml() {
@@ -1416,9 +1505,9 @@ function renderHome() {
         <div class="home-live-head">
           <div class="home-live-badge">
             <span class="live-ping" aria-hidden="true"></span>
-            Сессия открыта
+            Активная сессия
           </div>
-          <span class="home-live-count">Учеников в сети: <b id="home-live-count">${onlineN}</b></span>
+          <span class="home-live-count">В классе: <b id="home-live-count">${onlineN}</b></span>
         </div>
         <div class="home-live-grid ${people.length ? "" : "is-empty"}" id="home-live-grid">
           ${people.length ? homeLiveCardsHtml(people) : homeLiveEmptyHtml()}

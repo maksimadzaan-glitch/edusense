@@ -24,6 +24,7 @@ from backend.schemas.edu import (
 )
 from backend.services.analytics_labels import translate_topic_slug
 from backend.services.classroom import ensure_edu_class, normalize_student_name
+from backend.services import presence as presence_svc
 
 router = APIRouter(prefix="/api/classes", tags=["roster"])
 
@@ -315,6 +316,186 @@ def list_students(
     )
 
 
+
+
+def _filled_answers_count(answers_json: Optional[str]) -> int:
+    if not answers_json:
+        return 0
+    try:
+        data = json.loads(answers_json)
+    except json.JSONDecodeError:
+        return 0
+    items = data if isinstance(data, list) else (data.get("answers") if isinstance(data, dict) else [])
+    if not isinstance(items, list):
+        return 0
+    n = 0
+    for a in items:
+        if not isinstance(a, dict):
+            continue
+        text_v = str(a.get("text") or a.get("answer") or "").strip()
+        if text_v or a.get("has_photo") or a.get("hasPhoto") or a.get("photo_data_url") or a.get("photoDataUrl"):
+            n += 1
+    return n
+
+
+def _active_assignment(db: Session, class_id: int) -> Optional[Assignment]:
+    rows = (
+        db.query(Assignment)
+        .filter(Assignment.class_id == class_id)
+        .order_by(Assignment.id.desc())
+        .all()
+    )
+    for a in rows:
+        status = str(getattr(a, "status", "") or "").lower()
+        if status in ("draft", "closed"):
+            continue
+        if getattr(a, "accepting_submissions", True) is False:
+            continue
+        return a
+    return None
+
+
+def build_live_status(db: Session, classroom) -> dict:
+    """Rich live session payload for teacher home/live widgets."""
+    code = classroom.code
+    roster_rows = (
+        db.query(ClassStudent)
+        .filter(ClassStudent.class_id == classroom.id)
+        .order_by(ClassStudent.id.asc())
+        .all()
+    )
+    presence_map = presence_svc.snapshot(code)
+    active = _active_assignment(db, classroom.id)
+    subs_by_key: dict[str, Submission] = {}
+    tasks_count = 0
+    if active:
+        try:
+            qs = json.loads(active.questions_json or "[]")
+            tasks_count = len(qs) if isinstance(qs, list) else 0
+        except json.JSONDecodeError:
+            tasks_count = 0
+        subs = db.query(Submission).filter(Submission.assignment_id == active.id).all()
+        for s in subs:
+            key = normalize_student_name(s.student_name).casefold()
+            if not key:
+                continue
+            prev = subs_by_key.get(key)
+            if prev is None or (s.created_at and (not prev.created_at or s.created_at > prev.created_at)):
+                subs_by_key[key] = s
+
+    ordered: list[str] = []
+    display: dict[str, str] = {}
+    for r in roster_rows:
+        name = normalize_student_name(r.name)
+        if not name:
+            continue
+        key = name.casefold()
+        if key not in display:
+            display[key] = name
+            ordered.append(key)
+    for _k, row in presence_map.items():
+        name = normalize_student_name(row.get("name") or "")
+        if not name:
+            continue
+        key = name.casefold()
+        if key not in display:
+            display[key] = name
+            ordered.append(key)
+    for key, s in subs_by_key.items():
+        name = normalize_student_name(s.student_name)
+        if not name:
+            continue
+        k = name.casefold()
+        if k not in display:
+            display[k] = name
+            ordered.append(k)
+
+    students = []
+    submitted_count = 0
+    online_count = 0
+    working_count = 0
+    for key in ordered:
+        name = display[key]
+        pres = presence_map.get(key)
+        online = bool(pres)
+        if online:
+            online_count += 1
+        sub = subs_by_key.get(key)
+        filled = _filled_answers_count(sub.answers_json) if sub else 0
+        score = None
+        grade = None
+        submitted = False
+        if sub:
+            submitted = True
+            submitted_count += 1
+            raw = sub.teacher_score if sub.teacher_score is not None else sub.score
+            if raw is not None:
+                try:
+                    score = float(raw)
+                    grade = str(int(score)) if float(score).is_integer() else str(score)
+                except (TypeError, ValueError):
+                    score = None
+
+        if submitted:
+            badge = "submitted"
+            label = "Сдал" + (f" · {grade}" if grade is not None else "")
+            emoji = "🏁"
+        elif online and (pres or {}).get("status") == "working":
+            badge = "working"
+            label = "Приступил к работе"
+            emoji = "🟡"
+            working_count += 1
+        elif online:
+            badge = "online"
+            label = "В сети"
+            emoji = "🟢"
+        else:
+            badge = "offline"
+            label = "Не в сети"
+            emoji = "🔴"
+
+        students.append(
+            {
+                "name": name,
+                "badge": badge,
+                "label": label,
+                "emoji": emoji,
+                "online": online,
+                "working": badge == "working",
+                "submitted": submitted,
+                "score": score,
+                "grade": grade,
+                "filled_answers": filled,
+                "tasks_count": tasks_count,
+            }
+        )
+
+    names = [display[k] for k in ordered]
+    return {
+        "class_code": code,
+        "names": names,
+        "count": len(names),
+        "online_count": online_count,
+        "working_count": working_count,
+        "submitted_count": submitted_count,
+        "active_assignment_code": active.code if active else None,
+        "active_assignment_title": active.title if active else None,
+        "tasks_count": tasks_count,
+        "students": students,
+    }
+
+
+
+@router.get("/{code}/live-status")
+def get_live_status(
+    classroom=Depends(require_teacher_class),
+    db: Session = Depends(get_db),
+):
+    payload = build_live_status(db, classroom)
+    db.commit()
+    return payload
+
+
 @router.get("/{code}/live")
 async def live_class_roster(classroom=Depends(require_teacher_class)):
     """SSE: имена учеников, как только кто-то ввёл код на телефоне."""
@@ -324,21 +505,12 @@ async def live_class_roster(classroom=Depends(require_teacher_class)):
         db = SessionLocal()
         try:
             classroom = ensure_edu_class(db, class_code=code)
-            rows = (
-                db.query(ClassStudent)
-                .filter(ClassStudent.class_id == classroom.id)
-                .order_by(ClassStudent.id.asc())
-                .all()
-            )
-            names = [r.name for r in rows]
-            return json.dumps(
-                {"names": names, "count": len(names)},
-                ensure_ascii=False,
-            )
+            payload = build_live_status(db, classroom)
+            return json.dumps(payload, ensure_ascii=False, default=str)
         except HTTPException:
-            return json.dumps({"names": [], "count": 0, "error": True})
+            return json.dumps({"names": [], "count": 0, "students": [], "error": True})
         except Exception:
-            return json.dumps({"names": [], "count": 0})
+            return json.dumps({"names": [], "count": 0, "students": []})
         finally:
             db.close()
 

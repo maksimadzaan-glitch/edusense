@@ -29,10 +29,22 @@ from backend.routes.assignments import (
 )
 from backend.services.classroom import ensure_edu_class, normalize_student_name
 from backend.services.student_roster import ensure_roster_student, verify_roster_student
+from backend.services import presence as presence_svc
 from backend.services.deadlines import utc_aware
 from backend.services.grade_calculator import result_from_review
 
 router = APIRouter(prefix="/api/student", tags=["student"])
+
+
+from pydantic import BaseModel, Field
+
+
+class StudentPresenceRequest(BaseModel):
+    class_code: str = Field(..., min_length=3, max_length=32)
+    student_name: str = Field(..., min_length=2, max_length=100)
+    status: str = Field(default="online", max_length=20)
+    assignment_code: Optional[str] = Field(default=None, max_length=32)
+
 
 
 def _questions_count(questions_json: Optional[str]) -> int:
@@ -272,6 +284,35 @@ def _class_leaderboard(classroom: EduClass, subs: list[Submission], you_name: st
     return [StudentLeaderRowOut(rank=i, **row) for i, row in enumerate(rows, start=1)]
 
 
+
+@router.post("/presence", status_code=status.HTTP_200_OK)
+def student_presence(
+    payload: StudentPresenceRequest,
+    db: Session = Depends(get_db),
+    auth_user: Optional[User] = Depends(get_optional_user),
+):
+    """Heartbeat: marks student online / working for teacher live session."""
+    code = str(payload.class_code or "").strip().upper()
+    name = normalize_student_name(payload.student_name)
+    if not code or not name:
+        raise HTTPException(status_code=400, detail="Нужны class_code и имя.")
+    if auth_user and auth_user.role == "student":
+        assert_student_name_matches_user(auth_user, name)
+    # Ensure class exists (soft)
+    try:
+        ensure_edu_class(db, class_code=code)
+        db.commit()
+    except Exception:
+        db.rollback()
+    presence_svc.touch(
+        code,
+        name,
+        status=payload.status or "online",
+        assignment_code=payload.assignment_code,
+    )
+    return {"ok": True, "class_code": code, "status": payload.status or "online"}
+
+
 @router.post("/join", response_model=StudentJoinOut, status_code=status.HTTP_200_OK)
 def student_join(
     payload: StudentJoinRequest,
@@ -302,6 +343,10 @@ def student_join(
         )
 
     roster_row = _ensure_roster(db, classroom, name)
+    try:
+        presence_svc.touch(classroom.code, name, status="online")
+    except Exception:
+        pass
     db.commit()
 
     return StudentJoinOut(

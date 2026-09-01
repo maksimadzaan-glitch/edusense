@@ -779,6 +779,54 @@ input {
   transition: transform 0.24s var(--ease), width 0.24s var(--ease);
 }
 
+
+/* ---------- Auth v2 clean form ---------- */
+.auth-mode-label {
+  margin: 0 0 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #f8fafc;
+}
+.field-label {
+  display: block;
+  margin: 0 0 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted-2, #94a3b8);
+}
+.auth-row {
+  display: flex;
+  justify-content: flex-end;
+  margin: -4px 0 14px;
+}
+.auth-link,
+.auth-link-btn {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: #5eead4;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+.auth-link:hover,
+.auth-link-btn:hover {
+  color: #99f6e4;
+  text-decoration: underline;
+}
+.auth-switch {
+  margin: 16px 0 0;
+  text-align: center;
+  font-size: 0.86rem;
+  color: var(--muted-2, #94a3b8);
+}
+.auth-switch .auth-link-btn {
+  margin-left: 6px;
+}
+
 /* ---------- Saved account (continue as) ---------- */
 .saved-account {
   margin: 0 0 14px;

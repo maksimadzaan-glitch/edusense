@@ -7,6 +7,7 @@ const LS_CLASS = "class_code";
 const LS_STUDENT_ID = "student_id";
 const LS_META = "edusense_student_meta";
 const LS_PROGRESS = "edusense_student_progress";
+const LS_ACTIVE_QUIZ = "active_quiz_progress";
 const LS_HOME = "edusense_student_home";
 const LS_AUTH = "edusense_user";
 const LS_STREAK_VISITS = "edusense_streak_visits";
@@ -654,6 +655,21 @@ function saveLocalProgress(assignmentCode, answers, startedAt, extra = {}) {
       timer_expired: !!state.timerExpired,
     };
     localStorage.setItem(LS_PROGRESS, JSON.stringify(map));
+    try {
+      localStorage.setItem(
+        LS_ACTIVE_QUIZ,
+        JSON.stringify({
+          assignment_code: String(assignmentCode || "").trim().toUpperCase(),
+          student_name: state.name || "",
+          answers,
+          started_at: startedAt || prev.started_at || null,
+          updated_at: now,
+          timer_remaining_ms: remaining != null ? remaining : prev.timer_remaining_ms ?? null,
+          timer_paused: pauseTimer,
+          timer_expired: !!state.timerExpired,
+        })
+      );
+    } catch (_) {}
     state.lastSavedAt = now;
     if (!pauseTimer) pulseAutosaveHint();
   } catch {
@@ -714,6 +730,13 @@ function clearLocalProgress(assignmentCode) {
       changed = true;
     }
     if (changed) localStorage.setItem(LS_PROGRESS, JSON.stringify(map));
+    try {
+      const active = JSON.parse(localStorage.getItem(LS_ACTIVE_QUIZ) || "null");
+      const code = String(assignmentCode || "").trim().toUpperCase();
+      if (active && String(active.assignment_code || "").toUpperCase() === code) {
+        localStorage.removeItem(LS_ACTIVE_QUIZ);
+      }
+    } catch (_) {}
   } catch {
     /* ignore */
   }
@@ -728,8 +751,20 @@ function loadLocalProgress(assignmentCode) {
       const legacy = map[String(assignmentCode || "").trim().toUpperCase()];
       if (legacy && typeof legacy === "object") item = legacy;
     }
-    if (!item || typeof item !== "object") return null;
-    return item;
+    if (item && typeof item === "object") return item;
+    // Fallback: active_quiz_progress (EduSense v2)
+    try {
+      const active = JSON.parse(localStorage.getItem(LS_ACTIVE_QUIZ) || "null");
+      const code = String(assignmentCode || "").trim().toUpperCase();
+      if (
+        active &&
+        typeof active === "object" &&
+        String(active.assignment_code || "").toUpperCase() === code
+      ) {
+        return active;
+      }
+    } catch (_) {}
+    return null;
   } catch {
     return null;
   }
@@ -1286,6 +1321,80 @@ function stopProgressAutosave() {
     clearInterval(state._progressSaveId);
     state._progressSaveId = null;
   }
+}
+
+
+function stopPresenceHeartbeat() {
+  if (state._presenceTimer) {
+    clearInterval(state._presenceTimer);
+    state._presenceTimer = null;
+  }
+}
+
+async function sendPresenceHeartbeat() {
+  const classCode = String(state.classCode || "").trim().toUpperCase();
+  const name = String(state.name || "").trim();
+  if (!classCode || name.length < 2) return;
+  const working = state.step === "work";
+  try {
+    await fetch("/api/student/presence", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(window.EduSenseAuth?.authHeaders ? window.EduSenseAuth.authHeaders({}) : {}),
+      },
+      body: JSON.stringify({
+        class_code: classCode,
+        student_name: name,
+        status: working ? "working" : "online",
+        assignment_code: working && state.assignment?.code ? state.assignment.code : null,
+      }),
+      keepalive: true,
+    });
+  } catch (_) {}
+}
+
+function startPresenceHeartbeat() {
+  stopPresenceHeartbeat();
+  if (!hasCabinetSession() && state.step !== "work") return;
+  sendPresenceHeartbeat();
+  state._presenceTimer = setInterval(sendPresenceHeartbeat, 15000);
+}
+
+function showNetworkRetryBanner(message) {
+  let el = document.getElementById("network-retry-banner");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "network-retry-banner";
+    el.className = "network-retry-banner";
+    el.setAttribute("role", "status");
+    document.body.appendChild(el);
+  }
+  el.hidden = false;
+  el.textContent = message || "Сеть нестабильна. Ответы сохранены на устройстве. Повторная отправка…";
+}
+
+function hideNetworkRetryBanner() {
+  const el = document.getElementById("network-retry-banner");
+  if (el) el.hidden = true;
+}
+
+async function fetchWithRetry(url, options, { attempts = 5, delayMs = 1200 } = {}) {
+  let lastErr = null;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const res = await fetch(url, options);
+      if (res.status >= 500 || res.status === 429) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+      return res;
+    } catch (err) {
+      lastErr = err;
+      showNetworkRetryBanner();
+      await new Promise((r) => setTimeout(r, delayMs * (i + 1)));
+    }
+  }
+  throw lastErr || new Error("Сеть недоступна");
 }
 
 function startProgressAutosave() {
@@ -3426,6 +3535,8 @@ function render() {
   scheduleFocusPlayer({ visible: state.step === "dashboard" && !state.loading });
   markDashboardReady();
   if (state.step === "work") startProgressAutosave();
+  if (state.step === "work" || state.step === "dashboard" || state.step === "home") startPresenceHeartbeat();
+  else if (state.step === "join") stopPresenceHeartbeat();
   else stopProgressAutosave();
 }
 
@@ -4122,8 +4233,12 @@ async function submitWork() {
     if (!num) return;
     ensureAnswer(num).text = el.value;
   });
+  // Persist before network — zero-crash
+  saveLocalProgress(state.assignment.code, state.answers, state.startedAt);
   state.loading = true;
+  state.submitRetrying = true;
   render();
+  showNetworkRetryBanner("Отправляем работу…");
   try {
     const answers = state.assignment.questions.map((q) => {
       const a = ensureAnswer(q.num, q.part);
@@ -4140,12 +4255,27 @@ async function submitWork() {
       answers,
       started_at: startedAt,
     };
-    const result = await api(`/api/assignments/${encodeURIComponent(state.assignment.code)}/submit`, {
-      method: "POST",
-      body: JSON.stringify(body),
-    });
+    const headers = {
+      "Content-Type": "application/json",
+      ...(window.EduSenseAuth?.authHeaders ? window.EduSenseAuth.authHeaders({}) : {}),
+    };
+    const res = await fetchWithRetry(
+      `/api/assignments/${encodeURIComponent(state.assignment.code)}/submit`,
+      { method: "POST", headers, body: JSON.stringify(body) },
+      { attempts: 6, delayMs: 1400 }
+    );
+    let result = null;
+    try {
+      result = await res.json();
+    } catch (_) {}
+    if (!res.ok) {
+      const detail = result?.detail ?? `Ошибка ${res.status}`;
+      throw new Error(typeof detail === "string" ? detail : "Не удалось сдать работу");
+    }
+    hideNetworkRetryBanner();
     clearLocalProgress(state.assignment.code);
     stopWorkTimer();
+    stopPresenceHeartbeat();
     const locked = answersLockedOf(state.assignment);
     state.result = {
       ...result,
@@ -4170,9 +4300,16 @@ async function submitWork() {
       showToast("Работа сдана", "success");
     }
   } catch (err) {
-    showToast(err.message || "Ошибка отправки", "error");
+    // Stay on work screen — answers already on device
+    saveLocalProgress(state.assignment.code, state.answers, state.startedAt);
+    showNetworkRetryBanner(
+      "Сеть нестабильна. Ответы сохранены на устройстве. Повторная отправка…"
+    );
+    showToast(err.message || "Сеть нестабильна — ответы сохранены локально", "error");
+    state.step = "work";
   } finally {
     state.loading = false;
+    state.submitRetrying = false;
     render();
   }
 }

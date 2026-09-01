@@ -10320,3 +10320,10 @@ html.figure-lightbox-open body {
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   }
 }
+
+
+.home-live-card.is-online .home-live-status { color: #5eead4; }
+.live-chip-working { border-color: rgba(250, 204, 21, 0.35); }
+.live-chip-submitted { border-color: rgba(52, 211, 153, 0.4); }
+.live-chip-offline { opacity: 0.72; }
+.live-chip-online { border-color: rgba(94, 234, 212, 0.35); }

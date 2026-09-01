@@ -15,7 +15,7 @@
     });
   </script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="stylesheet" href="/css/styles.css?v=166" />
+  <link rel="stylesheet" href="/css/styles.css?v=170" />
   <link rel="stylesheet" href="/css/announce.css?v=160" />
   <link rel="stylesheet" href="/css/chrome.css?v=23" />
   <link rel="manifest" href="/manifest.json" />
@@ -96,28 +96,24 @@
         </button>
       </div>
 
-      <div class="auth-tabs" role="tablist">
-        <button type="button" id="tab-login" class="auth-tab active" role="tab" aria-selected="true">Вход</button>
-        <button type="button" id="tab-register" class="auth-tab" role="tab" aria-selected="false">Регистрация</button>
-        <span id="tab-indicator" class="auth-tab-indicator" aria-hidden="true"></span>
-      </div>
-
-      <div id="saved-account" class="saved-account" hidden></div>
+      <div id="auth-mode-label" class="auth-mode-label">Вход в EduSense</div>
 
       <form id="auth-form" autocomplete="on">
         <div class="field">
+          <label class="field-label" for="full-name">Логин / Email / Телефон</label>
           <input
             id="full-name"
             name="full_name"
             type="text"
-            placeholder="Имя и фамилия"
-            autocomplete="name"
+            placeholder="Логин, email или телефон"
+            autocomplete="username"
             required
             minlength="2"
           />
         </div>
 
         <div class="field">
+          <label class="field-label" for="password">Пароль</label>
           <input
             id="password"
             name="password"
@@ -135,10 +131,25 @@
           </button>
         </div>
 
+        <div class="auth-row">
+          <a href="#forgot" id="forgot-link" class="auth-link">Забыли пароль?</a>
+        </div>
+
         <button type="submit" id="launch-btn" class="btn btn-primary">
           <span id="launch-label">Войти</span>
         </button>
       </form>
+
+      <p class="auth-switch" id="auth-switch">
+        <span id="auth-switch-text">Нет аккаунта?</span>
+        <button type="button" id="auth-switch-btn" class="auth-link-btn">Зарегистрироваться</button>
+      </p>
+
+      <!-- hidden tabs for JS compatibility -->
+      <button type="button" id="tab-login" hidden aria-hidden="true"></button>
+      <button type="button" id="tab-register" hidden aria-hidden="true"></button>
+      <span id="tab-indicator" hidden aria-hidden="true"></span>
+      <div id="saved-account" hidden></div>
 
       <div class="divider"><span>или</span></div>
 
@@ -166,11 +177,11 @@
   </footer>
 
   <script src="/js/page_transition.js?v=1"></script>
-  <script src="/js/auth_session.js?v=5"></script>
+  <script src="/js/auth_session.js?v=6"></script>
   <script src="/js/telegram_webapp.js?v=124"></script>
   <script src="/js/announce.js?v=130"></script>
   <script src="/js/pwa.js?v=18"></script>
-  <script src="/js/onboarding.js?v=152"></script>
+  <script src="/js/onboarding.js?v=160"></script>
   <script src="/js/ui.js?v=150"></script>
 </body>
 </html>
