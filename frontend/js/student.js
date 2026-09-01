@@ -161,14 +161,48 @@ function closeQrScannerModal() {
   }
 }
 
-function applyScannedJoinCode(text) {
-  const el = document.getElementById("inp-code");
-  if (!el) return;
-  el.value = text;
-  applyCodeFromInput(el);
-  state.codeError = "";
+function extractCodeFromScan(raw) {
+  const text = String(raw || "").trim();
+  if (!text) return "";
+  try {
+    if (/^https?:\/\//i.test(text)) {
+      const u = new URL(text);
+      const kim = u.searchParams.get("kim") || u.searchParams.get("code") || u.searchParams.get("join");
+      if (kim) return String(kim).trim().toUpperCase();
+      const m = u.pathname.match(/\/work\/([^/]+)/i);
+      if (m) return String(m[1]).trim().toUpperCase();
+    }
+  } catch (_) {}
+  const m2 = text.match(/[A-Z0-9-]{4,}/i);
+  return (m2 ? m2[0] : text).trim().toUpperCase();
+}
+
+function applyScannedJoinCode(raw) {
+  const code = extractCodeFromScan(raw);
+  if (!code) {
+    showToast("Не удалось распознать код из QR", "error");
+    return;
+  }
   closeQrScannerModal();
-  el.dispatchEvent(new Event("input", { bubbles: true }));
+  // Deep-link straight into work when possible
+  if (hasCabinetSession()) {
+    state.code = code;
+    showToast("Открываем вариант из QR", "success");
+    openWorkByCode(code).catch(() => {
+      location.href = `/student?code=${encodeURIComponent(code)}`;
+    });
+    return;
+  }
+  const el = document.getElementById("inp-code");
+  if (el) {
+    el.value = code;
+    applyCodeFromInput(el);
+    state.codeError = "";
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+  } else {
+    location.href = `/student?code=${encodeURIComponent(code)}`;
+    return;
+  }
   showToast("Код из QR подставлен", "success");
 }
 
@@ -1918,7 +1952,7 @@ function renderDashTaskCard(item, { mode = "active" } = {}) {
   const inProgress = mode === "active" && hasLocalProgress(item.code);
   const rno = isRnoItem(item);
   const exam = examLabel(item.exam || state.exam) || "ОГЭ";
-  const chip = rno ? "🎯 РНО" : `📝 ${exam} · ${qCount} ${ruPlural(qCount, "задание", "задания", "заданий")}`;
+  const chip = rno ? "Работа над ошибками" : `📝 ${exam} · ${qCount} ${ruPlural(qCount, "задание", "задания", "заданий")}`;
   const timerLabel = timer ? `⏳ Лимит: ${timer} мин` : "⏳ Без лимита";
   const cta = inProgress ? "Продолжить" : "Начать решение";
 
@@ -1969,7 +2003,7 @@ function renderActiveSection(active) {
   if (!active.length) {
     return `<div class="empty-active glass" role="status">
          <p class="empty-title">Пока нет активных вариантов</p>
-         <p class="sub">Когда учитель выдаст КИМ, он появится здесь. РНО смотрите в «Мой прогресс».</p>
+         <p class="sub">Когда учитель выдаст КИМ, он появится здесь. Работу над ошибками смотрите в разделе «Мой прогресс».</p>
          <button type="button" class="btn btn-secondary btn-compact" data-tab-jump="progress" style="margin-top:12px">Мой прогресс</button>
        </div>`;
   }
@@ -2113,7 +2147,7 @@ function dailyGoalProgress(data) {
 function warmupQuizSpec() {
   if (studentSubjectCode() === "math") {
     return {
-      title: "⚡ Быстрый срез дня: Геометрия (+50 XP)",
+      title: "Диагностическая контрольная: геометрия (+50 XP)",
       question: "Чему равен третий угол треугольника, если два других — 70° и 60°?",
       options: [
         { id: 1, label: "1. 40°" },
@@ -2125,7 +2159,7 @@ function warmupQuizSpec() {
     };
   }
   return {
-    title: "⚡ Быстрый срез дня: Орфография (+50 XP)",
+    title: "Диагностическая контрольная: орфография (+50 XP)",
     question: "В каком слове пишется НН?",
     options: [
       { id: 1, label: "1. Песча..ый" },
@@ -2415,20 +2449,47 @@ function renderStudentHero(data) {
   `;
 }
 
+function renderHomeProgressWidget(data) {
+  const forecast = renderForecastCard(data);
+  const rno = activeRnoItems(data.active || []);
+  return `
+    <section class="home-dash-card reveal student-home-progress">
+      <div class="panel-head">
+        <h2>Мой прогресс и прогноз ОГЭ</h2>
+        <button type="button" class="btn-ghost" data-tab="progress">Подробнее</button>
+      </div>
+      ${forecast}
+      <div class="pro-quarantine">
+        <h3>PRO: персональный карантин ошибок</h3>
+        <p>Слабые темы из последних работ собираются здесь для повторной отработки.</p>
+        ${
+          rno.length
+            ? renderActiveSection(rno)
+            : `<p class="muted">Пока нет назначенной работы над ошибками.</p>
+               <button type="button" class="btn-try-pro" id="btn-try-pro-home">Открыть карантин ошибок</button>`
+        }
+      </div>
+    </section>`;
+}
+
 function renderHomeTab(data) {
   const variants = activeVariantItems(data.active || []);
+  const continueBtn = variants.length
+    ? `<button type="button" class="btn-primary" data-open-task="${escapeHtml(variants[0].code || "")}">Продолжить решение</button>`
+    : "";
   return `
     <div class="bento student-home student-home-grid">
       ${renderStudentHero(data)}
-      <div class="home-split">
+      <div class="home-split home-split-v2">
         <section class="home-variants home-dash-card reveal">
           <div class="panel-head">
-            <h2>Активные варианты</h2>
+            <h2>Назначенные домашние КИМы</h2>
+            ${continueBtn}
           </div>
           ${renderActiveSection(variants)}
         </section>
-        ${renderClassBoard(data)}
         ${renderWarmupWidget()}
+        ${renderHomeProgressWidget(data)}
       </div>
     </div>
   `;
@@ -2666,7 +2727,7 @@ function renderProVault() {
   return `
     <section class="pro-vault reveal" aria-label="PRO-аналитика">
       <div class="pro-vault-head">
-        <h2>🔥 Глубокая ИИ-Аналитика (PRO)</h2>
+        <h2>🔥 Прогноз ОГЭ и аналитика (PRO)</h2>
         <span class="pro-lock-chip">🔒 Закрыто</span>
       </div>
       <div class="pro-vault-stage">
@@ -2676,7 +2737,7 @@ function renderProVault() {
           ${renderProChartPreview()}
         </div>
         <div class="pro-overlay">
-          <h3>🔒 Откройте доступ к PRO-Аналитике</h3>
+          <h3>🔒 Откройте PRO: персональный карантин ошибок</h3>
           <p>Узнайте свои слабые задания ОГЭ, получите персональные ИИ-разборы ошибок и прогноз баллов.</p>
           <button type="button" class="btn-try-pro" id="btn-try-pro">Попробовать PRO бесплатно 🚀</button>
         </div>
@@ -2741,7 +2802,7 @@ function renderCabinetShell(mainHtml) {
     progress: "Мой прогресс",
   };
   const hellos = {
-    home: "Активные варианты и Live-урок",
+    home: "Назначенные домашние КИМы и Live-урок",
     progress: "Базовая аналитика и PRO-прогноз",
   };
   const classTitle = state.className || state.classCode || "Класс";
@@ -2784,6 +2845,7 @@ function renderCabinetShell(mainHtml) {
         </nav>
 
         <div class="sidebar-foot">
+          <a class="sidebar-install" href="/settings" style="margin-bottom:8px">⚙️ Настройки профиля</a>
           <div class="user-chip">
             <span class="avatar">${escapeHtml(initials(state.name))}</span>
             <div class="meta">
@@ -3428,7 +3490,7 @@ function collectStudentNotifications() {
     out.push({
       id: `${rno ? "rno" : "active"}-${a.id || a.code}`,
       kind: rno ? "rno" : "submit",
-      title: rno ? "Назначено РНО" : "Новая работа",
+      title: rno ? "Назначена работа над ошибками" : "Новая работа",
       text: title,
       tab: rno ? "progress" : "home",
       code: a.code,
@@ -3791,6 +3853,16 @@ function bind() {
   });
   document.getElementById("btn-check-code")?.addEventListener("click", () => previewByCode());
   document.getElementById("btn-scan-qr")?.addEventListener("click", () => openQrScanner());
+  document.querySelectorAll("[data-open-task]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const code = btn.getAttribute("data-open-task");
+      if (code) openWorkByCode(code);
+    });
+  });
+  document.getElementById("btn-try-pro-home")?.addEventListener("click", () => {
+    state.tab = "progress";
+    render();
+  });
   document.getElementById("inp-code")?.addEventListener("input", (e) => {
     applyCodeFromInput(e.target);
     state.codeError = "";
@@ -4315,6 +4387,12 @@ async function submitWork() {
 }
 
 async function boot() {
+  try {
+    if (/\/student\/analytics\/?$/i.test(String(location.pathname || ""))) {
+      state.tab = "progress";
+    }
+  } catch (_) {}
+
   installFigureLightbox();
   installCopyGuard();
   window.addEventListener("pagehide", flushProgressSave);

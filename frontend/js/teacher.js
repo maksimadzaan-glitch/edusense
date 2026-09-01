@@ -25,7 +25,7 @@ const GRADES = {};
 
 const NAV = [
   { id: "home", label: "Главная", icon: "layoutDashboard" },
-  { id: "live", label: "Live-Урок", icon: "rocket", badge: { text: "LIVE", kind: "live" } },
+  { id: "live", label: "Живой урок", icon: "rocket", badge: { text: "LIVE", kind: "live" } },
   { id: "students", label: "Ученики", icon: "users" },
   { id: "assignments", label: "Задания", icon: "bookOpen" },
   { id: "tests", label: "Тесты", icon: "fileCheck" },
@@ -334,7 +334,7 @@ function renderMutatorToggle(g) {
   if (wantsEtalonGenerate()) return "";
   return `<label class="tc-mutator" title="Математика: сюжет 1–5 общий, числа разные. Русский: изложение и сочинение общие, тест 2–9 — те же правила, другие формулировки.">
     <input type="checkbox" id="chk-mutator" ${g.publishShuffle ? "checked" : ""} />
-    <span><i class="tc-die" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><b></b></i> Мутатор</span>
+    <span><i class="tc-die" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><b></b></i> Генератор аналогичных заданий</span>
   </label>`;
 }
 
@@ -1117,7 +1117,7 @@ function renderLiveHub() {
         </button>
         <div class="live-hub-page-head">
           <h1 class="live-hub-page-title">
-            <span class="live-hub-page-title-text">Live-Урок</span>
+            <span class="live-hub-page-title-text">Живой урок</span>
             <span class="live-hub-live-pill">LIVE</span>
           </h1>
           <p class="live-hub-page-sub">Комната урока в реальном времени</p>
@@ -1485,11 +1485,11 @@ function renderHome() {
         <div class="dash-hero-inner">
           <div class="dash-hero-copy">
             <span class="dash-hero-badge">🟢 ${escapeHtml(classHeroBadge(c))}</span>
-            <h2>Операционная система класса</h2>
-            <p>Генерация КИМ с мутатором, мгновенный экспорт А4 и ИИ-проверка Части 2.</p>
+            <h2>Учительская ведомость успеваемости</h2>
+            <p>Назначение работ классу, контроль живой сессии и анализ освоения тем ФИПИ.</p>
             <div class="dash-hero-actions">
-              <button type="button" class="dash-hero-cta" data-quick="tests" id="btn-home-cta">⚡ Создать новый КИМ</button>
-              <button type="button" class="dash-hero-live" id="btn-home-live">🚀 Live-Урок</button>
+              <button type="button" class="dash-hero-cta" data-quick="tests" id="btn-home-cta">Сформировать КИМ</button>
+              <button type="button" class="dash-hero-live" id="btn-home-live">Живой урок</button>
             </div>
           </div>
           <div class="dash-hero-code">
@@ -1505,7 +1505,7 @@ function renderHome() {
         <div class="home-live-head">
           <div class="home-live-badge">
             <span class="live-ping" aria-hidden="true"></span>
-            Активная сессия
+            Живая сессия урока
           </div>
           <span class="home-live-count">В классе: <b id="home-live-count">${onlineN}</b></span>
         </div>
@@ -1514,35 +1514,30 @@ function renderHome() {
         </div>
       </section>
 
-      <div class="home-widgets reveal">
-        <section class="glass home-widget">
-          <div class="home-widget-head">
-            <h3>Проблемные подтипы</h3>
-            <button type="button" class="btn-ghost" data-quick="analytics">Все</button>
-          </div>
-          <div id="home-weak-body">${homeWeakTopicsInner()}</div>
-        </section>
+            <div class="home-widgets reveal">
         <section class="glass home-widget home-widget-drill">
           <div class="home-widget-head">
-            <h3>Быстрый тренажёр</h3>
+            <h3>Быстрая генерация КИМ</h3>
           </div>
-          <p>5-минутный срез по заданиям 1–5. Ученики решают короткий блок, вы сразу видите пробелы.</p>
-          <button type="button" class="btn-primary" id="btn-quick-drill">Запустить на 5 минут</button>
+          <p>Соберите диагностическую контрольную работу на 5 минут (задания 1–5) и назначьте классу.</p>
+          <button type="button" class="btn-primary" id="btn-quick-drill">Сформировать КИМ</button>
         </section>
         <section class="glass home-widget">
           <div class="home-widget-head">
-            <h3>Недавние работы</h3>
-            <button type="button" class="btn-ghost" data-quick="assignments">Журнал</button>
+            <h3>Последние выданные работы</h3>
+            <button type="button" class="btn-ghost" data-quick="assignments">Ведомость</button>
           </div>
           ${homeRecentWorksInner()}
         </section>
+        <section class="glass home-widget">
+          <div class="home-widget-head">
+            <h3>Статистика освоения тем ФИПИ</h3>
+            <button type="button" class="btn-ghost" data-quick="analytics">Открыть</button>
+          </div>
+          <div id="home-weak-body">${homeWeakTopicsInner()}</div>
+        </section>
       </div>
-    </div>
-    ${renderQrProjector(c.access_code)}
-  `;
-}
-
-function renderShellScreen({ title, lead, note, extraHtml = "", kicker = "В продуктовой карте" }) {
+    ${renderQrProjectorn renderShellScreen({ title, lead, note, extraHtml = "", kicker = "В продуктовой карте" }) {
   return `
     <div class="bento">
       <section class="glass shell-screen reveal">
@@ -2034,6 +2029,10 @@ function renderExportPanel(scope = "variant") {
             <button type="button" class="theme-btn ${ex.previewTheme === "light" || a4 ? "is-active" : ""}" data-ep-action="theme" data-preview-theme="light">Light</button>
           </div>
           <button type="button" class="ep-quick ep-quick-pdf" data-ep-action="pdf-students" id="btn-export-pdf-students">${icon("file")} PDF ученикам</button>
+          <label class="ep-keys-check" style="display:inline-flex;align-items:center;gap:6px;font-size:.82rem;margin-right:8px">
+            <input type="checkbox" id="pdf-include-keys" ${ex.pdfAnswerSheet ? "checked" : ""}/>
+            Включать страницу с ключами и критериями для учителя
+          </label>
           <button type="button" class="ep-quick ep-quick-keys" data-ep-action="pdf-keys" id="btn-export-pdf-keys">${icon("key")} Ключи</button>
           <button type="button" class="ep-quick ep-quick-qr" data-ep-action="qr-board" id="btn-export-qr-board">${icon("qr")} QR на доску</button>
           <button type="button" class="ep-quick ep-quick-a4 ${a4 ? "is-active" : ""}" data-ep-action="a4" id="btn-preview-a4">${icon("printer")} А4</button>
@@ -2197,7 +2196,7 @@ function renderPublishModal() {
         <div class="publish-top">
           <div>
             <p class="export-kicker">Публикация</p>
-            <h2 id="publish-title">${done ? "Вариант опубликован" : "Выдать классу"}</h2>
+            <h2 id="publish-title">${done ? "Вариант опубликован" : "Назначить работу классу"}</h2>
             <p class="publish-sub">${escapeHtml(v.title)} · ${tasksCountLabel(v.tasks.length)}</p>
           </div>
           <button type="button" class="icon-x" id="btn-close-publish" aria-label="Закрыть">×</button>
@@ -2301,12 +2300,12 @@ function renderPublishModal() {
           <div class="pub-toggles">
           ${
             wantsEtalonGenerate()
-              ? `<p class="publish-hint">Эталон: мутатор выключен, формулировки общие.</p>`
+              ? `<p class="publish-hint">Эталон: генератор аналогичных заданий выключен, формулировки общие.</p>`
               : renderPublishToggle({
                   id: "publish-shuffle",
                   checked: shuffleOn,
                   title: "Каждому ученику свой вариант",
-                  hint: "Мутатор чисел",
+                  hint: "Генератор аналогичных заданий",
                 })
           }
           ${renderPublishToggle({
@@ -2334,7 +2333,7 @@ function renderPublishModal() {
               ? "Выдаём…"
               : betaLimitReached()
                 ? "Лимит беты"
-                : "Выдать классу"
+                : "Назначить работу классу"
           }</button>
         </div>`
         }
@@ -2455,10 +2454,12 @@ function pdfExamHeaderHtml(payload) {
         <div class="pdf-exam-date">${escapeHtml(dateLabel)}</div>
       </div>
       <div class="pdf-exam-fields">
-        <div class="pdf-exam-field"><span>Ученик</span><em>____________________</em></div>
+        <div class="pdf-exam-field"><span>ФИО ученика</span><em>____________________</em></div>
         <div class="pdf-exam-field"><span>Класс</span><em>________</em></div>
+        <div class="pdf-exam-field"><span>Вариант</span><em>${escapeHtml(payload?.code || "____")}</em></div>
         <div class="pdf-exam-field"><span>Баллы</span><em>____ / ${maxScore || "—"}</em></div>
       </div>
+      <p class="muted" style="font-size:.82rem;margin:8px 0 0">Инструкция: внимательно прочитайте задания. Ответы части 1 внесите в бланк ответов №1 на последней странице.</p>
     </header>`;
 }
 
@@ -2798,7 +2799,7 @@ function handleExportPanelClick(e) {
     return;
   }
   if (action === "pdf-students") {
-    exportBrandedPdf({ keys: false });
+    exportBrandedPdf({ keys: !!state.generator.export.pdfAnswerSheet });
     return;
   }
   if (action === "pdf-keys") {
@@ -2818,6 +2819,11 @@ function bindExportPanelOnce() {
   if (window.__epExportBound) return;
   window.__epExportBound = true;
   document.addEventListener("click", handleExportPanelClick);
+  document.addEventListener("change", (e) => {
+    if (e.target && e.target.id === "pdf-include-keys") {
+      ensureGeneratorExport().pdfAnswerSheet = !!e.target.checked;
+    }
+  });
 }
 bindExportPanelOnce();
 
@@ -3838,7 +3844,7 @@ function renderGeneratorModes() {
               </svg>
             </div>
           </div>
-          <p class="tc-desc">Короткий срез на урок. При выдаче ставится таймер 15 минут.</p>
+          <p class="tc-desc">Краткая диагностическая работа на урок. При выдаче ставится таймер 15 минут.</p>
         </div>
         <button type="button" class="tc-cta tc-cta-express" id="btn-gen-express">
           Сгенерировать экспресс-вариант
@@ -3976,7 +3982,7 @@ function renderTests() {
               variantPublished
                 ? `<button type="button" class="btn-secondary btn-issue-done" disabled aria-disabled="true">Уже выдано ✓</button>
             <button type="button" class="btn-primary" id="btn-goto-journal-from-variant">Перейти в Журнал</button>`
-                : `<button type="button" class="btn-primary btn-issue-class" id="btn-open-publish" data-tour="issue">Выдать классу</button>`
+                : `<button type="button" class="btn-primary btn-issue-class" id="btn-open-publish" data-tour="issue">Назначить работу классу</button>`
             }
           </div>
         </div>
@@ -5205,7 +5211,7 @@ function renderIssueModal() {
   } else if (step === "recent") {
     body = `
       <div class="publish-section">
-        <h3>Недавние работы</h3>
+        <h3>Последние выданные работы</h3>
         <p class="publish-hint">Откройте карточку или скопируйте ссылку. Полный re-publish вопросов — из «Тестов».</p>
         ${
           recent.length
@@ -5251,7 +5257,7 @@ function renderIssueModal() {
         <div class="publish-top">
           <div>
             <p class="export-kicker">Задания</p>
-            <h2 id="issue-title">Выдать новую работу</h2>
+            <h2 id="issue-title">Назначить новую работу классу</h2>
             <p class="publish-sub">${escapeHtml(classTitle(state.classroom))}</p>
           </div>
           <button type="button" class="icon-x" id="btn-close-issue" aria-label="Закрыть">×</button>
@@ -5318,7 +5324,7 @@ function renderAssignments() {
           <p class="shell-note">Соберите вариант и выдайте классу — ученики зайдут по коду.</p>
           <div class="actions" style="margin-top:18px">
             <button type="button" class="btn-primary" id="btn-issue-new-empty" style="width:auto;min-width:220px">
-              + Выдать работу
+              + Назначить работу классу
             </button>
           </div>
         </section>
@@ -5344,7 +5350,7 @@ function renderAssignments() {
           <p class="shell-note">${escapeHtml(emptyHint)}</p>
           <div class="actions" style="margin-top:18px">
             <button type="button" class="btn-primary" id="btn-issue-new-empty" style="width:auto;min-width:220px">
-              + Выдать работу
+              + Назначить работу классу
             </button>
           </div>
         </section>
@@ -5371,43 +5377,40 @@ function renderAssignments() {
             const patching =
               board.patchingCode && String(board.patchingCode).toUpperCase() === codeKey;
             const subject = a.subject || state.classroom?.subject || "";
+            const issuedAt = a.createdAt || a.created_at || a.deadlineAt || null;
+            const issuedLabel = issuedAt ? formatAssignDate(issuedAt) : "—";
+            const doneN = Number(a.uniqueSubmitters || a.submissionsCount || 0);
+            const totalN = expectedStudentsOf(a) || sidebarStudentCount() || 0;
+            const ratio = totalN ? `${doneN}/${totalN}` : String(doneN);
             return `
-        <article class="glass assign-card ${expanded ? "is-open" : ""}" data-assign-code="${escapeHtml(a.code)}">
+        <article class="glass assign-card assign-card-v2 ${expanded ? "is-open" : ""}" data-assign-code="${escapeHtml(a.code)}">
           <div class="assign-top">
             <div>
               <h3>${escapeHtml(a.title)}</h3>
-              <p>${escapeHtml(a.subject || "—")} · ${
-              a.tasksCount ? tasksCountLabel(a.tasksCount) + " · " : ""
-            }код ${escapeHtml(a.code)} · ${escapeHtml(deadlineLine)}${
-              timerLine ? ` · ${escapeHtml(timerLine)}` : ""
-            }</p>
+              <div class="assign-meta-grid">
+                <span><b>Предмет:</b> ${escapeHtml(a.subject || subject || "—")}</span>
+                <span><b>Дата выдачи:</b> ${escapeHtml(issuedLabel)}</span>
+                <span><b>Сдано:</b> ${escapeHtml(ratio)} учеников</span>
+                <span><b>Код:</b> ${escapeHtml(a.code)}</span>
+              </div>
             </div>
             <span class="assign-badge ${meta.cls}">${escapeHtml(meta.label)}</span>
           </div>
           ${renderSubmitterChips(a.code, subject) || renderProgressLine(a)}
-          <div class="assign-actions">
-            <button type="button" class="btn-primary assign-btn assign-btn-vedomost" data-toggle-gradebook="${escapeHtml(
-              a.code
-            )}" aria-expanded="${expanded ? "true" : "false"}">
-              📊 Проверить / Ведомость
-            </button>
-            <div class="assign-actions-secondary">
-              <button type="button" class="btn-ghost assign-btn" data-extend-deadline="${escapeHtml(
-                a.code
-              )}" ${patching ? "disabled" : ""}>⏱️ +1 день</button>
-              ${
-                accepting
-                  ? `<button type="button" class="btn-ghost assign-btn" data-close-intake="${escapeHtml(
-                      a.code
-                    )}" ${patching ? "disabled" : ""}>🛑 Завершить</button>`
-                  : `<button type="button" class="btn-secondary assign-btn" data-reopen-intake="${escapeHtml(
-                      a.code
-                    )}" ${patching ? "disabled" : ""}>Открыть приём</button>`
-              }
-              <button type="button" class="btn-ghost assign-btn" data-copy-assign="${escapeHtml(
-                a.code
-              )}" data-copy-url="${escapeHtml(path)}">🔗 Скопировать ссылку</button>
-            </div>
+          <div class="assign-actions assign-actions-v2">
+            <button type="button" class="btn-secondary assign-btn" data-assign-view="${escapeHtml(a.code)}">👁️ Посмотреть варианты/ответы</button>
+            <button type="button" class="btn-secondary assign-btn" data-assign-analytics="${escapeHtml(a.code)}">📊 Аналитика сдачи</button>
+            <button type="button" class="btn-secondary assign-btn" data-assign-pdf="${escapeHtml(a.code)}" data-keys="0">🖨️ Печать PDF без ключей</button>
+            <button type="button" class="btn-secondary assign-btn" data-assign-pdf="${escapeHtml(a.code)}" data-keys="1">🖨️ Печать PDF с ключами</button>
+            <button type="button" class="btn-ghost assign-btn" data-copy-assign="${escapeHtml(a.code)}" data-copy-url="${escapeHtml(path)}">🔗 Скопировать ссылку</button>
+            <button type="button" class="btn-ghost assign-btn" data-assign-qr="${escapeHtml(a.code)}">QR-код</button>
+            <button type="button" class="btn-primary assign-btn assign-btn-vedomost" data-toggle-gradebook="${escapeHtml(a.code)}" aria-expanded="${expanded ? "true" : "false"}">Ведомость успеваемости класса</button>
+            <button type="button" class="btn-ghost assign-btn" data-extend-deadline="${escapeHtml(a.code)}" ${patching ? "disabled" : ""}>+1 день</button>
+            ${
+              accepting
+                ? `<button type="button" class="btn-ghost assign-btn" data-close-intake="${escapeHtml(a.code)}" ${patching ? "disabled" : ""}>Закрыть приём</button>`
+                : `<button type="button" class="btn-secondary assign-btn" data-reopen-intake="${escapeHtml(a.code)}" ${patching ? "disabled" : ""}>Открыть приём</button>`
+            }
           </div>
           ${expanded ? renderGradebookAccordion(a) : ""}
         </article>`;
@@ -5895,7 +5898,7 @@ function renderStudentDetailPane() {
         </div>
         <button type="button" class="students-cta" id="btn-issue-remediation" ${
           board.remediating ? "disabled" : ""
-        }>${board.remediating ? "Собираем…" : "🎲 Выдать работу над ошибками"}</button>
+        }>${board.remediating ? "Собираем…" : "🎲 Назначить работу над ошибками"}</button>
       </header>
       <div class="student-detail-body">${body}</div>
     </section>
@@ -6687,7 +6690,7 @@ function renderAnalyticsBanner(num, h, extra = {}) {
           ${
             state.analyticsBoard?.creatingRno
               ? "Собираем работу над ошибками…"
-              : "🎲 Автоматически создать работу над ошибками"
+              : "🎲 Сформировать работу над ошибками"
           }
         </button>
       </div>
@@ -7217,6 +7220,56 @@ function bindAnalyticsControls() {
   });
 }
 
+
+function analyticsRiskGroup(data) {
+  const rows = Array.isArray(data?.matrix?.students) ? data.matrix.students : [];
+  // Fallback: students with low avg from participation/heatmap not enough — use board students grades
+  const boardStudents = state.studentsBoard?.students || [];
+  const risk = [];
+  boardStudents.forEach((s) => {
+    const mark = ogeMarkFromPercent(studentPercent(s), state.classroom?.subject);
+    if (mark != null && mark <= 2) risk.push({ name: s.name, reason: "низкая успеваемость" });
+  });
+  // Also scan recent submissions grades if available
+  const items = mergeAssignmentLists(state.assignmentsBoard.items, state.generator.published).slice(0, 5);
+  const fails = new Map();
+  items.forEach((a) => {
+    const box = state.assignmentsBoard.submissions[String(a.code).toUpperCase()];
+    (box?.items || []).forEach((sub) => {
+      const sc = sub.score != null ? Number(sub.score) : null;
+      const mark = ogeMarkFromPrimary(sc, a.subject || state.classroom?.subject);
+      if (mark === 2) {
+        const key = normalizeStudentKey(sub.student_name);
+        fails.set(key, (fails.get(key) || 0) + 1);
+      }
+    });
+  });
+  fails.forEach((n, key) => {
+    if (n >= 3) {
+      const display =
+        (state.studentsBoard?.students || []).find((s) => normalizeStudentKey(s.name) === key)?.name || key;
+      if (!risk.some((r) => normalizeStudentKey(r.name) === key)) {
+        risk.push({ name: display, reason: "три оценки «2» подряд" });
+      }
+    }
+  });
+  return risk.slice(0, 12);
+}
+
+function renderRiskGroupHtml(data) {
+  const risk = analyticsRiskGroup(data);
+  if (!risk.length) {
+    return `<section class="glass an-card"><h3>Группа риска</h3><p class="muted">Учеников с тремя двойками подряд пока нет.</p></section>`;
+  }
+  return `<section class="glass an-card an-risk">
+    <h3>Группа риска</h3>
+    <p class="muted">Автоподсветка учеников с устойчиво низкой успеваемостью.</p>
+    <ul class="an-risk-list">${risk
+      .map((r) => `<li><strong>${escapeHtml(r.name)}</strong><span>${escapeHtml(r.reason)}</span></li>`)
+      .join("")}</ul>
+  </section>`;
+}
+
 function renderAnalytics() {
   const c = state.classroom;
   const board = state.analyticsBoard;
@@ -7276,8 +7329,8 @@ function renderAnalytics() {
   } else if (!assignments.length) {
     body = `
       <div class="an-empty">
-        <h3>Пока нечего анализировать</h3>
-        <p>Выдайте работу в «Заданиях» и дождитесь первых сдач — здесь появится матрица знаний 1–25.</p>
+        <h3>Пока недостаточно данных для аналитики</h3>
+        <p>Выдайте работу в «Заданиях» и дождитесь первых сдач — здесь появятся матрица успеваемости и группа риска.</p>
         <button type="button" class="btn-primary" id="btn-an-to-assign" style="width:auto;margin-top:12px">К заданиям</button>
       </div>`;
   } else {
@@ -7337,6 +7390,7 @@ function renderAnalytics() {
       <section class="an-panel an-matrix-panel">
         ${board.loading ? `<p class="assign-sub-hint">Обновляем…</p>` : ""}
         ${renderAnalyticsHeatmap(data, { canFix, remHint })}
+        ${renderRiskGroupHtml(data)}
       </section>
     `;
   }
@@ -7384,7 +7438,7 @@ function renderTab() {
       return `
         <div class="bento">
           <section class="glass shell-screen reveal">
-            <div class="kicker">Текущий класс</div>
+            <div class="kicker">Профиль и класс</div>
             <h2>Настройки</h2>
             <p class="shell-lead">${escapeHtml(classTitle(state.classroom))}</p>
             <div class="spec-pills" style="margin:14px 0 18px">
@@ -7393,12 +7447,10 @@ function renderTab() {
               <span class="spec-pill">${escapeHtml(state.classroom.subject)}</span>
               <span class="spec-pill">Код: ${escapeHtml(state.classroom.access_code)}</span>
             </div>
-            <p class="shell-note">
-              Создайте ещё одну комнату под другой предмет ОГЭ — без новой регистрации.
-              Всего классов: ${state.classrooms.length || 1}.
-            </p>
+            <p class="shell-note">Управляйте личными данными, паролем, уведомлениями и подпиской PRO на отдельной странице.</p>
             <div class="actions" style="margin-top:18px">
-              <button type="button" class="btn-primary js-new-class" style="width:auto;min-width:180px">Создать класс</button>
+              <a class="btn-primary" href="/settings" style="width:auto;min-width:220px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none">Открыть настройки профиля</a>
+              <button type="button" class="btn-secondary js-new-class" style="width:auto;min-width:180px">Создать класс</button>
               <button type="button" class="btn-ghost" data-quick="home" style="width:auto">На главную</button>
             </div>
           </section>
@@ -7484,9 +7536,9 @@ function renderDashboard() {
   const hideMainHead = inLiveRoom || inLiveHub;
   const titles = {
     home: "Главная",
-    live: "Live-Урок",
+    live: "Живой урок",
     students: "Ученики",
-    assignments: "Выданные работы",
+    assignments: "Назначенные работы",
     tests: "Тесты",
     analytics: "Аналитика",
     settings: "Настройки",
@@ -7600,7 +7652,7 @@ function renderDashboard() {
               state.tab === "assignments"
                 ? `<div class="main-head-actions">
               <button type="button" class="btn-primary head-issue-btn" id="btn-issue-new">
-                <span class="head-issue-full">+ Выдать работу</span>
+                <span class="head-issue-full">+ Назначить работу классу</span>
                 <span class="head-issue-short" aria-hidden="true">+</span>
               </button>
             </div>`
@@ -7955,6 +8007,42 @@ function bind() {
   document.querySelectorAll("[data-quick]").forEach((btn) => {
     btn.addEventListener("click", () => {
       switchTeacherTab(btn.getAttribute("data-quick"));
+    });
+  });
+
+
+  document.querySelectorAll("[data-assign-view]").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const code = btn.getAttribute("data-assign-view");
+      openGradebook(code);
+    });
+  });
+  document.querySelectorAll("[data-assign-analytics]").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const code = btn.getAttribute("data-assign-analytics");
+      if (code) state.analyticsBoard.assignmentCode = String(code).toUpperCase();
+      switchTeacherTab("analytics");
+    });
+  });
+  document.querySelectorAll("[data-assign-pdf]").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const code = btn.getAttribute("data-assign-pdf");
+      const withKeys = btn.getAttribute("data-keys") === "1";
+      try {
+        await exportAssignmentPdf(code, { keys: withKeys });
+      } catch (err) {
+        showToast(err?.message || "Не удалось сформировать PDF", "error");
+      }
+    });
+  });
+  document.querySelectorAll("[data-assign-qr]").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const code = btn.getAttribute("data-assign-qr");
+      printAssignmentSolveQr(code);
     });
   });
 
@@ -9131,21 +9219,166 @@ function renderTeacherKeysPrintHtml(payload) {
   </div>`;
 }
 
+
+function solveShareUrl(code) {
+  const origin = String(location.origin || "https://edusense.ru").replace(/\/$/, "");
+  return `${origin}/solve?kim=${encodeURIComponent(String(code || "").toUpperCase())}`;
+}
+
+function printAssignmentSolveQr(code) {
+  const c = String(code || "").trim().toUpperCase();
+  if (!c) return;
+  const url = solveShareUrl(c);
+  const opened = openPrintWindow(
+    `QR · ${c}`,
+    `<div class="a4-sheet" style="min-height:auto;display:flex;align-items:center;justify-content:center;">
+      ${eduSenseWatermarkHtml()}
+      <div class="a4-inner" style="text-align:center;">
+        ${eduSenseBrandHtml()}
+        <h1>Код работы ${escapeHtml(c)}</h1>
+        <p class="muted">Отсканируйте QR, чтобы открыть вариант в EduSense</p>
+        <img alt="QR" src="${qrDataImage(url, 520)}" width="520" height="520" style="width:360px;height:360px;border:10px solid #0f172a;border-radius:18px;background:#fff;"/>
+        <p class="muted" style="margin-top:14px;word-break:break-all">${escapeHtml(url)}</p>
+      </div>
+    </div>`,
+    brandedExamPrintCss()
+  );
+  if (!opened) showToast("Разрешите всплывающие окна для печати QR", "error");
+}
+
+function pdfAnswerBlankHtml(payload) {
+  const tasks = (payload?.tasks || []).filter((t) => Number(t.part) !== 2);
+  const cells = tasks
+    .map(
+      (t) => `<div class="ans-blank-cell"><b>${escapeHtml(String(t.num))}</b><span></span></div>`
+    )
+    .join("");
+  return `<div class="a4-sheet ans-blank-sheet">
+    ${eduSenseWatermarkHtml()}
+    <div class="a4-inner">
+      ${eduSenseBrandHtml("бланк ответов")}
+      <div class="ep-badge">Бланк ответов №1</div>
+      <h1>Бланк ответов №1</h1>
+      <p class="muted">${escapeHtml(payload?.title || "")} · запишите ответы в квадраты</p>
+      <div class="ans-blank-grid">${cells || "<p class='muted'>Нет заданий части 1</p>"}</div>
+    </div>
+  </div>`;
+}
+
+function pdfProTeacherBannerHtml() {
+  try {
+    const name = state.user?.full_name || "";
+    const contact = localStorage.getItem("edusense_teacher_contact") || "";
+    const pro = JSON.parse(localStorage.getItem("edusense_pro_meta") || "null");
+    if (!pro || !name) return "";
+    return `<div class="pdf-pro-banner">Преподаватель: ${escapeHtml(name)}${
+      contact ? ` | Контакты: ${escapeHtml(contact)}` : ""
+    }</div>`;
+  } catch (_) {
+    return "";
+  }
+}
+
+async function exportAssignmentPdf(code, { keys = false } = {}) {
+  const c = String(code || "").trim().toUpperCase();
+  if (!c) return;
+  // Prefer current generator variant if same code; else fetch assignment
+  let payload = null;
+  if (state.generator?.variant && String(state.generator.variant.code || "").toUpperCase() === c) {
+    payload = exportPreviewPayload();
+  }
+  if (!payload) {
+    const data = await api(`/api/assignments/${encodeURIComponent(c)}`);
+    const questions = Array.isArray(data.questions) ? data.questions : [];
+    payload = {
+      title: data.title || c,
+      code: c,
+      badge: "КИМ",
+      meta: `${data.subject || state.classroom?.subject || ""} · ${c}`,
+      tasks: questions.map((q) => ({
+        num: q.num,
+        part: q.part || 1,
+        topic: q.topic || "",
+        text: q.text || q.stem || "",
+        answer: q.answer || q.key || "",
+        solution: q.solution || "",
+        maxScore: q.max_score || q.maxScore || 1,
+      })),
+    };
+  }
+  const includeKeys = !!keys;
+  // confirm keys page
+  if (includeKeys === false) {
+    /* student version */
+  }
+  const qrUrl = solveShareUrl(c);
+  const qrBlock = `<div class="pdf-qr-row"><img alt="QR" src="${qrDataImage(qrUrl, 180)}" width="120" height="120"/><div><b>Открыть в EduSense</b><p class="muted" style="margin:4px 0 0;word-break:break-all;font-size:.75rem">${escapeHtml(qrUrl)}</p></div></div>`;
+  const studentInner = `<div class="a4-sheet">
+    ${eduSenseWatermarkHtml()}
+    <div class="a4-inner">
+      ${pdfProTeacherBannerHtml()}
+      ${pdfExamHeaderHtml(payload)}
+      ${qrBlock}
+      ${renderExportTaskBlocks(payload.tasks, false, true)}
+    </div>
+  </div>${pdfAnswerBlankHtml(payload)}`;
+  const keysInner = includeKeys
+    ? studentInner + renderTeacherKeysPrintHtml(payload)
+    : studentInner;
+  // Ask checkbox UX when printing with keys button already chose
+  const filename = `${pdfSafeName(payload.title || c)}${includeKeys ? "-kluchi" : ""}.pdf`;
+  const css =
+    brandedExamPrintCss() +
+    `
+    .pdf-pro-banner{font-size:.85rem;font-weight:700;margin:0 0 10px;padding:8px 10px;border:1px solid #cbd5e1;background:#f8fafc;border-radius:8px}
+    .pdf-qr-row{display:flex;gap:12px;align-items:center;margin:0 0 16px;padding:10px;border:1px dashed #cbd5e1;border-radius:10px}
+    .ans-blank-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:12px}
+    .ans-blank-cell{border:1px solid #94a3b8;border-radius:8px;min-height:64px;padding:6px;display:flex;flex-direction:column;gap:6px}
+    .ans-blank-cell b{font-size:.8rem;color:#64748b}
+    .ans-blank-cell span{flex:1;border:1px solid #e2e8f0;border-radius:4px;background:#fff}
+    .pdf-exam-fields{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin:12px 0 8px}
+    .pdf-exam-field{border-bottom:1px solid #cbd5e1;padding:6px 0;font-size:.9rem}
+    .pdf-exam-field span{display:block;font-size:.72rem;color:#64748b;font-weight:700;margin-bottom:4px}
+    .pdf-exam-field em{font-style:normal;letter-spacing:.08em}
+  `;
+  if (window.__pdfExportBusy) return;
+  window.__pdfExportBusy = true;
+  showPdfExportOverlay();
+  try {
+    await downloadHtmlAsPdf(payload.title, keysInner, css, filename);
+    showToast(includeKeys ? "PDF с ключами скачан" : "PDF скачан", "success");
+  } catch (_) {
+    const opened = openPrintWindow(payload.title, keysInner, css);
+    if (opened) showToast("Открыта печать — сохраните как PDF", "info");
+    else showToast("Не удалось сформировать PDF", "error");
+  } finally {
+    window.__pdfExportBusy = false;
+    closePdfExportOverlay();
+  }
+}
+
+
 function exportBrandedPdf({ keys = false } = {}) {
   const payload = exportPreviewPayload();
   if (!payload) {
     showToast("Сначала сформируйте вариант", "error");
     return;
   }
-  const inner = keys
-    ? renderTeacherKeysPrintHtml(payload)
-    : `<div class="a4-sheet">
+  const code = payload.code || state.generator?.variant?.code || "";
+  const qrUrl = code ? solveShareUrl(code) : "";
+  const qrBlock = qrUrl
+    ? `<div class="pdf-qr-row"><img alt="QR" src="${qrDataImage(qrUrl, 180)}" width="120" height="120"/><div><b>Открыть в EduSense</b><p class="muted" style="margin:4px 0 0;word-break:break-all;font-size:.75rem">${escapeHtml(qrUrl)}</p></div></div>`
+    : "";
+  const studentDoc = `<div class="a4-sheet">
     ${eduSenseWatermarkHtml()}
     <div class="a4-inner">
+      ${pdfProTeacherBannerHtml()}
       ${pdfExamHeaderHtml(payload)}
+      ${qrBlock}
       ${renderExportTaskBlocks(payload.tasks, false, true)}
     </div>
-  </div>`;
+  </div>${pdfAnswerBlankHtml(payload)}`;
+  const inner = keys ? studentDoc + renderTeacherKeysPrintHtml(payload) : studentDoc;
   const filename = `${pdfSafeName(payload.title || payload.code || "variant")}${
     keys ? "-kluchi" : ""
   }.pdf`;
@@ -9270,6 +9503,12 @@ async function submitCreate() {
 }
 
 async function boot() {
+  try {
+    const p = String(location.pathname || "");
+    if (/\/teacher\/analytics\/?$/i.test(p)) state.tab = "analytics";
+    if (/\/teacher\/settings\/?$/i.test(p)) state.tab = "settings";
+  } catch (_) {}
+
   let user = null;
   if (window.EduSenseAuth?.restore) {
     user = await window.EduSenseAuth.restore({ splash: true, requireToken: true });

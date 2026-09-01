@@ -44,6 +44,17 @@ class UserLogin(BaseModel):
     password: str = Field(..., min_length=1, max_length=128)
 
 
+
+
+class ProfileUpdate(BaseModel):
+    full_name: Optional[str] = Field(default=None, min_length=2, max_length=100)
+    subject: Optional[str] = Field(default=None, max_length=80)
+
+
+class PasswordChange(BaseModel):
+    old_password: str = Field(..., min_length=1, max_length=128)
+    new_password: str = Field(..., min_length=8, max_length=128)
+
 class UserResponse(BaseModel):
     id: int
     full_name: str
@@ -215,6 +226,42 @@ def auth_me(
 ):
     return _user_response(db, user, with_token=True)
 
+
+
+
+@router.patch("/auth/profile", response_model=UserResponse)
+def update_profile(
+    payload: ProfileUpdate,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if payload.full_name is not None:
+        name = payload.full_name.strip()
+        other = _find_user_by_name(db, name)
+        if other and other.id != user.id:
+            raise HTTPException(status_code=409, detail="Пользователь с таким именем уже существует.")
+        user.full_name = name
+    if payload.subject is not None:
+        subj = payload.subject.strip() if payload.subject else None
+        user.subject = subj or None
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return _user_response(db, user, with_token=True)
+
+
+@router.post("/auth/password")
+def change_password(
+    payload: PasswordChange,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if not _verify_password(payload.old_password, user.password):
+        raise HTTPException(status_code=400, detail="Неверный текущий пароль.")
+    user.password = _hash_password(payload.new_password)
+    db.add(user)
+    db.commit()
+    return {"ok": True}
 
 @router.post("/auth/logout")
 def auth_logout(_user: User = Depends(get_current_user)):

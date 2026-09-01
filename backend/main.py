@@ -146,6 +146,33 @@ def serve_index():
     return FileResponse(FRONTEND_DIR / "index.html")
 
 
+
+
+@app.get("/settings")
+def serve_settings():
+    return FileResponse(FRONTEND_DIR / "settings.html")
+
+
+@app.get("/solve")
+def serve_solve(kim: str = ""):
+    """QR deep-link: /solve?kim=CODE → student work."""
+    from fastapi.responses import RedirectResponse
+    code = (kim or "").strip().upper()
+    if not code:
+        return RedirectResponse(url="/student", status_code=302)
+    return RedirectResponse(url=f"/student?code={code}", status_code=302)
+
+
+@app.get("/student/analytics")
+def serve_student_analytics():
+    return FileResponse(FRONTEND_DIR / "student.html")
+
+
+@app.get("/teacher/analytics")
+def serve_teacher_analytics():
+    return FileResponse(FRONTEND_DIR / "teacher.html")
+
+
 @app.get("/teacher")
 def serve_teacher():
     return FileResponse(FRONTEND_DIR / "teacher.html")

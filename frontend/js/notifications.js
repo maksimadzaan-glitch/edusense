@@ -67,7 +67,7 @@
 
   function kindLabel(kind) {
     if (kind === "ai") return "ИИ-проверка";
-    if (kind === "rno") return "РНО";
+    if (kind === "rno") return "Работа над ошибками";
     return "Сдача";
   }
 
@@ -114,7 +114,7 @@
       ' role="dialog" aria-label="Уведомления">' +
       '<div class="notif-pop-head"><strong>Уведомления</strong>' +
       '<button type="button" class="notif-mark" id="notif-mark-all">Отметить всё как прочитанное</button></div>' +
-      (rows ? '<ul class="notif-list">' + rows + "</ul>" : '<p class="notif-empty">Пока тихо — сдачи и РНО появятся здесь.</p>') +
+      (rows ? '<ul class="notif-list">' + rows + "</ul>" : '<p class="notif-empty">Пока тихо — сдачи и Работа над ошибками появятся здесь.</p>') +
       '<label class="notif-mirror">Дублировать в Telegram / Push' +
       '<span class="notif-switch"><input type="checkbox" id="notif-mirror-toggle"' +
       (pref.telegram || pref.push ? " checked" : "") +

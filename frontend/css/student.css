@@ -4784,3 +4784,16 @@ body.has-focus-player .main {
   box-shadow: 0 10px 40px rgba(0,0,0,0.35);
 }
 .network-retry-banner[hidden] { display: none !important; }
+
+
+.pro-quarantine {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  background: rgba(251, 191, 36, 0.06);
+}
+.pro-quarantine h3 { margin: 0 0 6px; font-size: 1rem; }
+.pro-quarantine .muted { color: var(--muted); font-size: 0.9rem; }
+.home-split-v2 { display: grid; gap: 14px; }
+.panel-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }

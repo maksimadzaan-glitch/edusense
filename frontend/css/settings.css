@@ -1,0 +1,19 @@
+.settings-page { min-height: 100vh; background: radial-gradient(1200px 600px at 10% -10%, rgba(94,234,212,.12), transparent), #0b1220; color: #e2e8f0; font-family: "Plus Jakarta Sans", system-ui, sans-serif; }
+.settings-top { display:flex; align-items:center; gap:16px; padding:16px 20px; border-bottom:1px solid rgba(148,163,184,.18); }
+.settings-back { color:#99f6e4; text-decoration:none; font-weight:600; font-size:.9rem; }
+.settings-brand { font-weight:800; letter-spacing:-.02em; }
+.settings-main { max-width:720px; margin:0 auto; padding:24px 16px 64px; }
+.settings-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+.settings-tab { border:1px solid rgba(148,163,184,.25); background:rgba(15,23,42,.55); color:#cbd5e1; border-radius:999px; padding:8px 14px; font:inherit; font-size:.85rem; font-weight:600; cursor:pointer; }
+.settings-tab.is-active { background:rgba(94,234,212,.16); border-color:rgba(94,234,212,.45); color:#f8fafc; }
+.settings-card { background:rgba(15,23,42,.72); border:1px solid rgba(148,163,184,.18); border-radius:18px; padding:20px; }
+.settings-card h2 { margin:0 0 6px; font-size:1.15rem; }
+.settings-card .lead { margin:0 0 16px; color:#94a3b8; font-size:.9rem; }
+.settings-field { display:block; margin-bottom:14px; }
+.settings-field span { display:block; margin-bottom:6px; font-size:.8rem; color:#94a3b8; font-weight:600; }
+.settings-field input, .settings-field select { width:100%; border-radius:12px; border:1px solid rgba(148,163,184,.28); background:#0f172a; color:#f8fafc; padding:12px 14px; font:inherit; }
+.settings-check { display:flex; align-items:flex-start; gap:10px; margin:10px 0; font-size:.92rem; color:#cbd5e1; }
+.settings-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; }
+.settings-avatar { width:72px; height:72px; border-radius:18px; background:linear-gradient(135deg,#134e4a,#0f172a); display:grid; place-items:center; font-weight:800; font-size:1.2rem; margin-bottom:12px; border:1px solid rgba(94,234,212,.35); }
+.settings-pro-box { padding:14px; border-radius:14px; background:rgba(251,191,36,.08); border:1px solid rgba(251,191,36,.28); margin-top:8px; }
+.settings-loading { color:#94a3b8; }
