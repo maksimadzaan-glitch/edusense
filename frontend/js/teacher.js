@@ -1925,6 +1925,38 @@ function exportMediaHtml(task, paper) {
   return paper ? `<div class="ep-print-media">${block}</div>` : block;
 }
 
+function printAnswerLineHtml(task, paper) {
+  if (!paper) return "";
+  if (Number(task.part) === 2) {
+    return `<div class="es-print-answer-line">Место для развёрнутого решения / ответа</div>`;
+  }
+  return `<div class="es-print-answer-line"><b>Ответ:</b> <em>________________</em></div>`;
+}
+
+function renderPrintTaskCard(t, extras, showAnswer, paper) {
+  return `
+      <section class="ep-task pdf-task-card es-print-task">
+        <div class="es-print-task-title">Задание №${escapeHtml(String(t.num))}</div>
+        <div class="ep-task-head">
+          <span class="ep-pill">Часть ${escapeHtml(String(t.part || 1))}</span>
+          ${t.type ? `<span class="ep-pill">${escapeHtml(t.type)}</span>` : ""}
+        </div>
+        ${t.topic ? `<div class="ep-topic">${formatMathText(t.topic)}</div>` : ""}
+        ${extras || `<div class="ep-body es-print-task-body">${formatTeacherTaskText(t)}</div>`}
+        ${exportMediaHtml(t, paper)}
+        ${printAnswerLineHtml(t, paper)}
+        ${showAnswer ? solutionFigureHtml(t) : ""}
+        ${
+          showAnswer && Number(t.part) === 1 && t.answer
+            ? `<div class="ep-answer"><span>Ключ</span><div class="ep-answer-body">${formatAnswerKey(
+                t.answer,
+                1
+              )}</div></div>`
+            : ""
+        }
+      </section>`;
+}
+
 function renderExportTaskBlocks(tasks, showAnswer, paper) {
   const rus = isTeacherOgeRusExam();
   if (
@@ -1934,18 +1966,7 @@ function renderExportTaskBlocks(tasks, showAnswer, paper) {
   ) {
     const body = OgeRusUI.mapTasksWithShared(
       tasks || [],
-      (t, extras) => `
-      <section class="ep-task pdf-task-card">
-        <div class="ep-task-head">
-          <span class="ep-num">№${t.num}</span>
-          <span class="ep-pill">Ч.${t.part}</span>
-          <span class="ep-pill">${escapeHtml(t.type)}</span>
-        </div>
-        <div class="ep-topic">${formatMathText(t.topic)}</div>
-        ${extras || `<div class="ep-body">${formatTeacherTaskText(t)}</div>`}
-        ${exportMediaHtml(t, paper)}
-        ${showAnswer ? solutionFigureHtml(t) : ""}
-      </section>`,
+      (t, extras) => renderPrintTaskCard(t, extras, showAnswer, paper),
       { teacher: true, examBody: true, exam: true, showKey: !!showAnswer, print: !!paper }
     );
     return `<div class="oge-rus-exam${paper ? " is-paper" : ""}" data-exam-ui="kim-v2"><div class="oge-rus-exam-sheet">${body}</div></div>`;
@@ -1955,52 +1976,11 @@ function renderExportTaskBlocks(tasks, showAnswer, paper) {
     typeof MathOgeUI.mapTasks === "function" &&
     MathOgeUI.findMathContext(tasks || [])
   ) {
-    return MathOgeUI.mapTasks(
-      tasks || [],
-      (t) => `
-      <section class="ep-task pdf-task-card">
-        <div class="ep-task-head">
-          <span class="ep-num">№${t.num}</span>
-          <span class="ep-pill">Ч.${t.part}</span>
-          <span class="ep-pill">${escapeHtml(t.type)}</span>
-        </div>
-        <div class="ep-topic">${formatMathText(t.topic)}</div>
-        <div class="ep-body">${formatTeacherTaskText(t)}</div>
-        ${exportMediaHtml(t, paper)}
-        ${
-          showAnswer && Number(t.part) === 1 && t.answer
-            ? `<div class="ep-answer"><span>Ключ</span><div class="ep-answer-body">${formatAnswerKey(
-                t.answer,
-                1
-              )}</div></div>`
-            : ""
-        }
-      </section>`
+    return MathOgeUI.mapTasks(tasks || [], (t) =>
+      renderPrintTaskCard(t, "", showAnswer, paper)
     );
   }
-  return (tasks || [])
-    .map(
-      (t) => `
-      <section class="ep-task pdf-task-card">
-        <div class="ep-task-head">
-          <span class="ep-num">№${t.num}</span>
-          <span class="ep-pill">Ч.${t.part}</span>
-          <span class="ep-pill">${escapeHtml(t.type)}</span>
-        </div>
-        <div class="ep-topic">${formatMathText(t.topic)}</div>
-        <div class="ep-body">${formatTeacherTaskText(t)}</div>
-        ${exportMediaHtml(t, paper)}
-        ${
-          showAnswer && Number(t.part) === 1 && t.answer
-            ? `<div class="ep-answer"><span>Ключ</span><div class="ep-answer-body">${formatAnswerKey(
-                t.answer,
-                1
-              )}</div></div>`
-            : ""
-        }
-      </section>`
-    )
-    .join("");
+  return (tasks || []).map((t) => renderPrintTaskCard(t, "", showAnswer, paper)).join("");
 }
 
 function renderExportPanel(scope = "variant") {
@@ -2618,83 +2598,109 @@ function examPrintMediaCss() {
 }
 
 function brandedExamPrintCss() {
+  const printKit =
+    typeof window !== "undefined" && window.EduSensePrint && window.EduSensePrint.getPrintCss
+      ? window.EduSensePrint.getPrintCss()
+      : "";
   return `
+    ${printKit}
+    /* Fallback + html2canvas pixel sheet sizing (794×1123 ≈ A4 @96dpi) */
     @page { size: A4; margin: 12mm; }
     * { box-sizing: border-box; }
     html, body {
       margin: 0;
-      background: #e2e8f0;
-      color: #0f172a;
-      font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+      background: #ffffff !important;
+      color: #000000 !important;
+      font-family: "Times New Roman", Times, serif !important;
     }
     .a4-sheet {
       position: relative;
       overflow: hidden;
-      background: #fff;
-      color: #0f172a;
-      width: 794px;
-      max-width: 794px;
-      min-height: 1123px;
-      height: 1123px;
-      margin: 0 auto 16px;
-      padding: 28px 36px 48px;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,.25);
-      border-radius: 2px;
+      background: #fff !important;
+      color: #000 !important;
+      width: 210mm;
+      max-width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto 8mm;
+      padding: 15mm 20mm;
+      box-shadow: none;
+      border-radius: 0;
+      font-family: "Times New Roman", Times, serif !important;
     }
     ${eduSensePrintWatermarkCss()}
     .ep-badge {
-      display: inline-block; font-size: .72rem; font-weight: 700;
-      padding: 3px 9px; border: 1px solid #cbd5e1; border-radius: 999px;
-      margin-bottom: 10px; color: #334155; background: #f8fafc;
+      display: inline-block; font-size: 9pt; font-weight: 700;
+      padding: 2px 8px; border: 1px solid #000; margin-bottom: 8px; color: #000; background: #fff;
     }
-    h1, .pdf-exam-title { font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif; font-size: 1.28rem; margin: 8px 0 6px; letter-spacing: -0.03em; }
-    h2 { font-size: .82rem; margin: 22px 0 10px; letter-spacing: .08em; text-transform: uppercase; color: #64748b; font-weight: 700; }
-    .muted { color: #475569; font-size: .9rem; margin: 0 0 16px; }
+    h1, .pdf-exam-title { font-family: "Times New Roman", Times, serif; font-size: 16pt; margin: 6px 0; color: #000 !important; }
+    h2 { font-size: 11pt; margin: 14px 0 8px; letter-spacing: .04em; text-transform: uppercase; color: #000 !important; font-weight: 700; }
+    .muted { color: #222 !important; font-size: 10pt; margin: 0 0 12px; }
     .pdf-task-card,
-    .ep-task {
-      background: transparent;
+    .ep-task,
+    .es-print-task {
+      background: #fff !important;
       border: 0;
-      border-bottom: 1px solid #e2e8f0;
-      color: #0f172a;
-      padding: 12px 0 16px;
-      margin: 0 0 1.5rem;
+      border-bottom: 1px solid #333;
+      color: #000 !important;
+      padding: 10px 0 12px;
+      margin: 0 0 12px;
       page-break-inside: avoid !important;
       break-inside: avoid !important;
     }
-    .ep-task-head { display: flex; flex-wrap: wrap; gap: 6px; font-size: .85rem; color: #475569; margin-bottom: 6px; }
+    .ep-task-head { display: flex; flex-wrap: wrap; gap: 6px; font-size: 10pt; color: #000; margin-bottom: 4px; }
     .ep-num, .ep-pill {
-      display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px;
-      font-size: .7rem; font-weight: 700; background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0;
+      display: inline-flex; align-items: center; padding: 1px 6px; border: 1px solid #000;
+      font-size: 9pt; font-weight: 700; background: #fff; color: #000;
     }
-    .ep-topic { font-weight: 700; margin-bottom: 6px; }
+    .ep-topic, .es-print-task-title { font-weight: 700; margin-bottom: 6px; color: #000 !important; }
+    .a4-sheet img, .a4-sheet svg, .ep-print-media img, .task-figure img, .task-media-img {
+      max-width: 100% !important;
+      max-height: 80mm !important;
+      object-fit: contain !important;
+      display: block !important;
+      margin: 10px auto !important;
+      height: auto !important;
+    }
+    .ep-print-media, .task-figure {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .oge-rus-shared, .es-print-text-frame {
+      border: 1px solid #000 !important;
+      padding: 12px !important;
+      margin: 0 0 15px !important;
+      font-size: 11pt !important;
+      line-height: 1.4 !important;
+      background: #fff !important;
+      color: #000 !important;
+      orphans: 3; widows: 3;
+    }
+    .es-print-answer-line {
+      margin: 8px 0 2px; padding: 8px 10px; border: 1px solid #000; font-size: 11pt;
+      page-break-inside: avoid; break-inside: avoid;
+    }
     table { width: 100%; border-collapse: collapse; background: #fff; }
-    th, td { border: 1px solid #cbd5e1; color: #0f172a; background: #fff; padding: 6px 8px; }
+    th, td { border: 1px solid #000; color: #000; background: #fff; padding: 5px 7px; }
     .key-table { margin: 0 0 8px; }
-    .key-table th.n { width: 52px; text-align: center; background: #f8fafc; font-variant-numeric: tabular-nums; }
-    .key-table td.ans { font-weight: 700; font-family: ui-monospace, "JetBrains Mono", monospace; }
-    .key-table td.topic { color: #475569; font-size: .85rem; }
-    .key-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+    .key-table th.n { width: 52px; text-align: center; font-variant-numeric: tabular-nums; }
+    .key-table td.ans { font-weight: 700; }
     .key-p2 {
-      border: 1px solid #cbd5e1; padding: 12px 14px; margin: 10px 0 1.5rem;
+      border: 1px solid #000; padding: 10px 12px; margin: 8px 0 12px;
       page-break-inside: avoid !important; break-inside: avoid !important;
     }
-    .key-p2 header { display: flex; gap: 10px; align-items: baseline; margin-bottom: 8px; }
-    .key-p2 header b { font-size: 1rem; }
-    .key-short { margin: 0 0 8px; }
-    .key-sol { margin: 0; white-space: pre-wrap; font-family: inherit; font-size: .92rem; line-height: 1.5; }
+    .keys-sheet { page-break-before: always; break-before: page; }
     .answer-row { margin: 8px 0; }
     .no-print { display: none !important; }
     @media print {
       html, body { background: #fff !important; }
-      .a4-sheet { box-shadow: none; margin: 0 auto; max-width: none; height: auto; min-height: auto; }
-      .ep-wm-layer { opacity: 0.055; }
-      .pdf-task-card, .ep-task, .key-p2 {
+      .a4-sheet { box-shadow: none; margin: 0 auto; max-width: none; height: auto; min-height: auto; width: auto; }
+      .ep-wm-layer { opacity: 0.04; }
+      .pdf-task-card, .ep-task, .key-p2, .ep-print-media {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
       }
       .no-print { display: none !important; }
     }
-    @media (max-width: 640px) { .key-grid { grid-template-columns: 1fr; } }
     ${fracCssForPrint()}
   `;
 }
@@ -2918,6 +2924,9 @@ async function waitPdfAssets(root) {
         })
     )
   );
+  if (window.EduSensePrint?.clampImagesIn) {
+    window.EduSensePrint.clampImagesIn(root);
+  }
   await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 }
 
@@ -2971,15 +2980,24 @@ async function downloadHtmlAsPdf(title, innerHtml, css, filename) {
         onclone: (doc) => {
           const cloned = doc.querySelectorAll(".a4-sheet")[i] || doc.querySelector(".a4-sheet");
           if (!cloned) return;
+          cloned.style.background = "#ffffff";
+          cloned.style.color = "#000000";
           cloned.style.width = "794px";
           cloned.style.maxWidth = "794px";
           cloned.style.height = "1123px";
           cloned.style.overflow = "hidden";
-          cloned.querySelectorAll(".task-figure, .task-media-img, img, svg").forEach((el) => {
-            el.style.maxWidth = "100%";
-            el.style.minWidth = "0";
-            el.style.height = "auto";
-          });
+          if (window.EduSensePrint?.clampImagesIn) {
+            window.EduSensePrint.clampImagesIn(cloned);
+          } else {
+            cloned.querySelectorAll(".task-figure, .task-media-img, img, svg").forEach((el) => {
+              el.style.setProperty("max-width", "100%", "important");
+              el.style.setProperty("max-height", "80mm", "important");
+              el.style.setProperty("object-fit", "contain", "important");
+              el.style.setProperty("display", "block", "important");
+              el.style.setProperty("margin", "10px auto", "important");
+              el.style.height = "auto";
+            });
+          }
         },
       });
       if (i) pdf.addPage();
@@ -9215,8 +9233,8 @@ function renderTeacherKeysPrintHtml(payload) {
     ${eduSenseWatermarkHtml()}
     <div class="a4-inner">
       ${eduSenseBrandHtml("только для учителя")}
-      <div class="ep-badge">Лист ключей</div>
-      <h1>Ключи</h1>
+      <div class="ep-badge">Ключи и критерии проверки</div>
+      <h1>КЛЮЧИ И КРИТЕРИИ ПРОВЕРКИ</h1>
       <p class="muted">${escapeHtml(payload.title || "Вариант")} · ${escapeHtml(payload.meta || "")}</p>
       ${p1Table}
       ${p2Block}
@@ -9226,7 +9244,7 @@ function renderTeacherKeysPrintHtml(payload) {
 
 
 function solveShareUrl(code) {
-  const origin = String(location.origin || "https://edusense.ru").replace(/\/$/, "");
+  const origin = String(location.origin || "https://edusence.ru").replace(/\/$/, "");
   return `${origin}/solve?kim=${encodeURIComponent(String(code || "").toUpperCase())}`;
 }
 
@@ -9312,13 +9330,9 @@ async function exportAssignmentPdf(code, { keys = false } = {}) {
     };
   }
   const includeKeys = !!keys;
-  // confirm keys page
-  if (includeKeys === false) {
-    /* student version */
-  }
   const qrUrl = solveShareUrl(c);
   const qrBlock = `<div class="pdf-qr-row"><img alt="QR" src="${qrDataImage(qrUrl, 180)}" width="120" height="120"/><div><b>Открыть в EduSense</b><p class="muted" style="margin:4px 0 0;word-break:break-all;font-size:.75rem">${escapeHtml(qrUrl)}</p></div></div>`;
-  const studentInner = `<div class="a4-sheet">
+  const studentInner = `<div class="a4-sheet es-print-page">
     ${eduSenseWatermarkHtml()}
     <div class="a4-inner">
       ${pdfProTeacherBannerHtml()}
@@ -9327,10 +9341,13 @@ async function exportAssignmentPdf(code, { keys = false } = {}) {
       ${renderExportTaskBlocks(payload.tasks, false, true)}
     </div>
   </div>${pdfAnswerBlankHtml(payload)}`;
-  const keysInner = includeKeys
-    ? studentInner + renderTeacherKeysPrintHtml(payload)
-    : studentInner;
-  // Ask checkbox UX when printing with keys button already chose
+  const keysBlock = includeKeys
+    ? renderTeacherKeysPrintHtml(payload).replace(
+        'class="a4-sheet keys-sheet"',
+        'class="a4-sheet keys-sheet es-print-page es-print-keys"'
+      )
+    : "";
+  const keysInner = includeKeys ? studentInner + keysBlock : studentInner;
   const filename = `${pdfSafeName(payload.title || c)}${includeKeys ? "-kluchi" : ""}.pdf`;
   const css =
     brandedExamPrintCss() +
@@ -9346,20 +9363,40 @@ async function exportAssignmentPdf(code, { keys = false } = {}) {
     .pdf-exam-field span{display:block;font-size:.72rem;color:#64748b;font-weight:700;margin-bottom:4px}
     .pdf-exam-field em{font-style:normal;letter-spacing:.08em}
   `;
-  if (window.__pdfExportBusy) return;
-  window.__pdfExportBusy = true;
-  showPdfExportOverlay();
-  try {
-    await downloadHtmlAsPdf(payload.title, keysInner, css, filename);
-    showToast(includeKeys ? "PDF с ключами скачан" : "PDF скачан", "success");
-  } catch (_) {
-    const opened = openPrintWindow(payload.title, keysInner, css);
-    if (opened) showToast("Открыта печать — сохраните как PDF", "info");
-    else showToast("Не удалось сформировать PDF", "error");
-  } finally {
-    window.__pdfExportBusy = false;
-    closePdfExportOverlay();
+  const runDownload = async () => {
+    if (window.__pdfExportBusy) return;
+    window.__pdfExportBusy = true;
+    showPdfExportOverlay();
+    try {
+      await downloadHtmlAsPdf(payload.title, keysInner, css, filename);
+      showToast(includeKeys ? "PDF с ключами скачан" : "PDF скачан", "success");
+    } catch (_) {
+      const opened = openPrintWindow(payload.title, keysInner, css);
+      if (opened) showToast("Открыта печать — сохраните как PDF", "info");
+      else showToast("Не удалось сформировать PDF", "error");
+    } finally {
+      window.__pdfExportBusy = false;
+      closePdfExportOverlay();
+    }
+  };
+  if (window.EduSensePrint?.isMobileViewport?.() && window.EduSensePrint?.openMobilePreview) {
+    window.EduSensePrint.openMobilePreview({
+      title: "Превью бланка A4",
+      html: keysInner,
+      css,
+      onDownload: () => {
+        window.EduSensePrint.closeMobilePreview();
+        runDownload();
+      },
+      onPrint: () => {
+        window.EduSensePrint.closeMobilePreview();
+        const opened = openPrintWindow(payload.title, keysInner, css);
+        if (!opened) showToast("Разрешите всплывающие окна для печати", "error");
+      },
+    });
+    return;
   }
+  await runDownload();
 }
 
 
@@ -9374,7 +9411,7 @@ function exportBrandedPdf({ keys = false } = {}) {
   const qrBlock = qrUrl
     ? `<div class="pdf-qr-row"><img alt="QR" src="${qrDataImage(qrUrl, 180)}" width="120" height="120"/><div><b>Открыть в EduSense</b><p class="muted" style="margin:4px 0 0;word-break:break-all;font-size:.75rem">${escapeHtml(qrUrl)}</p></div></div>`
     : "";
-  const studentDoc = `<div class="a4-sheet">
+  const studentDoc = `<div class="a4-sheet es-print-page">
     ${eduSenseWatermarkHtml()}
     <div class="a4-inner">
       ${pdfProTeacherBannerHtml()}
@@ -9383,29 +9420,61 @@ function exportBrandedPdf({ keys = false } = {}) {
       ${renderExportTaskBlocks(payload.tasks, false, true)}
     </div>
   </div>${pdfAnswerBlankHtml(payload)}`;
-  const inner = keys ? studentDoc + renderTeacherKeysPrintHtml(payload) : studentDoc;
+  const keysBlock = keys
+    ? renderTeacherKeysPrintHtml(payload).replace('class="a4-sheet keys-sheet"', 'class="a4-sheet keys-sheet es-print-page es-print-keys"')
+    : "";
+  const inner = keys ? studentDoc + keysBlock : studentDoc;
   const filename = `${pdfSafeName(payload.title || payload.code || "variant")}${
     keys ? "-kluchi" : ""
   }.pdf`;
-  const fallbackPrint = () => {
+  const css = brandedExamPrintCss();
+  const runDownload = () => {
+    if (window.__pdfExportBusy) return;
+    window.__pdfExportBusy = true;
+    showPdfExportOverlay();
+    downloadHtmlAsPdf(payload.title, inner, css, filename)
+      .then(() => showToast(keys ? "PDF с ключами скачан" : "PDF скачан", "success"))
+      .catch(() => {
+        const opened = openPrintWindow(
+          keys ? `Ключи · ${payload.title}` : payload.title,
+          inner,
+          css
+        );
+        if (opened) showToast("Открыта печать — сохраните как PDF", "info");
+        else showToast("Не удалось сформировать PDF", "error");
+      })
+      .finally(() => {
+        window.__pdfExportBusy = false;
+        closePdfExportOverlay();
+      });
+  };
+  const runPrint = () => {
     const opened = openPrintWindow(
       keys ? `Ключи · ${payload.title}` : payload.title,
       inner,
-      brandedExamPrintCss()
+      css
     );
-    if (opened) showToast("Не удалось скачать PDF — открыта печать. Сохраните как PDF", "info");
-    else showToast("Не удалось сформировать PDF", "error");
+    if (!opened) showToast("Разрешите всплывающие окна для печати", "error");
   };
-  if (window.__pdfExportBusy) return;
-  window.__pdfExportBusy = true;
-  showPdfExportOverlay();
-  downloadHtmlAsPdf(payload.title, inner, brandedExamPrintCss(), filename)
-    .then(() => showToast(keys ? "Ключи скачаны (PDF)" : "PDF скачан", "success"))
-    .catch(() => fallbackPrint())
-    .finally(() => {
-      window.__pdfExportBusy = false;
-      closePdfExportOverlay();
+
+  // Mobile: A4 preview modal first — avoid freezing / theme bleed
+  if (window.EduSensePrint?.isMobileViewport?.() && window.EduSensePrint?.openMobilePreview) {
+    window.EduSensePrint.openMobilePreview({
+      title: "Превью бланка A4",
+      html: inner,
+      css,
+      onDownload: () => {
+        window.EduSensePrint.closeMobilePreview();
+        runDownload();
+      },
+      onPrint: () => {
+        window.EduSensePrint.closeMobilePreview();
+        runPrint();
+      },
     });
+    return;
+  }
+  runDownload();
 }
 
 function printVariantQrBoard() {

@@ -1357,7 +1357,9 @@
     if (kind === "reading") {
       const parts = splitReadingPassage(text);
       return (
-        '<aside class="oge-rus-shared" data-oge-shared="reading" data-oge-collapse-root="' +
+        '<aside class="oge-rus-shared' +
+        (options.print ? " is-print es-print-text-frame" : "") +
+        '" data-oge-shared="reading" data-oge-collapse-root="' +
         escapeHtml(uid) +
         '">' +
         '<div class="oge-rus-shared-head">' +
@@ -1389,7 +1391,9 @@
       );
     }
     return (
-      '<aside class="oge-rus-shared" data-oge-shared="grammar" data-oge-collapse-root="' +
+      '<aside class="oge-rus-shared' +
+      (options.print ? " is-print es-print-text-frame" : "") +
+      '" data-oge-shared="grammar" data-oge-collapse-root="' +
       escapeHtml(uid) +
       '">' +
       '<div class="oge-rus-shared-head">' +
