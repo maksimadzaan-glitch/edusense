@@ -931,10 +931,10 @@ body.is-telegram-miniapp .pwa-nav-btn {
 }
 
 .es-logo-name {
-  font-family: "Manrope", "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+  font-family: var(--display, "Unbounded", system-ui, sans-serif);
   font-weight: 800;
-  font-size: 1.2rem;
-  letter-spacing: -0.02em;
+  font-size: 1.18rem;
+  letter-spacing: -0.04em;
   color: #f8fafc;
   transition: color 0.2s ease;
 }
@@ -1209,9 +1209,12 @@ html.is-nav-open #pwa-install-root {
 
 @media (max-width: 900px) {
   .sidebar-backdrop {
+    display: block !important;
     position: fixed !important;
     inset: 0 !important;
-    z-index: 9999 !important;
+    z-index: 9998 !important;
+    width: auto !important;
+    max-width: none !important;
   }
 
   .sidebar {
@@ -1220,7 +1223,18 @@ html.is-nav-open #pwa-install-root {
     right: auto !important;
     bottom: 0 !important;
     left: 0 !important;
+    width: min(300px, 86vw) !important;
+    max-width: 86vw !important;
+    height: 100dvh !important;
     z-index: 9999 !important;
+    transform: translateX(-105%) !important;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    box-shadow: none;
+  }
+
+  .dash.is-nav-open .sidebar {
+    transform: translateX(0) !important;
+    box-shadow: 16px 0 40px rgba(0, 0, 0, 0.45);
   }
 
   .dash.is-nav-open .sidebar-foot {

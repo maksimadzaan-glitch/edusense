@@ -1917,7 +1917,7 @@ h3 {
     display: block;
     position: fixed !important;
     inset: 0 !important;
-    z-index: 9999 !important;
+    z-index: 9998 !important;
     background: rgba(4, 8, 16, 0.55);
     opacity: 0;
     pointer-events: none;
@@ -1935,11 +1935,12 @@ h3 {
     top: 0 !important;
     right: auto !important;
     bottom: 0 !important;
-    width: min(300px, 88vw);
+    width: min(300px, 86vw) !important;
+    max-width: 86vw !important;
     height: 100vh;
     height: 100dvh;
     z-index: 9999 !important;
-    transform: translateX(-105%);
+    transform: translateX(-105%) !important;
     transition: transform 0.28s var(--ease);
     border-right: 1px solid var(--border);
     border-bottom: none;
@@ -1950,7 +1951,7 @@ h3 {
   }
 
   .dash.is-nav-open .sidebar {
-    transform: translateX(0);
+    transform: translateX(0) !important;
   }
 
   .nav-list {
@@ -2575,21 +2576,23 @@ html.pdf-export-busy .atmosphere {
 }
 
 @keyframes genAura {
-  from { transform: scale(1) translateY(0); opacity: 0.6; }
-  to { transform: scale(1.06) translateY(-10px); opacity: 0.95; }
+  from { transform: scale(1); opacity: 0.7; }
+  to { transform: scale(1.03); opacity: 0.95; }
 }
 
 .gen-loading-copy,
 .pdf-export-panel {
   position: relative;
   z-index: 2;
-  width: min(28rem, 92vw);
-  padding: 1.25rem 1.5rem 1.35rem;
+  width: min(22rem, 92vw);
+  padding: 1.35rem 1.35rem 1.2rem;
   text-align: center;
-  background: rgba(15, 23, 42, 0.92) !important;
-  border: 1px solid #334155 !important;
-  border-radius: 16px !important;
-  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.55) !important;
+  background: rgba(10, 14, 22, 0.94) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 18px !important;
+  box-shadow:
+    0 24px 48px -16px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
 }
 
 .gen-loading .gen-forge,
@@ -2605,30 +2608,34 @@ html.pdf-export-busy .atmosphere {
 .gen-loading-title,
 .gen-loading h2,
 .pdf-export-title {
-  margin: 0 0 8px;
+  margin: 0 0 6px;
+  font-family: var(--display) !important;
   color: #ffffff !important;
-  font-size: 1.25rem !important;
-  font-weight: 700 !important;
-  letter-spacing: -0.03em;
+  font-size: clamp(1.35rem, 4.2vw, 1.7rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.04em;
+  line-height: 1.12;
   background: none !important;
   -webkit-text-fill-color: #ffffff !important;
 }
 
 .gen-loading-kicker {
-  margin: 0 0 6px;
-  font-size: 0.72rem;
-  font-weight: 600;
+  margin: 0 0 10px;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #64748b;
+  color: #5eead4;
 }
 
 .gen-loading-sub,
 .pdf-export-sub {
-  margin: 0 0 18px;
-  color: #94a3b8 !important;
-  line-height: 1.45;
-  font-size: 0.9rem !important;
+  margin: 0 0 16px;
+  color: #a8b4c7 !important;
+  line-height: 1.4;
+  font-size: 0.88rem !important;
+  font-weight: 600;
 }
 
 .gen-steps {
@@ -2642,10 +2649,13 @@ html.pdf-export-busy .atmosphere {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 0;
+  padding: 7px 0;
   color: #64748b;
-  font-size: 0.86rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: var(--font);
   position: relative;
+  letter-spacing: -0.01em;
 }
 
 .gen-steps li + li::before {
@@ -2654,8 +2664,8 @@ html.pdf-export-busy .atmosphere {
   left: 7px;
   top: -8px;
   width: 1px;
-  height: 10px;
-  border-left: 1px dashed #334155;
+  height: 12px;
+  background: rgba(51, 65, 85, 0.95);
 }
 
 .gen-step-ico {
@@ -2667,37 +2677,45 @@ html.pdf-export-busy .atmosphere {
   justify-content: center;
   font-size: 10px;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 800;
   color: #64748b;
   border-radius: 999px;
 }
 
-.gen-steps li.is-active { color: #e2e8f0; }
+.gen-steps li.is-active {
+  color: #f8fafc;
+  font-weight: 750;
+}
 .gen-steps li.is-active .gen-step-ico,
 .gen-steps li.is-done .gen-step-ico { color: #34d399; }
-.gen-steps li.is-done { color: #94a3b8; }
+.gen-steps li.is-done {
+  color: #94a3b8;
+  font-weight: 600;
+}
 .gen-steps li.is-done .gen-step-ico {
-  background: rgba(16, 185, 129, 0.12);
+  background: rgba(16, 185, 129, 0.14);
 }
 
 .gen-step-pulse {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: #34d399;
-  box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.45);
-  animation: genPing 1.4s ease-in-out infinite;
+  background: #5eead4;
+  box-shadow: 0 0 0 0 rgba(94, 234, 212, 0.45);
+  animation: genPing 1.5s ease-in-out infinite;
 }
 
 @keyframes genPing {
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.4); }
-  50% { opacity: 0.55; box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(94, 234, 212, 0.4); }
+  50% { opacity: 0.7; transform: scale(1.08); box-shadow: 0 0 0 7px rgba(94, 234, 212, 0); }
 }
 
 .gen-progress-label {
   margin: 0 0 10px;
-  color: #64748b;
-  font-size: 0.8rem;
+  color: #7b879c;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .gen-progress,
@@ -2712,7 +2730,7 @@ html.pdf-export-busy .atmosphere {
   width: 100%;
   height: 4px;
   border-radius: 999px;
-  background: rgba(51, 65, 85, 0.9);
+  background: rgba(51, 65, 85, 0.95);
   overflow: hidden;
 }
 
@@ -2722,7 +2740,7 @@ html.pdf-export-busy .atmosphere {
   width: 25%;
   border-radius: 999px;
   background: linear-gradient(90deg, #34d399, #5eead4);
-  transition: width 0.45s ease;
+  transition: width 0.45s var(--ease);
 }
 
 .pdf-export-overlay {

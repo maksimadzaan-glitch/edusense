@@ -16,8 +16,8 @@
   --radius: 12px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --font: "Manrope", "Plus Jakarta Sans", Inter, system-ui, sans-serif;
-  --display: "Manrope", "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+  --font: "Golos Text", system-ui, -apple-system, sans-serif;
+  --display: "Unbounded", "Golos Text", system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, monospace;
   --serif: "Source Serif 4", "PT Serif", "Times New Roman", Georgia, serif;
 }
@@ -26,6 +26,8 @@
 html, body { margin: 0; min-height: 100%; }
 body {
   font-family: var(--font);
+  font-weight: 500;
+  letter-spacing: -0.014em;
   color: var(--text);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
@@ -396,7 +398,7 @@ html.qr-scan-open body {
 .menu-actions .btn { width: 100%; margin: 0; }
 
 .kicker { color: var(--muted); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-h1 { margin: 6px 0 8px; font-size: 1.55rem; letter-spacing: -0.03em; }
+h1 { margin: 6px 0 8px; font-family: var(--display); font-weight: 800; font-size: 1.55rem; letter-spacing: -0.045em; }
 .sub { color: var(--muted); margin: 0 0 18px; line-height: 1.5; }
 
 label.field { display: block; margin-bottom: 14px; }
@@ -1398,7 +1400,7 @@ html.dash-ready .student-hero-glow {
 
 .sidebar-brand .es-logo-mark,
 .sidebar-brand img {
-  animation: logoBreathe 3.8s ease-in-out infinite;
+  animation: none;
 }
 
 .sidebar .class-switch {
@@ -2350,11 +2352,12 @@ html.dash-ready .student-hero-glow {
     top: 0 !important;
     right: auto !important;
     bottom: 0 !important;
-    width: min(288px, 86vw);
+    width: min(288px, 86vw) !important;
+    max-width: 86vw !important;
     height: 100vh;
     height: 100dvh;
     z-index: 9999 !important;
-    transform: translateX(-105%);
+    transform: translateX(-105%) !important;
     transition: transform 0.28s var(--ease);
     border-right: 1px solid var(--border);
     border-bottom: none;
@@ -2367,7 +2370,7 @@ html.dash-ready .student-hero-glow {
     display: block;
     position: fixed !important;
     inset: 0 !important;
-    z-index: 9999 !important;
+    z-index: 9998 !important;
     background: rgba(4, 8, 16, 0.55);
     opacity: 0;
     pointer-events: none;
@@ -2378,7 +2381,7 @@ html.dash-ready .student-hero-glow {
     pointer-events: auto;
   }
   .dash.is-nav-open .sidebar {
-    transform: translateX(0);
+    transform: translateX(0) !important;
   }
   .nav-list {
     display: flex;
@@ -4682,16 +4685,17 @@ body.has-focus-player .main {
     top: 0 !important;
     right: auto !important;
     bottom: 0 !important;
-    width: min(288px, 86vw);
+    width: min(288px, 86vw) !important;
+    max-width: 86vw !important;
     height: 100vh;
     height: 100dvh;
     z-index: 9999 !important;
-    transform: translateX(-105%);
+    transform: translateX(-105%) !important;
     transition: transform 0.28s var(--ease);
   }
 
   .dash.is-nav-open .sidebar {
-    transform: translateX(0);
+    transform: translateX(0) !important;
   }
 
   .nav-toggle {
