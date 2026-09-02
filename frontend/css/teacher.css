@@ -13,8 +13,8 @@
   --accent: #5eead4;
   --accent-2: #e8a87c;
   --glow: rgba(94, 234, 212, 0.35);
-  --font: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
-  --display: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+  --font: "Manrope", "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+  --display: "Manrope", "Plus Jakarta Sans", Inter, system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, monospace;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -988,8 +988,8 @@ h3 {
 }
 
 @keyframes logoBreathe {
-  0%, 100% { filter: drop-shadow(0 0 0 rgba(52, 211, 153, 0)); transform: scale(1); }
-  50% { filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.35)); transform: scale(1.04); }
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(52, 211, 153, 0)); }
+  50% { filter: drop-shadow(0 0 10px rgba(52, 211, 153, 0.4)); }
 }
 
 .dash .class-switch-card {
@@ -1033,8 +1033,8 @@ h3 {
 }
 
 .dash .sidebar .nav-item:hover svg {
-  transform: translateY(-1px) rotate(-8deg);
-  transition: transform 0.22s ease, opacity 0.18s ease;
+  opacity: 1;
+  transform: none;
 }
 
 .dash .sidebar .nav-item.is-active::before {
@@ -2917,7 +2917,7 @@ html.is-telegram-miniapp .noise {
   backface-visibility: hidden;
   transform-style: preserve-3d;
   opacity: 0;
-  animation: forgeStitch 4s var(--ease-out) infinite;
+  animation: forgeStitch 5.4s var(--ease-out) infinite;
   animation-delay: calc(var(--i) * 0.5s);
 }
 

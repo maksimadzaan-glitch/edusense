@@ -1,4 +1,4 @@
-.settings-page { min-height: 100vh; background: radial-gradient(1200px 600px at 10% -10%, rgba(94,234,212,.12), transparent), #0b1220; color: #e2e8f0; font-family: "Plus Jakarta Sans", system-ui, sans-serif; }
+.settings-page { min-height: 100vh; background: radial-gradient(1200px 600px at 10% -10%, rgba(94,234,212,.12), transparent), #0b1220; color: #e2e8f0; font-family: "Manrope", "Plus Jakarta Sans", system-ui, sans-serif; }
 .settings-top { display:flex; align-items:center; gap:16px; padding:16px 20px; border-bottom:1px solid rgba(148,163,184,.18); }
 .settings-back { color:#99f6e4; text-decoration:none; font-weight:600; font-size:.9rem; }
 .settings-brand { font-weight:800; letter-spacing:-.02em; }

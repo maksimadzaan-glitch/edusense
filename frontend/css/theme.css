@@ -21,8 +21,8 @@
   --muted-2: #6b6b6b;
   --glow: transparent;
   --radius: 12px;
-  --font: "Plus Jakarta Sans", Inter, system-ui, -apple-system, sans-serif;
-  --display: "Plus Jakarta Sans", Inter, system-ui, -apple-system, sans-serif;
+  --font: "Manrope", "Plus Jakarta Sans", Inter, system-ui, -apple-system, sans-serif;
+  --display: "Manrope", "Plus Jakarta Sans", Inter, system-ui, -apple-system, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
