@@ -62,9 +62,19 @@ class NoCacheStaticMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         response: Response = await call_next(request)
         path = request.url.path or ""
-        if path.startswith("/js/") or path.startswith("/css/"):
-            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        no_cache = (
+            path.startswith("/js/")
+            or path.startswith("/css/")
+            or path.endswith(".html")
+            or path.endswith(".js")
+            or path in ("/", "/teacher", "/student", "/settings", "/updates", "/news", "/install")
+            or path.startswith("/teacher")
+            or path.startswith("/student")
+        )
+        if no_cache:
+            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
             response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
         return response
 
 
@@ -141,9 +151,16 @@ def serve_shortcut(request: Request):
     )
 
 
+NO_CACHE = {
+    "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
+    "Pragma": "no-cache",
+    "Expires": "0",
+}
+
+
 @app.get("/")
 def serve_index():
-    return FileResponse(FRONTEND_DIR / "index.html")
+    return FileResponse(FRONTEND_DIR / "index.html", headers=NO_CACHE)
 
 
 
@@ -175,19 +192,19 @@ def serve_teacher_analytics():
 
 @app.get("/teacher")
 def serve_teacher():
-    return FileResponse(FRONTEND_DIR / "teacher.html")
+    return FileResponse(FRONTEND_DIR / "teacher.html", headers=NO_CACHE)
 
 
 @app.get("/teacher/{rest:path}")
 def serve_teacher_spa(rest: str):
-    return FileResponse(FRONTEND_DIR / "teacher.html")
+    return FileResponse(FRONTEND_DIR / "teacher.html", headers=NO_CACHE)
 
 
 @app.get("/student")
 @app.get("/student/join")
 @app.get("/student/dashboard")
 def serve_student():
-    return FileResponse(FRONTEND_DIR / "student.html")
+    return FileResponse(FRONTEND_DIR / "student.html", headers=NO_CACHE)
 
 
 @app.get("/student/work/{code}")

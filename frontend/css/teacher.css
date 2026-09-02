@@ -2574,10 +2574,13 @@ html.is-telegram-miniapp .noise {
 }
 
 .gen-loading .gen-forge,
-.pdf-export-overlay .gen-forge {
+.pdf-export-overlay .gen-forge,
+.gen-forge {
   position: relative;
   z-index: 2;
-  display: grid;
+  display: grid !important;
+  visibility: visible !important;
+  opacity: 1;
   margin: 0 0 8px;
 }
 
