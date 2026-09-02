@@ -3448,6 +3448,8 @@ function setNavOpen(open) {
   const backdrop = document.getElementById("sidebar-backdrop");
   if (!dash) return;
   dash.classList.toggle("is-nav-open", !!open);
+  document.documentElement.classList.toggle("is-nav-open", !!open);
+  document.body?.classList.toggle("is-nav-open", !!open);
   btn?.setAttribute("aria-expanded", open ? "true" : "false");
   btn?.setAttribute("aria-label", open ? "Закрыть меню" : "Открыть меню");
   if (backdrop) backdrop.hidden = !open;

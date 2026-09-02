@@ -2345,14 +2345,15 @@ html.dash-ready .student-hero-glow {
   }
   .main-head h1 { font-size: clamp(1.35rem, 5vw, 1.85rem); }
   .sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    right: auto !important;
+    bottom: 0 !important;
     width: min(288px, 86vw);
     height: 100vh;
     height: 100dvh;
-    z-index: 120 !important;
+    z-index: 9999 !important;
     transform: translateX(-105%);
     transition: transform 0.28s var(--ease);
     border-right: 1px solid var(--border);
@@ -2364,9 +2365,9 @@ html.dash-ready .student-hero-glow {
   }
   .sidebar-backdrop {
     display: block;
-    position: fixed;
-    inset: 0;
-    z-index: 110 !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 9999 !important;
     background: rgba(4, 8, 16, 0.55);
     opacity: 0;
     pointer-events: none;
@@ -4343,7 +4344,7 @@ html.block-copy-exam #app * {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 40;
+  z-index: 40 !important;
   pointer-events: none;
   width: 100%;
   max-width: none;
@@ -4676,14 +4677,15 @@ body.has-focus-player .main {
   }
 
   .sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    right: auto !important;
+    bottom: 0 !important;
     width: min(288px, 86vw);
     height: 100vh;
     height: 100dvh;
-    z-index: 120 !important;
+    z-index: 9999 !important;
     transform: translateX(-105%);
     transition: transform 0.28s var(--ease);
   }

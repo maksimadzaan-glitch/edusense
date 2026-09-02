@@ -1184,3 +1184,48 @@ html.nav-busy.page-spinner-open {
 html.nav-busy.page-spinner-open body {
   overflow: hidden;
 }
+
+/* Mobile drawer must stack above body-level widgets (lo-fi player, PWA banner).
+   #app has z-index:1, so a player at z-index:40 on <body> otherwise paints over the menu. */
+html.is-nav-open,
+html.is-nav-open body {
+  overflow: hidden;
+}
+
+html.is-nav-open #app,
+body.is-nav-open #app {
+  z-index: 50;
+}
+
+#focus-player-root {
+  z-index: 40 !important;
+}
+
+html.is-nav-open #focus-player-root,
+html.is-nav-open #pwa-install-root {
+  z-index: 40 !important;
+  pointer-events: none !important;
+}
+
+@media (max-width: 900px) {
+  .sidebar-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 9999 !important;
+  }
+
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    right: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    z-index: 9999 !important;
+  }
+
+  .dash.is-nav-open .sidebar-foot {
+    position: relative;
+    z-index: 2;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+}
