@@ -2959,6 +2959,32 @@ function pdfSafeName(title) {
   );
 }
 
+function buildOverlayMarkup({ kind, kicker, title, sub, steps, captions }) {
+  const firstCaption = captions?.[0] || "Сборка…";
+  return `
+    <div class="gen-loading-bg"></div>
+    ${forgeSceneHtml(kind)}
+    <div class="gen-loading-copy">
+      <p class="gen-loading-kicker">${kicker}</p>
+      <h2 class="gen-loading-title">${title}</h2>
+      <p class="gen-loading-sub">${sub}</p>
+      <ol class="gen-steps">
+        ${steps
+          .map(
+            (label, i) => `
+          <li class="${i === 0 ? "is-active" : ""}">
+            <i class="gen-step-ico" aria-hidden="true">${i === 0 ? '<span class="gen-step-pulse"></span>' : ""}</i>
+            <span>${label}</span>
+          </li>`,
+          )
+          .join("")}
+      </ol>
+      <p class="gen-progress-label"><span class="gen-progress-text">${firstCaption}</span></p>
+      <div class="gen-progress"><span class="gen-progress-bar" style="width:25%"></span></div>
+    </div>
+  `;
+}
+
 function showPdfExportOverlay() {
   closePdfExportOverlay();
   const el = document.createElement("div");
@@ -2967,22 +2993,56 @@ function showPdfExportOverlay() {
   el.setAttribute("role", "dialog");
   el.setAttribute("aria-modal", "true");
   el.setAttribute("aria-label", "Генерация PDF");
-  el.innerHTML = `
-    <div class="gen-loading-bg"></div>
-    ${forgeParticlesHtml()}
-    ${forgeSceneHtml("pdf")}
-    <div class="pdf-export-panel gen-loading-copy">
-      <p class="pdf-export-title">Собираем PDF</p>
-      <p class="pdf-export-sub">Верстка A4, тексты и чертежи</p>
-    </div>
-  `;
+  el.innerHTML = buildOverlayMarkup({
+    kind: "pdf",
+    kicker: "PDF · A4",
+    title: "Собираем PDF",
+    sub: "Верстка бланка, тексты и чертежи",
+    steps: ["Верстка", "Тексты", "Чертежи", "Готово"],
+    captions: [
+      "Готовим листы A4…",
+      "Переносим тексты…",
+      "Встраиваем чертежи…",
+      "Сохраняем файл…",
+    ],
+  });
   document.body.appendChild(el);
   document.documentElement.classList.add("pdf-export-busy");
+  startGenStepsCycle(el, [
+    "Готовим листы A4…",
+    "Переносим тексты…",
+    "Встраиваем чертежи…",
+    "Сохраняем файл…",
+  ]);
 }
 
 function closePdfExportOverlay() {
+  stopGenStepsCycle();
   document.getElementById("pdf-export-overlay")?.remove();
   document.documentElement.classList.remove("pdf-export-busy");
+}
+
+function showKimOverlay() {
+  if (document.getElementById("gen-loading")) return;
+  const el = document.createElement("div");
+  el.id = "gen-loading";
+  el.className = "gen-loading";
+  el.setAttribute("data-step", "0");
+  el.setAttribute("aria-live", "polite");
+  el.setAttribute("aria-busy", "true");
+  el.innerHTML = renderGeneratingStageInner();
+  document.body.appendChild(el);
+  document.documentElement.classList.add("kim-export-busy");
+  startGenStepsCycle(el);
+}
+
+function closeKimOverlay() {
+  const el = document.getElementById("gen-loading");
+  if (el) {
+    stopGenStepsCycle();
+    el.remove();
+  }
+  document.documentElement.classList.remove("kim-export-busy");
 }
 
 async function waitPdfAssets(root) {
@@ -4002,68 +4062,42 @@ function renderGeneratorModes() {
   `;
 }
 
-function genForgeCardsHtml(n = 5) {
-  return Array.from({ length: n })
+function forgeSceneHtml(kind = "kim") {
+  const pdf = kind === "pdf";
+  const sheets = [0, 1, 2]
     .map(
-      (_, i) => `
-        <div class="gen-forge-card" style="--i:${i}">
-          <span class="gen-forge-card-tag"></span>
-          <i></i><i></i><i></i>
-          <span class="gen-forge-card-seam"></span>
+      (i) => `
+        <div class="gen-forge-sheet" style="--i:${i}">
+          <span class="gen-forge-sheet-tag"></span>
+          <i></i><i></i><i></i><i></i>
         </div>`,
     )
     .join("");
-}
-
-function forgeParticlesHtml() {
-  return `<div class="gen-particles" aria-hidden="true">${"<i></i>".repeat(8)}</div>`;
-}
-
-function forgeSceneHtml(kind = "kim") {
-  const pdf = kind === "pdf";
   return `
     <div class="gen-forge${pdf ? " is-pdf" : ""}" aria-hidden="true">
-      <div class="gen-forge-ambient"></div>
-      <div class="gen-forge-scene">
-        <span class="gen-forge-shadow"></span>
-        <span class="gen-forge-ring gen-forge-ring-a"></span>
-        <span class="gen-forge-ring gen-forge-ring-b"></span>
-        <div class="gen-forge-deck">${genForgeCardsHtml(pdf ? 4 : 5)}</div>
-        <div class="gen-forge-core"><em></em></div>
+      <div class="gen-forge-viewport">
+        <div class="gen-forge-stack">${sheets}</div>
+        <span class="gen-forge-scan"></span>
       </div>
     </div>`;
 }
 
-function renderGeneratingStage() {
+function renderGeneratingStageInner() {
   const subject = state.classroom?.subject || "предмету";
   const exam = examLabel(state.classroom?.exam_type || "oge");
-  const steps = ["Кодификатор", "Тексты", "Чертежи", "Готово"];
-  return `
-    <div class="gen-loading" id="gen-loading" data-step="0" aria-live="polite" aria-busy="true">
-      <div class="gen-loading-bg"></div>
-      ${forgeParticlesHtml()}
-      ${forgeSceneHtml("kim")}
-      <div class="gen-loading-copy">
-        <p class="gen-loading-kicker">КИМ · ${escapeHtml(exam)}</p>
-        <h2 class="gen-loading-title">Собираем вариант</h2>
-        <p class="gen-loading-sub">${escapeHtml(subject)} · ${generatorRequestCount()} заданий</p>
-        <ol class="gen-steps" id="gen-steps">
-          ${steps
-            .map(
-              (label, i) => `
-            <li class="${i === 0 ? "is-active" : ""}">
-              <i aria-hidden="true">${i === 0 ? "●" : ""}</i>
-              <span>${label}</span>
-            </li>`,
-            )
-            .join("")}
-        </ol>
-        <p class="gen-progress-label" id="gen-progress-label">
-          <span id="gen-progress-text">Сверяем кодификатор…</span>
-        </p>
-      </div>
-    </div>
-  `;
+  return buildOverlayMarkup({
+    kind: "kim",
+    kicker: `КИМ · ${escapeHtml(exam)}`,
+    title: "Собираем вариант",
+    sub: `${escapeHtml(subject)} · ${generatorRequestCount()} заданий`,
+    steps: ["Кодификатор", "Тексты", "Чертежи", "Готово"],
+    captions: [
+      "Сверяем кодификатор…",
+      "Подставляем тексты и задания…",
+      "Подгоняем чертежи и ключи…",
+      "Вариант почти готов…",
+    ],
+  });
 }
 
 function renderTests() {
@@ -4071,7 +4105,6 @@ function renderTests() {
 
   if (g.generating) {
     return `
-      ${renderGeneratingStage()}
       ${renderPublishModal()}
       ${renderLinkQrModal()}
     `;
@@ -7825,44 +7858,45 @@ function escapeHtml(value) {
 
 let genStepsTimer = null;
 
-function startGenStepsCycle() {
+function stopGenStepsCycle() {
   if (genStepsTimer) {
     clearInterval(genStepsTimer);
     genStepsTimer = null;
   }
-  const root = document.getElementById("gen-steps");
-  const stage = document.getElementById("gen-loading");
-  const label = document.getElementById("gen-progress-text");
-  const bar = document.getElementById("gen-progress-bar");
-  const track = document.getElementById("gen-progress");
+}
+
+function startGenStepsCycle(rootEl, captionsOverride) {
+  stopGenStepsCycle();
+  const root = rootEl?.querySelector(".gen-steps");
   if (!root) return;
   const items = [...root.querySelectorAll("li")];
   if (!items.length) return;
+  const label = rootEl.querySelector(".gen-progress-text");
+  const bar = rootEl.querySelector(".gen-progress-bar");
   const stepMs = 1400;
-  const captions = [
+  const captions = captionsOverride || [
     "Сверяем кодификатор…",
     "Подставляем тексты и задания…",
     "Подгоняем чертежи и ключи…",
     "Вариант почти готов…",
   ];
-  const stitchIndex = 2;
 
   const paint = (i) => {
     items.forEach((el, idx) => {
       el.classList.toggle("is-done", idx < i);
       el.classList.toggle("is-active", idx === i);
-      const mark = el.querySelector("i");
-      if (mark) mark.textContent = idx < i ? "✓" : idx === i ? "●" : "";
+      const mark = el.querySelector(".gen-step-ico");
+      if (!mark) return;
+      if (idx < i) mark.innerHTML = "✓";
+      else if (idx === i) mark.innerHTML = '<span class="gen-step-pulse"></span>';
+      else mark.innerHTML = "";
     });
-    if (stage) {
-      stage.dataset.step = String(i);
-      stage.classList.toggle("is-stitching", i === stitchIndex);
-    }
-    if (label) label.textContent = captions[i] || "Генерация…";
+    rootEl.dataset.step = String(i);
+    if (label) label.textContent = captions[i] || "Сборка…";
+    if (bar) bar.style.width = `${((i + 1) / items.length) * 100}%`;
   };
 
   let i = 0;
-  if (stage) stage.style.setProperty("--gen-step-ms", `${stepMs}ms`);
   paint(0);
   genStepsTimer = setInterval(() => {
     i = Math.min(i + 1, items.length - 1);
@@ -7871,11 +7905,8 @@ function startGenStepsCycle() {
 }
 
 function enhanceEffects() {
-  if (state.generator?.generating) startGenStepsCycle();
-  else if (genStepsTimer) {
-    clearInterval(genStepsTimer);
-    genStepsTimer = null;
-  }
+  if (state.generator?.generating) showKimOverlay();
+  else closeKimOverlay();
 
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
