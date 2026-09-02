@@ -2959,11 +2959,44 @@ function pdfSafeName(title) {
   );
 }
 
+function genForgeCardsHtml(n = 5) {
+  return Array.from({ length: n })
+    .map(
+      (_, i) => `
+        <div class="gen-forge-card" style="--i:${i}">
+          <span class="gen-forge-card-tag"></span>
+          <i></i><i></i><i></i>
+          <span class="gen-forge-card-seam"></span>
+        </div>`,
+    )
+    .join("");
+}
+
+function forgeParticlesHtml() {
+  return `<div class="gen-particles" aria-hidden="true">${"<i></i>".repeat(8)}</div>`;
+}
+
+function forgeSceneHtml(kind = "kim") {
+  const pdf = kind === "pdf";
+  return `
+    <div class="gen-forge${pdf ? " is-pdf" : ""}" aria-hidden="true">
+      <div class="gen-forge-ambient"></div>
+      <div class="gen-forge-scene">
+        <span class="gen-forge-shadow"></span>
+        <span class="gen-forge-ring gen-forge-ring-a"></span>
+        <span class="gen-forge-ring gen-forge-ring-b"></span>
+        <div class="gen-forge-deck">${genForgeCardsHtml(pdf ? 4 : 5)}</div>
+        <div class="gen-forge-core"><em></em></div>
+      </div>
+    </div>`;
+}
+
 function buildOverlayMarkup({ kind, kicker, title, sub, steps, captions }) {
   const firstCaption = captions?.[0] || "Сборка…";
   return `
     <div class="gen-loading-bg"></div>
-    ${forgeSceneHtml(kind)}
+    ${forgeParticlesHtml()}
+    ${forgeSceneHtml(kind || "kim")}
     <div class="gen-loading-copy">
       <p class="gen-loading-kicker">${kicker}</p>
       <h2 class="gen-loading-title">${title}</h2>
@@ -4060,26 +4093,6 @@ function renderGeneratorModes() {
       </article>
     </div>
   `;
-}
-
-function forgeSceneHtml(kind = "kim") {
-  const pdf = kind === "pdf";
-  const sheets = [0, 1, 2]
-    .map(
-      (i) => `
-        <div class="gen-forge-sheet" style="--i:${i}">
-          <span class="gen-forge-sheet-tag"></span>
-          <i></i><i></i><i></i><i></i>
-        </div>`,
-    )
-    .join("");
-  return `
-    <div class="gen-forge${pdf ? " is-pdf" : ""}" aria-hidden="true">
-      <div class="gen-forge-viewport">
-        <div class="gen-forge-stack">${sheets}</div>
-        <span class="gen-forge-scan"></span>
-      </div>
-    </div>`;
 }
 
 function renderGeneratingStageInner() {
@@ -7881,6 +7894,7 @@ function startGenStepsCycle(rootEl, captionsOverride) {
     "Вариант почти готов…",
   ];
 
+  const stitchIndex = 2;
   const paint = (i) => {
     items.forEach((el, idx) => {
       el.classList.toggle("is-done", idx < i);
@@ -7892,6 +7906,7 @@ function startGenStepsCycle(rootEl, captionsOverride) {
       else mark.innerHTML = "";
     });
     rootEl.dataset.step = String(i);
+    rootEl.classList.toggle("is-stitching", i === stitchIndex);
     if (label) label.textContent = captions[i] || "Сборка…";
     if (bar) bar.style.width = `${((i + 1) / items.length) * 100}%`;
   };
