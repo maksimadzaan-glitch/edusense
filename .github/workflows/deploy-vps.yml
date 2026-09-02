@@ -20,23 +20,34 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
           script_stop: true
+          command_timeout: 2m
           script: |
             set -e
             cd /opt/edusense
-            # www-data tree + git-as-root → mark safe and keep .git root-owned
             git config --global --add safe.directory /opt/edusense || true
             git config --global --add safe.directory '*' || true
             chown -R root:root /opt/edusense/.git 2>/dev/null || true
+            rm -f /opt/edusense/.git/index.lock /opt/edusense/.git/HEAD.lock /opt/edusense/.git/refs/heads/main.lock
             git -c safe.directory=/opt/edusense fetch origin main
             git -c safe.directory=/opt/edusense reset --hard origin/main
-            # Runtime must write SQLite (+ -wal/-shm) in the app directory
             chown www-data:www-data /opt/edusense
             chown -R www-data:www-data /opt/edusense/backend /opt/edusense/frontend 2>/dev/null || true
             chown www-data:www-data /opt/edusense/.env /opt/edusense/edusense.db 2>/dev/null || true
             chown www-data:www-data /opt/edusense/edusense.db-wal /opt/edusense/edusense.db-shm /opt/edusense/edusense.db-journal 2>/dev/null || true
             chown -R root:root /opt/edusense/.git 2>/dev/null || true
             systemctl restart edusense
-            sleep 3
-            systemctl is-active edusense
+            ok=0
+            for i in 1 2 3 4 5 6 7 8 9 10; do
+              sleep 2
+              if systemctl is-active --quiet edusense; then
+                ok=1
+                break
+              fi
+            done
+            if [ "$ok" != 1 ]; then
+              systemctl status edusense --no-pager -l || true
+              journalctl -u edusense -n 40 --no-pager || true
+              exit 1
+            fi
             curl -sf -m 8 http://127.0.0.1:8010/api/health || curl -sf -m 8 http://127.0.0.1:8010/api/health || true
             echo "Deploy OK: $(git -c safe.directory=/opt/edusense rev-parse --short HEAD)"
