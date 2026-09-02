@@ -9,26 +9,35 @@ concurrency:
   group: deploy-vps
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
           script_stop: true
           command_timeout: 2m
+          envs: GITHUB_TOKEN
           script: |
             set -e
+            export GIT_TERMINAL_PROMPT=0
             cd /opt/edusense
             git config --global --add safe.directory /opt/edusense || true
             git config --global --add safe.directory '*' || true
             chown -R root:root /opt/edusense/.git 2>/dev/null || true
             rm -f /opt/edusense/.git/index.lock /opt/edusense/.git/HEAD.lock /opt/edusense/.git/refs/heads/main.lock
-            git -c safe.directory=/opt/edusense fetch origin main
+            git -c safe.directory=/opt/edusense -c credential.helper= \
+              -c http.extraHeader="Authorization: Bearer ${GITHUB_TOKEN}" \
+              fetch --prune origin main
             git -c safe.directory=/opt/edusense reset --hard origin/main
             chown www-data:www-data /opt/edusense
             chown -R www-data:www-data /opt/edusense/backend /opt/edusense/frontend 2>/dev/null || true
