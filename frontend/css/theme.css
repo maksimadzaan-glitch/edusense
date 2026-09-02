@@ -29,8 +29,7 @@
 body {
   background: var(--bg);
   color: var(--text);
-  font-feature-settings: "cv11", "ss01";
-  letter-spacing: -0.011em;
+  letter-spacing: -0.004em;
 }
 
 .fx {

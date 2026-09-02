@@ -38,8 +38,7 @@ body {
   color: var(--text);
   font-family: var(--font);
   font-weight: 500;
-  letter-spacing: -0.011em;
-  font-feature-settings: "ss01", "cv11";
+  letter-spacing: -0.004em;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
 }
@@ -517,10 +516,10 @@ input {
   margin: 26px 0 0;
   font-size: clamp(2.35rem, 7.4vw, 3.35rem);
   font-weight: 800;
-  line-height: 1.08;
-  letter-spacing: -0.032em;
+  line-height: 1.12;
+  letter-spacing: -0.018em;
   color: #f8fafc;
-  background-image: linear-gradient(180deg, #ffffff 12%, #ecfeff 48%, #a7f3d0 100%);
+  background-image: linear-gradient(180deg, #ffffff 8%, #f0fdfa 58%, #99f6e4 100%);
   background-size: 100% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -528,17 +527,12 @@ input {
   animation: rise 0.65s var(--ease) forwards;
 }
 
-@keyframes titleFlow {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
 .hero-lede {
   margin: 18px 0 0;
   max-width: 34rem;
-  font-size: 0.98rem;
-  line-height: 1.6;
-  letter-spacing: -0.011em;
+  font-size: 1rem;
+  line-height: 1.65;
+  letter-spacing: 0;
   color: var(--muted);
 }
 
@@ -582,20 +576,18 @@ input {
   pointer-events: none;
   background: conic-gradient(
     from var(--spin),
+    rgba(255, 255, 255, 0.08),
+    rgba(94, 234, 212, 0.42),
     rgba(255, 255, 255, 0.06),
-    rgba(94, 234, 212, 0.95),
-    rgba(255, 255, 255, 0.1),
-    rgba(232, 168, 124, 0.85),
-    rgba(167, 139, 250, 0.7),
-    rgba(94, 234, 212, 0.5),
-    rgba(255, 255, 255, 0.06)
+    rgba(94, 234, 212, 0.22),
+    rgba(255, 255, 255, 0.08)
   );
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  animation: spinHue 7s linear infinite;
+  animation: spinHue 22s linear infinite;
 }
 
 @keyframes spinHue {
@@ -949,24 +941,29 @@ input {
 
 .toggle-pass {
   position: absolute;
+  top: 0;
   right: 6px;
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: 0;
+  z-index: 1;
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
+  margin: auto 0;
+  padding: 0;
   border: 0;
   border-radius: 8px;
   background: none;
-  color: #94a3b8;
+  color: #cbd5e1;
   cursor: pointer;
-  transition: color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+  transition: color 0.18s ease, background 0.18s ease;
 }
 
-.toggle-pass:hover {
+.toggle-pass:hover,
+.toggle-pass:focus-visible {
   color: #5eead4;
-  background: rgba(94, 234, 212, 0.1);
+  background: rgba(94, 234, 212, 0.12);
+  outline: none;
 }
 
 .toggle-pass.is-on {
@@ -974,9 +971,10 @@ input {
 }
 
 .toggle-pass svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   display: block;
+  pointer-events: none;
 }
 
 /* ---------- Buttons ---------- */

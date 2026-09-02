@@ -934,7 +934,7 @@ body.is-telegram-miniapp .pwa-nav-btn {
   font-family: "Manrope", "Plus Jakarta Sans", Inter, system-ui, sans-serif;
   font-weight: 800;
   font-size: 1.2rem;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   color: #f8fafc;
   transition: color 0.2s ease;
 }

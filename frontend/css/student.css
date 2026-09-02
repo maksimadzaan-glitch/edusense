@@ -180,7 +180,7 @@ body.is-student-entry .entry-card {
 .brand {
   font-family: var(--display);
   font-weight: 800;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.02em;
   font-size: clamp(2.1rem, 6vw, 2.85rem);
   line-height: 1;
   color: #f7f8fa;
@@ -1715,7 +1715,7 @@ html.dash-ready .student-hero-glow {
   font-family: var(--display);
   font-size: clamp(2rem, 3.6vw, 2.6rem);
   font-weight: 800;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.02em;
   line-height: 1;
   color: #f7f8fa;
   animation: brandIn 0.7s var(--ease-out) both;
