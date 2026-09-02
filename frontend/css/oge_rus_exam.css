@@ -370,25 +370,40 @@
 }
 
 .passage-box,
-.reading-passage-box {
-  border: 1.5px solid #1e293b;
-  padding: 14px 18px;
+.reading-passage-box,
+.a4-sheet .passage-box,
+.a4-sheet .reading-passage-box,
+.oge-rus-exam.is-paper .passage-box,
+.oge-rus-exam.is-paper .reading-passage-box {
+  border: 1px solid #334155 !important;
+  padding: 14px 16px;
   margin: 16px 0;
-  background-color: #f8fafc;
-  border-radius: 6px;
-  font-size: 11pt;
-  line-height: 1.5;
+  background-color: #ffffff !important;
+  border-radius: 4px;
+  font-size: 10.5pt;
+  line-height: 1.6;
   page-break-inside: avoid;
   orphans: 3;
   widows: 3;
-  color: #0f172a;
+  color: #1e293b !important;
+}
+
+.passage-box .oge-rus-shared-title,
+.reading-passage-box .oge-rus-shared-title,
+.oge-rus-exam.is-paper .oge-rus-shared-title,
+.a4-sheet .oge-rus-shared-title {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  font-size: 11pt !important;
+  letter-spacing: 0.04em;
 }
 
 .oge-rus-exam:not(.is-paper) .passage-box,
 .oge-rus-exam:not(.is-paper) .reading-passage-box {
-  background-color: rgba(15, 23, 42, 0.55);
-  border-color: rgba(148, 163, 184, 0.35);
-  color: inherit;
+  background-color: #f8fafc;
+  border-color: #334155;
+  color: #1e293b;
 }
 
 .oge-exam-match-col + .oge-exam-match-col {
@@ -1270,12 +1285,7 @@ span.katex-scroll {
 }
 
 .oge-rus-exam.is-paper .oge-exam-banner {
-  margin: 0 0 16px;
-  padding: 0 0 12px;
-  border: 0;
-  border-bottom: 1px solid #cbd5e1;
-  border-radius: 0;
-  background: transparent;
+  display: none !important;
 }
 
 .oge-rus-exam.is-paper .oge-exam-banner-kicker {

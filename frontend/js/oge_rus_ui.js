@@ -2087,25 +2087,25 @@
           break;
         }
       }
-      const bannerTitle = bankLabel || "КИМ · задания 1–13";
-      const bannerHint = options.print
-        ? "Ответы записывайте в бланк. Изложение — после двукратного прослушивания."
-        : bankLabel
-        ? "Чтобы указать ошибку, напишите: " +
-          (bankLabel.split(" · ")[0] || bankCode) +
-          ", задание 11"
-        : "Тестовая часть (2–12) — как в бланке. Изложение и сочинение — по порядку КИМ.";
-      out.push(
-        '<header class="oge-exam-banner"><p class="oge-exam-banner-kicker">ОГЭ · Русский язык' +
-          (bankCode ? " · " + escapeHtml(bankCode) : "") +
-          "</p>" +
-          "<h2>" +
-          escapeHtml(bannerTitle) +
-          "</h2>" +
-          "<p>" +
-          escapeHtml(bannerHint) +
-          "</p></header>"
-      );
+      if (!options.print) {
+        const bannerTitle = bankLabel || "КИМ · задания 1–13";
+        const bannerHint = bankLabel
+          ? "Чтобы указать ошибку, напишите: " +
+            (bankLabel.split(" · ")[0] || bankCode) +
+            ", задание 11"
+          : "Тестовая часть (2–12) — как в бланке. Изложение и сочинение — по порядку КИМ.";
+        out.push(
+          '<header class="oge-exam-banner"><p class="oge-exam-banner-kicker">ОГЭ · Русский язык' +
+            (bankCode ? " · " + escapeHtml(bankCode) : "") +
+            "</p>" +
+            "<h2>" +
+            escapeHtml(bannerTitle) +
+            "</h2>" +
+            "<p>" +
+            escapeHtml(bannerHint) +
+            "</p></header>"
+        );
+      }
     }
 
     function emitPassagesForTask(kim) {

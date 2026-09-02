@@ -1930,10 +1930,27 @@ function exportMediaHtml(task, paper) {
   return paper ? `<div class="ep-print-media">${block}</div>` : block;
 }
 
+function isEssayPrintAnswer(task) {
+  const n = Number(task?.num);
+  const ui = String(task?.payload?.ui || task?.ui || "").toLowerCase();
+  if (ui === "listening" || ui === "essay_choice" || ui === "essay" || ui === "summary") return true;
+  return isTeacherOgeRusExam() && (n === 1 || n === 13);
+}
+
+function isExtendedPrintAnswer(task) {
+  const n = Number(task?.num);
+  const part = Number(task?.part);
+  if (isEssayPrintAnswer(task)) return true;
+  if (part === 2) return true;
+  return n >= 19 && n <= 25;
+}
+
 function printAnswerLineHtml(task, paper) {
   if (!paper) return "";
-  if (Number(task.part) === 2) {
-    return `<div class="es-print-answer-line">Место для развёрнутого решения / ответа</div>`;
+  if (isExtendedPrintAnswer(task)) {
+    const essay = isEssayPrintAnswer(task);
+    const label = essay ? "Место для развёрнутого ответа" : "Место для решения";
+    return `<div class="lined-box${essay ? " is-essay" : " is-math"}"><span class="lined-box-label">${label}</span></div>`;
   }
   return `<div class="es-print-answer-line"><b>Ответ:</b> <em>________________</em></div>`;
 }
@@ -2696,15 +2713,49 @@ function brandedExamPrintCss() {
     .math-oge-context-title { font-size: 12pt; margin: 0 0 8px; }
     .math-oge-context-story { font-size: 11pt; line-height: 1.4; margin: 0 0 8px; }
     .oge-rus-shared, .es-print-text-frame, .passage-box, .reading-passage-box {
-      border: 1px solid #000 !important;
-      padding: 12px !important;
+      border: 1px solid #334155 !important;
+      padding: 14px 16px !important;
       margin: 0 0 15px !important;
-      font-size: 11pt !important;
-      line-height: 1.4 !important;
-      background: #fff !important;
-      color: #000 !important;
+      font-size: 10.5pt !important;
+      line-height: 1.6 !important;
+      background: #ffffff !important;
+      color: #1e293b !important;
       orphans: 3; widows: 3;
       page-break-inside: avoid;
+      border-radius: 4px;
+    }
+    .oge-rus-shared-title, .passage-box .oge-rus-shared-title, .reading-passage-box .oge-rus-shared-title {
+      color: #0f172a !important;
+      font-weight: 700 !important;
+      text-transform: uppercase !important;
+      font-size: 11pt !important;
+      letter-spacing: 0.04em;
+      margin: 0 0 10px !important;
+    }
+    .lined-box {
+      border: 1px dashed #94a3b8;
+      width: 100%;
+      margin-top: 10px;
+      padding: 8px 10px 0;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          transparent,
+          transparent 21px,
+          #e2e8f0 21px,
+          #e2e8f0 22px
+        );
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    .lined-box.is-essay { min-height: 280px; height: 300px; }
+    .lined-box.is-math { min-height: 180px; height: 196px; }
+    .lined-box-label {
+      display: block;
+      font-size: 9pt;
+      font-weight: 700;
+      color: #64748b;
+      margin-bottom: 6px;
     }
     .es-print-answer-line {
       margin: 8px 0 2px; padding: 8px 10px; border: 1px solid #000; font-size: 11pt;
@@ -2919,8 +2970,8 @@ function showPdfExportOverlay() {
   el.innerHTML = `
     <div class="pdf-export-panel">
       <div class="pdf-export-spinner" aria-hidden="true"></div>
-      <p class="pdf-export-title">Готовим PDF-бланк</p>
-      <p class="pdf-export-sub">Верстаем A4 · подгоняем чертежи · без обрезки текстов</p>
+      <p class="pdf-export-title">Готовим PDF</p>
+      <p class="pdf-export-sub">Верстка A4 и чертежи</p>
     </div>
   `;
   document.body.appendChild(el);
@@ -3057,13 +3108,11 @@ function packPdfSheets(host) {
   const keepSel = [
     ".pdf-pro-banner",
     ".pdf-qr-row",
-    ".pdf-exam-header",
     ".math-oge-context",
     ".passage-box",
     ".reading-passage-box",
     ".oge-rus-shared",
     ".oge-section-label",
-    ".oge-exam-banner",
     ".pdf-task-card",
     ".ep-task",
     ".es-print-task",
@@ -3077,6 +3126,7 @@ function packPdfSheets(host) {
     const parent = el.parentElement?.closest(keepSel);
     if (parent && parent !== el && innerSrc.contains(parent)) return false;
     if (el.closest(".pdf-exam-header") && !el.classList.contains("pdf-exam-header")) return false;
+    if (el.classList.contains("oge-exam-banner") || el.closest(".oge-exam-banner")) return false;
     return true;
   });
   if (!cards.length) {
@@ -3187,8 +3237,6 @@ function packPdfSheets(host) {
     inner.className = "a4-inner";
     if (idx === 0 && headerBlock.childNodes.length) {
       [...headerBlock.childNodes].forEach((n) => inner.appendChild(n.cloneNode(true)));
-    } else if (idx > 0) {
-      inner.insertAdjacentHTML("beforeend", eduSenseBrandHtml());
     }
     page.items.forEach((n) => inner.appendChild(n));
     sheet.appendChild(inner);
@@ -3968,12 +4016,7 @@ function genForgeCardsHtml(n = 5) {
 function renderGeneratingStage() {
   const subject = state.classroom?.subject || "предмету";
   const exam = examLabel(state.classroom?.exam_type || "oge");
-  const steps = [
-    "Кодификатор и темы",
-    "Тексты и задания",
-    "Чертежи и ключи",
-    "Готово к выдаче",
-  ];
+  const steps = ["Кодификатор", "Тексты", "Чертежи", "Готово"];
   return `
     <div class="gen-loading" id="gen-loading" data-step="0" aria-live="polite" aria-busy="true">
       <div class="gen-loading-panel">
@@ -3981,25 +4024,20 @@ function renderGeneratingStage() {
         <p class="gen-loading-kicker">КИМ · ${escapeHtml(exam)}</p>
         <h2 class="gen-loading-title">Собираем вариант</h2>
         <p class="gen-loading-sub">${escapeHtml(subject)} · ${generatorRequestCount()} заданий</p>
-        <ul class="gen-checklist" id="gen-steps">
+        <ol class="gen-steps" id="gen-steps">
           ${steps
             .map(
               (label, i) => `
             <li class="${i === 0 ? "is-active" : ""}">
-              <b>${i + 1}</b>
+              <i aria-hidden="true">${i === 0 ? "●" : ""}</i>
               <span>${label}</span>
             </li>`,
             )
             .join("")}
-        </ul>
-        <div class="gen-progress-wrap">
-          <div class="gen-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" id="gen-progress">
-            <i id="gen-progress-bar" style="width:25%"></i>
-          </div>
-          <div class="gen-progress-label" id="gen-progress-label">
-            <span id="gen-progress-text">Сверяем кодификатор…</span>
-          </div>
-        </div>
+        </ol>
+        <p class="gen-progress-label" id="gen-progress-label">
+          <span id="gen-progress-text">Сверяем кодификатор…</span>
+        </p>
       </div>
     </div>
   `;
@@ -7542,7 +7580,9 @@ function renderTab() {
 
 function navBadgeHtml(badge) {
   if (!badge) return "";
-  return `<span class="nav-badge nav-badge-${badge.kind}" aria-hidden="true">${escapeHtml(badge.text)}</span>`;
+  const kind = String(badge.kind || "");
+  const liveDot = kind === "live" ? `<i class="nav-live-dot" aria-hidden="true"></i>` : "";
+  return `<span class="nav-badge nav-badge-${escapeHtml(kind)}">${liveDot}${escapeHtml(badge.text)}</span>`;
 }
 
 const REF_NOTIFY_KEY = "edusense_ref_notify";
@@ -7784,15 +7824,14 @@ function startGenStepsCycle() {
     items.forEach((el, idx) => {
       el.classList.toggle("is-done", idx < i);
       el.classList.toggle("is-active", idx === i);
+      const mark = el.querySelector("i");
+      if (mark) mark.textContent = idx < i ? "✓" : idx === i ? "●" : "";
     });
     if (stage) {
       stage.dataset.step = String(i);
       stage.classList.toggle("is-stitching", i === stitchIndex);
     }
     if (label) label.textContent = captions[i] || "Генерация…";
-    const pct = Math.round(((i + 1) / items.length) * 100);
-    if (bar) bar.style.width = `${pct}%`;
-    track?.setAttribute("aria-valuenow", String(pct));
   };
 
   let i = 0;

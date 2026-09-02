@@ -81,13 +81,13 @@ html, body {
 .a4-sheet .oge-rus-shared,
 .passage-box,
 .reading-passage-box {
-  border: 1px solid #000 !important;
-  padding: 12px !important;
+  border: 1px solid #334155 !important;
+  padding: 14px 16px !important;
   margin: 0 0 15px !important;
-  font-size: 11pt !important;
-  line-height: 1.4 !important;
-  background: #fff !important;
-  color: #000 !important;
+  font-size: 10.5pt !important;
+  line-height: 1.6 !important;
+  background: #ffffff !important;
+  color: #1e293b !important;
   orphans: 3;
   widows: 3;
   page-break-inside: auto;
@@ -99,6 +99,36 @@ html, body {
   margin: 0 0 0.55em;
   orphans: 3;
   widows: 3;
+  color: #1e293b !important;
+}
+.oge-rus-shared-title,
+.passage-box .oge-rus-shared-title {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  font-size: 11pt !important;
+}
+.lined-box {
+  border: 1px dashed #94a3b8;
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px 10px 0;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 21px,
+      #e2e8f0 21px,
+      #e2e8f0 22px
+    );
+}
+.lined-box.is-essay { min-height: 280px; height: 300px; }
+.lined-box.is-math { min-height: 180px; height: 196px; }
+.lined-box-label {
+  display: block;
+  font-size: 9pt;
+  font-weight: 700;
+  color: #64748b;
 }
 
 .es-print-task-title {

@@ -743,8 +743,8 @@ h3 {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  background: #0a0f18;
-  border-right: 1px solid var(--border);
+  background: #090d16;
+  border-right: 1px solid rgba(51, 65, 85, 0.4);
 }
 
 @keyframes slideInLeft {
@@ -789,10 +789,14 @@ h3 {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 10px;
-  background: #0f172a;
-  border: 1px solid #1e293b;
+  padding: 12px;
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(51, 65, 85, 0.4);
   border-radius: 12px;
+}
+
+.dash .class-switch-card:hover {
+  background: rgba(30, 41, 59, 0.8);
 }
 
 .dash .class-switch-copy {
@@ -868,19 +872,19 @@ h3 {
 .dash .sidebar .nav-item {
   width: 100%;
   border: none;
-  border-left: 2px solid transparent;
+  border-left: 0;
   background: transparent;
   color: #94a3b8;
   text-align: left;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 10px 12px;
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 500;
   box-shadow: none;
-  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+  transition: background 0.18s ease, color 0.18s ease;
 }
 
 .dash .sidebar .nav-item svg {
@@ -902,16 +906,16 @@ h3 {
 }
 
 .dash .sidebar .nav-item.is-active {
-  background: linear-gradient(to right, rgba(16, 185, 129, 0.15), transparent);
-  color: #34d399;
-  font-weight: 700;
-  border-left-color: #34d399;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+  background: #1e293b;
+  color: #ffffff;
+  font-weight: 500;
+  border-left-color: transparent;
+  box-shadow: none;
 }
 
 .dash .sidebar .nav-item.is-active svg {
   opacity: 1;
-  color: #34d399;
+  color: #ffffff;
   filter: none;
 }
 
@@ -2371,8 +2375,8 @@ html.is-telegram-miniapp .noise {
 
 /* Generation loader */
 .gen-loading {
-  --gen-accent: #5eead4;
-  --gen-accent-rgb: 94, 234, 212;
+  --gen-accent: #34d399;
+  --gen-accent-rgb: 52, 211, 153;
   --gen-step-ms: 1400ms;
   position: fixed;
   inset: 0;
@@ -2386,42 +2390,43 @@ html.is-telegram-miniapp .noise {
   justify-content: center;
   text-align: center;
   isolation: isolate;
-  background: #0f172a !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  background: rgba(2, 6, 23, 0.92) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .gen-loading-panel {
-  width: min(420px, 92vw);
-  padding: 28px 22px 24px;
-  border: 1px solid rgba(148, 163, 184, 0.22);
+  width: min(28rem, 92vw);
+  padding: 2rem;
+  border: 1px solid #1e293b;
   border-radius: 16px;
-  background: #111827;
+  background: #0f172a;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
 }
 
 .gen-loading-spinner {
-  width: 48px;
-  height: 48px;
+  width: 32px;
+  height: 32px;
   margin: 0 auto 16px;
   border-radius: 50%;
-  border: 3px solid rgba(94, 234, 212, 0.18);
-  border-top-color: #5eead4;
+  border: 2px solid #334155;
+  border-top-color: #10b981;
   animation: spin360 0.85s linear infinite;
 }
 
 .gen-loading-kicker {
   margin: 0 0 6px;
   font-size: 0.72rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(94, 234, 212, 0.9);
+  color: #64748b;
 }
 
 .gen-loading-title {
   margin: 0 0 8px;
-  font-size: clamp(1.35rem, 3vw, 1.75rem);
-  font-weight: 800;
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  font-weight: 700;
   letter-spacing: -0.03em;
   color: #f8fafc;
   background: none;
@@ -2429,49 +2434,61 @@ html.is-telegram-miniapp .noise {
 }
 
 .gen-loading-sub {
-  margin: 0 0 18px;
+  margin: 0 0 20px;
   color: #94a3b8;
   line-height: 1.45;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
 }
 
-.gen-loading .gen-checklist {
+.gen-steps {
   list-style: none;
-  margin: 0 0 16px;
+  margin: 0 0 14px;
   padding: 0;
   text-align: left;
 }
 
-.gen-loading .gen-checklist li {
+.gen-steps li {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 10px;
-  margin: 0 0 6px;
-  border-radius: 10px;
-  color: #94a3b8;
-  background: rgba(15, 23, 42, 0.65);
+  padding: 6px 0;
+  color: #64748b;
+  font-size: 0.86rem;
+  position: relative;
 }
 
-.gen-loading .gen-checklist li.is-active {
-  color: #e2e8f0;
-  background: rgba(94, 234, 212, 0.1);
+.gen-steps li + li::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: -8px;
+  width: 1px;
+  height: 10px;
+  border-left: 1px dashed #334155;
 }
 
-.gen-loading .gen-checklist b {
-  width: 22px;
-  height: 22px;
+.gen-steps li i {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  font-size: 0.72rem;
-  background: rgba(148, 163, 184, 0.2);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+  color: #64748b;
 }
 
-.gen-loading .gen-checklist li.is-active b {
-  background: #5eead4;
-  color: #0f172a;
+.gen-steps li.is-active { color: #e2e8f0; }
+.gen-steps li.is-active i,
+.gen-steps li.is-done i { color: #34d399; }
+.gen-steps li.is-done { color: #94a3b8; }
+
+.gen-loading .gen-progress-label {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.8rem;
 }
 
 .pdf-export-overlay {
@@ -2482,9 +2499,9 @@ html.is-telegram-miniapp .noise {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #0f172a !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  background: rgba(2, 6, 23, 0.92) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .pdf-export-panel {
@@ -2492,25 +2509,27 @@ html.is-telegram-miniapp .noise {
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  max-width: min(92vw, 380px);
-  padding: 28px 24px;
+  max-width: min(92vw, 28rem);
+  width: 100%;
+  padding: 2rem;
   text-align: center;
-  border: 1px solid rgba(148, 163, 184, 0.22);
+  border: 1px solid #1e293b;
   border-radius: 16px;
-  background: #111827;
+  background: #0f172a;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
 }
 
 .pdf-export-title {
   margin: 0;
-  font-size: 1.15rem;
-  font-weight: 800;
+  font-size: 1.1rem;
+  font-weight: 700;
   letter-spacing: -0.02em;
   color: #f8fafc;
 }
 
 .pdf-export-sub {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   line-height: 1.45;
   color: #94a3b8;
 }
@@ -2537,6 +2556,7 @@ html.is-telegram-miniapp .noise {
 
 /* Мягкий ambient light вместо жёсткого пятна */
 .gen-loading-bg {
+  display: none !important;
   position: absolute;
   inset: -25%;
   z-index: 0;
@@ -3180,52 +3200,45 @@ html.is-telegram-miniapp .noise {
 }
 
 .pdf-export-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #0f172a !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  animation: fadeIn 0.25s ease;
+  background: rgba(2, 6, 23, 0.92) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .pdf-export-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  max-width: min(92vw, 420px);
-  padding: 8px 20px;
-  text-align: center;
+  gap: 12px;
+  max-width: min(92vw, 28rem);
+  width: 100%;
+  padding: 2rem;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  background: #0f172a;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
 }
 
 .pdf-export-spinner {
-  width: 56px;
-  height: 56px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  border: 3px solid rgba(94, 234, 212, 0.18);
-  border-top-color: #5eead4;
-  box-shadow: 0 0 28px rgba(94, 234, 212, 0.35);
+  border: 2px solid #334155;
+  border-top-color: #10b981;
+  box-shadow: none;
   animation: spin360 0.85s linear infinite;
 }
 
 .pdf-export-title {
-  margin: 4px 0 0;
-  font-size: 1.2rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: #f8fafc;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
 }
 
 .pdf-export-sub {
-  margin: 0;
-  font-size: 0.92rem;
-  line-height: 1.45;
-  color: var(--muted);
+  color: #94a3b8;
+}
+
+.pdf-export-progress,
+.pdf-export-progress-bar {
+  display: none;
 }
 
 .pdf-export-progress {
@@ -10099,40 +10112,50 @@ html.figure-lightbox-open body {
 
 .nav-badge {
   flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 2px 6px;
-  font-size: 9px;
-  line-height: 1.4;
-  letter-spacing: 0.04em;
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border-radius: 4px;
+}
+
+.nav-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
+  animation: navLivePulse 1.8s ease-in-out infinite;
+}
+
+@keyframes navLivePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.45); opacity: 1; }
+  50% { box-shadow: 0 0 0 4px rgba(52, 211, 153, 0); opacity: 0.85; }
 }
 
 .nav-badge-live {
-  border-radius: 999px;
-  font-weight: 700;
-  color: #34d399;
-  background: rgba(16, 185, 129, 0.2);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  animation: navBadgeLive 2.4s ease-in-out infinite;
-}
-
-@keyframes navBadgeLive {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-  50% { box-shadow: 0 0 12px 0 rgba(16, 185, 129, 0.38); }
+  color: #94a3b8;
+  background: transparent;
+  border: 1px solid rgba(51, 65, 85, 0.7);
+  animation: none;
 }
 
 .nav-badge-pro {
-  border-radius: 4px;
-  font-weight: 900;
-  color: #fcd34d;
-  background: linear-gradient(to right, rgba(245, 158, 11, 0.2), rgba(168, 85, 247, 0.2));
-  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  background: transparent;
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  font-weight: 600;
 }
 
 .nav-badge-bonus {
-  border-radius: 4px;
-  font-weight: 700;
-  color: #a5b4fc;
-  background: rgba(99, 102, 241, 0.2);
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: #94a3b8;
+  background: transparent;
+  border: 1px solid rgba(51, 65, 85, 0.7);
 }
 
 .dash .sidebar-mini {
@@ -10164,9 +10187,9 @@ html.figure-lightbox-open body {
 }
 
 .dash .sidebar-mini.is-active {
-  color: #34d399;
-  border-color: rgba(16, 185, 129, 0.35);
-  background: rgba(16, 185, 129, 0.1);
+  color: #ffffff;
+  border-color: rgba(51, 65, 85, 0.6);
+  background: #1e293b;
 }
 
 /* ---------- Реферальная модалка ---------- */

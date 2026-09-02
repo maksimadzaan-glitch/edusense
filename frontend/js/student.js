@@ -2776,7 +2776,9 @@ function renderProgressTab(data) {
 
 function navBadgeHtml(badge) {
   if (!badge) return "";
-  return `<span class="nav-badge nav-badge-${badge.kind}" aria-hidden="true">${escapeHtml(badge.text)}</span>`;
+  const kind = String(badge.kind || "");
+  const liveDot = kind === "live" ? `<i class="nav-live-dot" aria-hidden="true"></i>` : "";
+  return `<span class="nav-badge nav-badge-${escapeHtml(kind)}">${liveDot}${escapeHtml(badge.text)}</span>`;
 }
 
 function renderInviteModal() {

@@ -1117,8 +1117,8 @@ html.figure-lightbox-open body {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  background: #0a0f18;
-  border-right: 1px solid var(--border);
+  background: #090d16;
+  border-right: 1px solid rgba(51, 65, 85, 0.4);
 }
 
 @keyframes slideInLeft {
@@ -1237,11 +1237,15 @@ html.dash-ready .student-hero-glow {
 }
 
 .class-switch {
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(51, 65, 85, 0.4);
+  background: rgba(30, 41, 59, 0.4);
   border-radius: 12px;
-  padding: 14px;
+  padding: 12px;
   box-shadow: none;
+}
+
+.class-switch:hover {
+  background: rgba(30, 41, 59, 0.8);
 }
 
 .class-switch label {
@@ -1271,13 +1275,13 @@ html.dash-ready .student-hero-glow {
 }
 
 .class-switch .mini-specs span {
-  font-size: 0.68rem;
-  font-weight: 600;
-  color: #b7c0d2;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: rgba(94, 234, 212, 0.1);
-  border: 1px solid rgba(94, 234, 212, 0.18);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #94a3b8;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: 0;
 }
 
 .nav-list {
@@ -1290,15 +1294,15 @@ html.dash-ready .student-hero-glow {
   width: 100%;
   border: none;
   background: transparent;
-  color: #9aa6bb;
+  color: #94a3b8;
   text-align: left;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 11px 12px;
   display: flex;
   align-items: center;
   gap: 11px;
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 500;
   font-family: inherit;
   cursor: pointer;
   transition: 0.22s var(--ease);
@@ -1320,13 +1324,13 @@ html.dash-ready .student-hero-glow {
 
 .nav-item.is-active {
   color: #fff;
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: inset 2px 0 0 #5eead4;
+  background: #1e293b;
+  box-shadow: none;
 }
 
 .nav-item.is-active svg {
   opacity: 1;
-  color: #99f6e4;
+  color: #fff;
   filter: none;
 }
 
@@ -2572,33 +2576,47 @@ html.block-copy-exam #app * {
 
 .nav-badge {
   flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 2px 6px;
-  font-size: 9px;
-  line-height: 1.4;
-  letter-spacing: 0.04em;
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border-radius: 4px;
+}
+
+.nav-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #34d399;
+  animation: navLivePulse 1.8s ease-in-out infinite;
+}
+
+@keyframes navLivePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.45); }
+  50% { box-shadow: 0 0 0 4px rgba(52, 211, 153, 0); }
 }
 
 .nav-badge-pro {
-  border-radius: 4px;
-  font-weight: 900;
-  color: #fcd34d;
-  background: rgba(245, 158, 11, 0.2);
-  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  background: transparent;
+  border: 1px solid rgba(251, 191, 36, 0.45);
 }
 
 .nav-badge-live {
-  border-radius: 999px;
-  font-weight: 700;
-  color: #34d399;
-  background: rgba(16, 185, 129, 0.2);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #94a3b8;
+  background: transparent;
+  border: 1px solid rgba(51, 65, 85, 0.7);
 }
 
 .nav-badge-bonus {
-  border-radius: 4px;
-  font-weight: 700;
-  color: #a5b4fc;
-  background: rgba(99, 102, 241, 0.2);
+  color: #94a3b8;
+  background: transparent;
+  border: 1px solid rgba(51, 65, 85, 0.7);
 }
 
 .modal-backdrop {

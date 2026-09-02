@@ -439,11 +439,11 @@ input {
   width: 100%;
   max-width: 560px;
   margin: 0 auto;
-  padding: 40px 20px 56px;
+  padding: 40px 20px 3rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   text-align: center;
 }
 
@@ -1207,10 +1207,34 @@ input {
   to { opacity: 0; transform: translateY(-6px); }
 }
 
+@media (max-width: 720px) {
+  .hero {
+    padding-top: 24px;
+    padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
+    justify-content: flex-start;
+    overflow: visible;
+  }
+  .chips {
+    position: static;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    z-index: 0;
+    margin: 20px 0 12px;
+    flex-wrap: wrap;
+    width: 100%;
+    pointer-events: auto;
+  }
+  .foot {
+    position: relative;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 @media (max-width: 420px) {
   .hero {
     padding-top: 28px;
-    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
   }
   .nav {
     flex-wrap: nowrap;
@@ -1220,7 +1244,7 @@ input {
     display: none;
   }
   .auth {
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   }
   #launch-btn {
     margin-bottom: 4px;
