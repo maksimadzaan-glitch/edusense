@@ -1748,7 +1748,8 @@ function figureHtml(task) {
   const p = task?.payload || {};
   const n = Number(task?.num);
   if (p.math_context && n >= 1 && n <= 5) return "";
-  const kind = task?.figureKind || (task?.solutionFigureSvg ? "asset" : null);
+  const hasSvg = !!(task?.figureSvg || task?.solutionFigureSvg);
+  const kind = task?.figureKind || (hasSvg ? "asset" : null);
   const mainSvg = _safeFigureSvg(kind, task?.figureSvg || "");
   const solOnly =
     !mainSvg && !!task?.solutionFigureSvg
@@ -1759,7 +1760,6 @@ function figureHtml(task) {
   const label = solOnly
     ? `<span class="ep-solution-figure-label">Чертёж</span>`
     : "";
-  // только шаблонный SVG (fipi/geo + viewBox), сырой от ИИ отбрасываем
   return `${label}<div class="task-figure" data-figure="${escapeHtml(kind || "asset")}" role="button" tabindex="0" title="Увеличить чертёж" aria-label="Увеличить чертёж">${svg}</div>`;
 }
 
@@ -2671,18 +2671,30 @@ function brandedExamPrintCss() {
       font-size: 9pt; font-weight: 700; background: #fff; color: #000;
     }
     .ep-topic, .es-print-task-title { font-weight: 700; margin-bottom: 6px; color: #000 !important; }
-    .a4-sheet img, .a4-sheet svg, .ep-print-media img, .task-figure img, .task-media-img {
+    .a4-sheet img, .a4-sheet svg, .ep-print-media img, .task-figure img, .task-media-img,
+    .math-oge-context img, .math-oge-context svg {
       max-width: 100% !important;
-      max-height: 80mm !important;
+      max-height: 70mm !important;
       object-fit: contain !important;
       display: block !important;
       margin: 10px auto !important;
       height: auto !important;
+      width: auto !important;
     }
-    .ep-print-media, .task-figure {
+    .ep-print-media, .task-figure, .math-oge-context, .passage-box, .reading-passage-box, .oge-rus-shared {
       page-break-inside: avoid !important;
       break-inside: avoid !important;
     }
+    .math-oge-context {
+      border: 1px solid #000;
+      padding: 10px 12px;
+      margin: 0 0 14px;
+      background: #fff;
+      color: #000;
+    }
+    .math-oge-context-kicker { font-size: 9pt; font-weight: 700; margin: 0 0 4px; text-transform: uppercase; }
+    .math-oge-context-title { font-size: 12pt; margin: 0 0 8px; }
+    .math-oge-context-story { font-size: 11pt; line-height: 1.4; margin: 0 0 8px; }
     .oge-rus-shared, .es-print-text-frame, .passage-box, .reading-passage-box {
       border: 1px solid #000 !important;
       padding: 12px !important;
@@ -2907,9 +2919,8 @@ function showPdfExportOverlay() {
   el.innerHTML = `
     <div class="pdf-export-panel">
       <div class="pdf-export-spinner" aria-hidden="true"></div>
-      <h2 class="pdf-export-title">Генерация бланка КИМ...</h2>
-      <p class="pdf-export-sub">Оптимизируем изображения и верстаем задачи...</p>
-      <div class="pdf-export-progress" aria-hidden="true"><div class="pdf-export-progress-bar"></div></div>
+      <p class="pdf-export-title">Готовим PDF-бланк</p>
+      <p class="pdf-export-sub">Верстаем A4 · подгоняем чертежи · без обрезки текстов</p>
     </div>
   `;
   document.body.appendChild(el);
@@ -3037,13 +3048,37 @@ async function downloadHtmlAsPdf(title, innerHtml, css, filename) {
   }
 }
 
-/** Раскладывает задания по фиксированным A4-листам без разрыва карточек. */
+/** Раскладывает задания по фиксированным A4-листам без разрыва карточек и текстов. */
 function packPdfSheets(host) {
-  const source = host.querySelector(".a4-sheet");
+  const source = host.querySelector(".a4-sheet:not(.keys-sheet)");
   if (!source) return;
-  const cards = [
-    ...source.querySelectorAll(".pdf-task-card, .ep-task, .key-p2, .key-table, h2"),
-  ].filter((el) => !el.closest(".pdf-exam-header"));
+  const innerSrc = source.querySelector(".a4-inner") || source;
+  // Берём ВСЕ смысловые блоки по порядку: тексты, сюжет 1–5, задания, QR…
+  const keepSel = [
+    ".pdf-pro-banner",
+    ".pdf-qr-row",
+    ".pdf-exam-header",
+    ".math-oge-context",
+    ".passage-box",
+    ".reading-passage-box",
+    ".oge-rus-shared",
+    ".oge-section-label",
+    ".oge-exam-banner",
+    ".pdf-task-card",
+    ".ep-task",
+    ".es-print-task",
+    ".oge-exam-task",
+    ".key-p2",
+    ".key-table",
+    "h2",
+  ].join(",");
+  const cards = [...innerSrc.querySelectorAll(keepSel)].filter((el) => {
+    // Не брать вложенные (например task внутри уже выбранного контейнера)
+    const parent = el.parentElement?.closest(keepSel);
+    if (parent && parent !== el && innerSrc.contains(parent)) return false;
+    if (el.closest(".pdf-exam-header") && !el.classList.contains("pdf-exam-header")) return false;
+    return true;
+  });
   if (!cards.length) {
     source.style.height = "1123px";
     source.style.minHeight = "1123px";
@@ -3061,7 +3096,7 @@ function packPdfSheets(host) {
   const muted = !header ? source.querySelector(".a4-inner > .muted") : null;
 
   const PAGE_H = 1123;
-  const PAD_Y = 28 + 48;
+  const PAD_Y = 56 + 48;
   const usable = PAGE_H - PAD_Y - 8;
 
   const pages = [];
@@ -3077,7 +3112,6 @@ function packPdfSheets(host) {
     if (title) headerBlock.appendChild(title.cloneNode(true));
     if (muted) headerBlock.appendChild(muted.cloneNode(true));
   }
-  // Measure header
   const measureHost = document.createElement("div");
   measureHost.className = "a4-sheet";
   measureHost.style.cssText =
@@ -3090,6 +3124,16 @@ function packPdfSheets(host) {
   function measureEl(node) {
     measureInner.innerHTML = "";
     measureInner.appendChild(node.cloneNode(true));
+    // Сжать огромные чертежи перед замером
+    measureInner.querySelectorAll("img, svg").forEach((el) => {
+      el.style.maxWidth = "100%";
+      el.style.maxHeight = "70mm";
+      el.style.height = "auto";
+      el.style.width = "auto";
+      el.style.objectFit = "contain";
+      el.style.display = "block";
+      el.style.margin = "8px auto";
+    });
     return measureInner.getBoundingClientRect().height || node.offsetHeight || 80;
   }
 
@@ -3099,7 +3143,17 @@ function packPdfSheets(host) {
   }
 
   cards.forEach((card) => {
-    const h = Math.ceil(measureEl(card) + 10);
+    const clone = card.cloneNode(true);
+    clone.querySelectorAll("img, svg").forEach((el) => {
+      el.style.maxWidth = "100%";
+      el.style.maxHeight = "70mm";
+      el.style.height = "auto";
+      el.style.width = "auto";
+      el.style.objectFit = "contain";
+      el.style.display = "block";
+      el.style.margin = "8px auto";
+    });
+    const h = Math.ceil(measureEl(clone) + 10);
     if (!current.length) {
       used = needHeader ? headerH : 0;
     }
@@ -3112,8 +3166,9 @@ function packPdfSheets(host) {
     if (!current.length) {
       used = needHeader ? headerH : 0;
     }
-    current.push(card.cloneNode(true));
-    used += h;
+    // Если один блок выше страницы — всё равно кладём (лучше целиком, чем потерять)
+    current.push(clone);
+    used += Math.min(h, usable);
     needHeader = false;
   });
   if (current.length) pages.push({ items: current });
@@ -3122,10 +3177,11 @@ function packPdfSheets(host) {
   if (!pages.length) return;
 
   const parent = source.parentNode;
+  // Убираем только исходный student sheet; ключи (.keys-sheet) не трогаем
   source.remove();
   pages.forEach((page, idx) => {
     const sheet = document.createElement("div");
-    sheet.className = "a4-sheet";
+    sheet.className = "a4-sheet es-print-page";
     sheet.innerHTML = eduSenseWatermarkHtml();
     const inner = document.createElement("div");
     inner.className = "a4-inner";
@@ -3136,7 +3192,7 @@ function packPdfSheets(host) {
     }
     page.items.forEach((n) => inner.appendChild(n));
     sheet.appendChild(inner);
-    parent.appendChild(sheet);
+    parent.insertBefore(sheet, parent.querySelector(".keys-sheet") || null);
   });
 }
 
@@ -3914,52 +3970,35 @@ function renderGeneratingStage() {
   const exam = examLabel(state.classroom?.exam_type || "oge");
   const steps = [
     "Кодификатор и темы",
-    "Часть 1 · краткие ответы",
-    "Часть 2 · развёрнутые",
-    "Отправка варианта",
+    "Тексты и задания",
+    "Чертежи и ключи",
+    "Готово к выдаче",
   ];
   return `
     <div class="gen-loading" id="gen-loading" data-step="0" aria-live="polite" aria-busy="true">
-      <div class="gen-loading-bg" aria-hidden="true"></div>
-      <div class="gen-particles" aria-hidden="true">
-        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-      </div>
-
-      <div class="gen-forge" aria-hidden="true">
-        <span class="gen-forge-ambient"></span>
-        <div class="gen-forge-scene">
-          <span class="gen-forge-shadow"></span>
-          <span class="gen-forge-ring gen-forge-ring-a"></span>
-          <span class="gen-forge-ring gen-forge-ring-b"></span>
-          <div class="gen-forge-deck">${genForgeCardsHtml()}</div>
-          <span class="gen-forge-core"><em></em></span>
-        </div>
-      </div>
-
-      <p class="export-kicker">По спецификации КИМ</p>
-      <h2 class="gen-title-shine">Собираем вариант</h2>
-      <p class="gen-loading-sub">${escapeHtml(exam)} · ${escapeHtml(subject)} · ${generatorRequestCount()} заданий</p>
-
-      <ul class="gen-checklist" id="gen-steps">
-        ${steps
-          .map(
-            (label, i) => `
-          <li class="${i === 0 ? "is-active" : ""}">
-            <b>${i + 1}</b>
-            <span>${label}</span>
-            <em class="gen-step-ico" aria-hidden="true"></em>
-          </li>`,
-          )
-          .join("")}
-      </ul>
-
-      <div class="gen-progress-wrap">
-        <div class="gen-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" id="gen-progress">
-          <i id="gen-progress-bar" style="width:25%"></i>
-        </div>
-        <div class="gen-progress-label" id="gen-progress-label">
-          <span class="gen-spin" aria-hidden="true"></span>
-          <span id="gen-progress-text">Сверяем кодификатор…</span>
+      <div class="gen-loading-panel">
+        <div class="gen-loading-spinner" aria-hidden="true"></div>
+        <p class="gen-loading-kicker">КИМ · ${escapeHtml(exam)}</p>
+        <h2 class="gen-loading-title">Собираем вариант</h2>
+        <p class="gen-loading-sub">${escapeHtml(subject)} · ${generatorRequestCount()} заданий</p>
+        <ul class="gen-checklist" id="gen-steps">
+          ${steps
+            .map(
+              (label, i) => `
+            <li class="${i === 0 ? "is-active" : ""}">
+              <b>${i + 1}</b>
+              <span>${label}</span>
+            </li>`,
+            )
+            .join("")}
+        </ul>
+        <div class="gen-progress-wrap">
+          <div class="gen-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" id="gen-progress">
+            <i id="gen-progress-bar" style="width:25%"></i>
+          </div>
+          <div class="gen-progress-label" id="gen-progress-label">
+            <span id="gen-progress-text">Сверяем кодификатор…</span>
+          </div>
         </div>
       </div>
     </div>

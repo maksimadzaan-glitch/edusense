@@ -2110,18 +2110,32 @@
 
     function emitPassagesForTask(kim) {
       const n = Number(kim);
+      const presentNums = list
+        .map(function (t) {
+          return Number(kimTypeOf(t));
+        })
+        .filter(function (x) {
+          return x > 0;
+        });
       passages.forEach(function (passage) {
         if (shownPassageIds[passage.id]) return;
-        const targets = passage.targetTaskNumbers || [];
-        const first = targets.length
-          ? Math.min.apply(null, targets.map(Number))
+        const targets = (passage.targetTaskNumbers || []).map(Number).filter(Boolean);
+        let first = targets.length
+          ? Math.min.apply(null, targets)
           : passage.kind === "grammar"
           ? 2
           : passage.kind === "reading"
           ? 10
-          : passage.kind === "listening"
-          ? 1
           : 1;
+        // Если целевого № нет в варианте — вставить перед ближайшим из группы
+        if (presentNums.indexOf(first) < 0) {
+          const group = targets.length ? targets : [first];
+          const hit = presentNums.filter(function (x) {
+            return group.indexOf(x) >= 0;
+          });
+          if (hit.length) first = Math.min.apply(null, hit);
+          else return;
+        }
         if (n !== first) return;
         if (passage.kind === "listening") return;
         if (examMode && !renderCard && passage.kind === "grammar") {

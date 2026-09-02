@@ -1,5 +1,5 @@
 /* EduSense PWA — кэш оболочки, API не трогаем. */
-const CACHE = "edusense-shell-v17";
+const CACHE = "edusense-shell-v18";
 const PRECACHE = [
   "/",
   "/manifest.json",

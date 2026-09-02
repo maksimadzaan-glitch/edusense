@@ -2377,9 +2377,9 @@ html.is-telegram-miniapp .noise {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  overflow: hidden;
+  overflow: auto;
   min-height: 100vh;
-  padding: 48px 28px 44px;
+  padding: 32px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2389,7 +2389,130 @@ html.is-telegram-miniapp .noise {
   background: #0f172a !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  animation: genCardIn 0.55s var(--ease-out) both;
+}
+
+.gen-loading-panel {
+  width: min(420px, 92vw);
+  padding: 28px 22px 24px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 16px;
+  background: #111827;
+}
+
+.gen-loading-spinner {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  border: 3px solid rgba(94, 234, 212, 0.18);
+  border-top-color: #5eead4;
+  animation: spin360 0.85s linear infinite;
+}
+
+.gen-loading-kicker {
+  margin: 0 0 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(94, 234, 212, 0.9);
+}
+
+.gen-loading-title {
+  margin: 0 0 8px;
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #f8fafc;
+  background: none;
+  -webkit-text-fill-color: #f8fafc;
+}
+
+.gen-loading-sub {
+  margin: 0 0 18px;
+  color: #94a3b8;
+  line-height: 1.45;
+  font-size: 0.92rem;
+}
+
+.gen-loading .gen-checklist {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  text-align: left;
+}
+
+.gen-loading .gen-checklist li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  margin: 0 0 6px;
+  border-radius: 10px;
+  color: #94a3b8;
+  background: rgba(15, 23, 42, 0.65);
+}
+
+.gen-loading .gen-checklist li.is-active {
+  color: #e2e8f0;
+  background: rgba(94, 234, 212, 0.1);
+}
+
+.gen-loading .gen-checklist b {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  background: rgba(148, 163, 184, 0.2);
+}
+
+.gen-loading .gen-checklist li.is-active b {
+  background: #5eead4;
+  color: #0f172a;
+}
+
+.pdf-export-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #0f172a !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.pdf-export-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: min(92vw, 380px);
+  padding: 28px 24px;
+  text-align: center;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 16px;
+  background: #111827;
+}
+
+.pdf-export-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #f8fafc;
+}
+
+.pdf-export-sub {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: #94a3b8;
 }
 
 .gen-loading[data-step="1"] {

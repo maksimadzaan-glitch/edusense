@@ -866,6 +866,18 @@ def _fill_oge_rus_shared_from_context(
     return out
 
 
+def _coerce_oge_rus_text_field(val: Any) -> str:
+    if val is None:
+        return ""
+    if isinstance(val, dict):
+        for key in ("content", "text", "audio_script", "passage", "body"):
+            chunk = val.get(key)
+            if chunk:
+                return str(chunk).strip()
+        return ""
+    return str(val).strip()
+
+
 def _enrich_oge_rus_shared_across_tasks(tasks: list[dict[str, Any]]) -> None:
     """Скопировать grammar_text на слоты 2–3 и reading_text на 10–12 (UI + устойчивость к старым seed)."""
     grammar = None
@@ -878,14 +890,34 @@ def _enrich_oge_rus_shared_across_tasks(tasks: list[dict[str, Any]]) -> None:
         except (TypeError, ValueError):
             num = 0
         p = t.get("payload") if isinstance(t.get("payload"), dict) else {}
-        if num in (2, 3) and not grammar and p.get("grammar_text"):
-            grammar = str(p["grammar_text"])
-        if num in (10, 11, 12, 13) and not reading and p.get("reading_text"):
-            reading = str(p["reading_text"])
-        if num == 1 and not listening and p.get("listening_text"):
-            listening = str(p["listening_text"])
+        if num in (2, 3) and not grammar:
+            grammar = _coerce_oge_rus_text_field(p.get("grammar_text")) or None
+        if num in (10, 11, 12, 13) and not reading:
+            reading = _coerce_oge_rus_text_field(p.get("reading_text")) or None
+        if num == 1 and not listening:
+            listening = _coerce_oge_rus_text_field(p.get("listening_text")) or None
         if num == 1 and not audio_url and p.get("audio_url"):
             audio_url = str(p["audio_url"])
+    if not grammar or not reading or not listening:
+        for t in tasks:
+            p0 = t.get("payload") if isinstance(t.get("payload"), dict) else {}
+            desc = str(
+                t.get("context_description")
+                or t.get("description_text")
+                or p0.get("description_text")
+                or ""
+            ).strip()
+            if not desc:
+                continue
+            izlo, g, r = _split_oge_rus_context(desc)
+            if not listening and izlo:
+                listening = izlo
+            if not grammar and g:
+                grammar = g
+            if not reading and r:
+                reading = r
+            if listening and grammar and reading:
+                break
     for t in tasks:
         try:
             num = int(t.get("task_number") or 0)
@@ -896,21 +928,21 @@ def _enrich_oge_rus_shared_across_tasks(tasks: list[dict[str, Any]]) -> None:
         p.setdefault("kim_type", num)
         changed = False
         if num in (2, 3) and grammar:
-            if p.get("grammar_text") != grammar:
+            if _coerce_oge_rus_text_field(p.get("grammar_text")) != grammar:
                 p["grammar_text"] = grammar
                 changed = True
             if num == 2 and p.get("show_shared") != "grammar":
                 p["show_shared"] = "grammar"
                 changed = True
         if num in (10, 11, 12) and reading:
-            if p.get("reading_text") != reading:
+            if _coerce_oge_rus_text_field(p.get("reading_text")) != reading:
                 p["reading_text"] = reading
                 changed = True
             if num == 10 and p.get("show_shared") != "reading":
                 p["show_shared"] = "reading"
                 changed = True
         if num == 1:
-            if listening and not p.get("listening_text"):
+            if listening and not _coerce_oge_rus_text_field(p.get("listening_text")):
                 p["listening_text"] = listening
                 changed = True
             if audio_url and not p.get("audio_url"):
@@ -928,9 +960,42 @@ def _enrich_oge_rus_shared_across_tasks(tasks: list[dict[str, Any]]) -> None:
                 if p.get("context_id") != cid:
                     p["context_id"] = cid
                     changed = True
-        if num == 13 and reading and not p.get("reading_text"):
-            # Сочинение опирается на прочитанный текст — держим ссылку в payload для UI.
+        if num == 13 and reading and not _coerce_oge_rus_text_field(p.get("reading_text")):
             p["reading_text"] = reading
+            changed = True
+        passages: list[dict[str, Any]] = []
+        if listening:
+            passages.append(
+                {
+                    "id": "listening-1",
+                    "title": "Текст для изложения (задание 1)",
+                    "content": listening,
+                    "targetTaskNumbers": [1],
+                    "kind": "listening",
+                }
+            )
+        if grammar:
+            passages.append(
+                {
+                    "id": "grammar-2-3",
+                    "title": "ПОЯСНИТЕЛЬНЫЙ ТЕКСТ К ЗАДАНИЯМ №2–3",
+                    "content": grammar,
+                    "targetTaskNumbers": [2, 3],
+                    "kind": "grammar",
+                }
+            )
+        if reading:
+            passages.append(
+                {
+                    "id": "reading-10-12",
+                    "title": "ПОЯСНИТЕЛЬНЫЙ ТЕКСТ К ЗАДАНИЯМ №10–12",
+                    "content": reading,
+                    "targetTaskNumbers": [10, 11, 12],
+                    "kind": "reading",
+                }
+            )
+        if passages:
+            p["passages"] = passages
             changed = True
         if num == 1:
             t["max_score"] = 7
