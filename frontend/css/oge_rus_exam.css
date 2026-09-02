@@ -102,21 +102,21 @@
 .oge-rus-exam .oge-rus-shared,
 .oge-rus-exam aside.oge-rus-shared,
 .oge-rus-exam .oge-rus-essay-reading {
-  margin: 0 0 18px;
-  padding: 14px 16px;
-  border-radius: calc(var(--oge-radius) - 8px);
-  border: 1px solid var(--oge-rule);
-  background: rgba(255, 255, 255, 0.035);
-  color: var(--oge-ink);
+  margin: 16px 0;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #e2e8f0;
 }
 
 .oge-rus-exam .oge-rus-shared-title {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   font-weight: 700;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--oge-ink);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #f8fafc;
   font-family: var(--oge-sans);
 }
 
@@ -369,17 +369,59 @@
   -webkit-overflow-scrolling: touch;
 }
 
+/* Экран кабинета: тёмный читаемый текст */
+.passage-container,
 .passage-box,
 .reading-passage-box,
+.oge-rus-exam:not(.is-paper) .passage-container,
+.oge-rus-exam:not(.is-paper) .passage-box,
+.oge-rus-exam:not(.is-paper) .reading-passage-box,
+.oge-rus-exam:not(.is-paper) .oge-rus-shared {
+  background-color: #0f172a !important;
+  border: 1px solid #334155 !important;
+  border-radius: 12px !important;
+  padding: 20px !important;
+  margin: 16px 0 !important;
+  color: #e2e8f0 !important;
+}
+
+.passage-container .oge-rus-shared-title,
+.passage-box .oge-rus-shared-title,
+.reading-passage-box .oge-rus-shared-title,
+.oge-rus-exam:not(.is-paper) .oge-rus-shared-title {
+  color: #f8fafc !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  font-size: 0.875rem !important;
+  letter-spacing: 0.05em;
+}
+
+.passage-container .oge-rus-shared-body,
+.passage-container .oge-passage-body,
+.passage-container .oge-passage-p,
+.passage-box .oge-rus-shared-body,
+.passage-box .oge-passage-body,
+.reading-passage-box .oge-rus-shared-body,
+.oge-rus-exam:not(.is-paper) .oge-rus-shared-body,
+.oge-rus-exam:not(.is-paper) .oge-passage-body,
+.oge-rus-exam:not(.is-paper) .oge-passage-p,
+.oge-rus-exam:not(.is-paper) .oge-fmt-p {
+  color: #e2e8f0 !important;
+}
+
+/* Печать / A4: светлая бумага */
 .a4-sheet .passage-box,
 .a4-sheet .reading-passage-box,
+.a4-sheet .passage-container,
 .oge-rus-exam.is-paper .passage-box,
-.oge-rus-exam.is-paper .reading-passage-box {
+.oge-rus-exam.is-paper .reading-passage-box,
+.oge-rus-exam.is-paper .passage-container,
+.oge-rus-exam.is-paper .oge-rus-shared {
   border: 1px solid #334155 !important;
-  padding: 14px 16px;
-  margin: 16px 0;
+  padding: 14px 16px !important;
+  margin: 16px 0 !important;
   background-color: #ffffff !important;
-  border-radius: 4px;
+  border-radius: 4px !important;
   font-size: 10.5pt;
   line-height: 1.6;
   page-break-inside: avoid;
@@ -388,10 +430,9 @@
   color: #1e293b !important;
 }
 
-.passage-box .oge-rus-shared-title,
-.reading-passage-box .oge-rus-shared-title,
+.a4-sheet .oge-rus-shared-title,
 .oge-rus-exam.is-paper .oge-rus-shared-title,
-.a4-sheet .oge-rus-shared-title {
+.a4-sheet .passage-box .oge-rus-shared-title {
   color: #0f172a !important;
   font-weight: 700 !important;
   text-transform: uppercase !important;
@@ -399,11 +440,13 @@
   letter-spacing: 0.04em;
 }
 
-.oge-rus-exam:not(.is-paper) .passage-box,
-.oge-rus-exam:not(.is-paper) .reading-passage-box {
-  background-color: #f8fafc;
-  border-color: #334155;
-  color: #1e293b;
+.a4-sheet .oge-rus-shared-body,
+.a4-sheet .oge-passage-body,
+.oge-rus-exam.is-paper .oge-rus-shared-body,
+.oge-rus-exam.is-paper .oge-passage-body,
+.oge-rus-exam.is-paper .oge-passage-p,
+.oge-rus-exam.is-paper .oge-fmt-p {
+  color: #1e293b !important;
 }
 
 .oge-exam-match-col + .oge-exam-match-col {
@@ -1338,8 +1381,9 @@ span.katex-scroll {
 
 .oge-rus-exam.is-paper .oge-rus-shared-title,
 .oge-rus-exam.is-paper .oge-section-label {
-  color: #334155;
+  color: #0f172a !important;
   font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+  font-weight: 700;
 }
 
 .oge-rus-exam.is-paper .oge-rus-collapse-btn,

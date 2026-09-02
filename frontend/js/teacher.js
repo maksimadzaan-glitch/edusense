@@ -30,7 +30,7 @@ const NAV = [
   { id: "assignments", label: "Задания", icon: "bookOpen" },
   { id: "tests", label: "Тесты", icon: "fileCheck" },
   { id: "analytics", label: "Аналитика", icon: "barChart3", badge: { text: "PRO", kind: "pro" } },
-  { id: "invite", label: "Пригласить человека", icon: "gift", action: "invite", badge: { text: "Бонус", kind: "bonus" } },
+  { id: "invite", label: "Пригласить", icon: "gift", action: "invite" },
 ];
 
 // Настройки убраны из основного меню и живут в подвале сайдбара.
@@ -7581,8 +7581,11 @@ function renderTab() {
 function navBadgeHtml(badge) {
   if (!badge) return "";
   const kind = String(badge.kind || "");
-  const liveDot = kind === "live" ? `<i class="nav-live-dot" aria-hidden="true"></i>` : "";
-  return `<span class="nav-badge nav-badge-${escapeHtml(kind)}">${liveDot}${escapeHtml(badge.text)}</span>`;
+  if (kind === "bonus") return "";
+  if (kind === "live") {
+    return `<span class="nav-badge nav-badge-live" aria-hidden="true"><i class="nav-live-dot"></i></span>`;
+  }
+  return `<span class="nav-badge nav-badge-${escapeHtml(kind)}">${escapeHtml(badge.text)}</span>`;
 }
 
 const REF_NOTIFY_KEY = "edusense_ref_notify";
@@ -7683,7 +7686,7 @@ function renderDashboard() {
           ${
             window.EduSenseBrand?.logoHtml
               ? window.EduSenseBrand.logoHtml({ compact: true })
-              : `<span class="es-logo is-compact"><span class="es-logo-mark" aria-hidden="true"><img src="/assets/edusense-mark-192.png?v=9" alt="" width="34" height="34"/></span><span class="es-logo-text"><span class="es-logo-name">EduSense</span><span class="es-logo-beta">BETA</span></span></span>`
+              : `<span class="es-logo is-compact"><span class="es-logo-mark" aria-hidden="true"><img src="/assets/edusense-mark-192.png?v=9" alt="" width="34" height="34"/></span><span class="es-logo-text"><span class="es-logo-name">EduSense</span></span></span>`
           }
         </div>
 

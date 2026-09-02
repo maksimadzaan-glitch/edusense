@@ -268,10 +268,31 @@ body:has(.dash) .fx-mark {
 }
 
 .class-switch {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.02);
-  box-shadow: none;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0;
+}
+
+.sidebar > .class-switch {
+  background: rgba(30, 41, 59, 0.4) !important;
+  border: 1px solid rgba(51, 65, 85, 0.5) !important;
+  border-radius: 12px !important;
+  padding: 10px !important;
+}
+
+.dash .sidebar > .class-switch:has(.class-switch-card) {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+.sidebar .class-switch-card,
+.dash .class-switch-card {
+  background: rgba(30, 41, 59, 0.4) !important;
+  border: 1px solid rgba(51, 65, 85, 0.5) !important;
+  border-radius: 12px !important;
+  padding: 10px !important;
 }
 
 .class-switch .class-select {

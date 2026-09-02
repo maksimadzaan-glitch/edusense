@@ -1549,7 +1549,7 @@
           formatPassageHtml(passage.content) +
           "</div>";
     const frameClass =
-      "passage-box reading-passage-box oge-rus-shared" +
+      "passage-container passage-box reading-passage-box oge-rus-shared" +
       (options.print ? " is-print es-print-text-frame" : "") +
       (kind === "reading" ? " is-reading" : " is-grammar");
     return (

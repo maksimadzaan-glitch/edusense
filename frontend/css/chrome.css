@@ -943,16 +943,23 @@ body.is-telegram-miniapp .pwa-nav-btn {
   color: #34d399;
 }
 
+.sidebar .es-logo-beta,
+.sidebar-brand .es-logo-beta {
+  display: none !important;
+}
+
 .es-logo-beta {
-  font-size: 0.62rem;
-  font-weight: 800;
+  font-size: 10px;
+  font-weight: 500;
+  font-family: ui-monospace, "JetBrains Mono", monospace;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 3px 7px;
-  border-radius: 6px;
-  color: #34d399;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.22);
+  padding: 0;
+  margin-left: 4px;
+  border-radius: 0;
+  color: #64748b;
+  background: none;
+  border: none;
 }
 
 .es-logo.is-compact .es-logo-mark {

@@ -24,12 +24,13 @@
     const tag = href ? "a" : "div";
     const hrefAttr = href ? ` href="${href}"` : "";
     const extraClass = o.className ? ` ${o.className}` : "";
+    const hideBeta = o.hideBeta === true || compact;
     return `
       <${tag} class="es-logo${compact ? " is-compact" : ""}${extraClass}"${hrefAttr} aria-label="EduSense">
         <span class="es-logo-mark" aria-hidden="true">${markHtml()}</span>
         <span class="es-logo-text">
           <span class="es-logo-name">EduSense</span>
-          <span class="es-logo-beta">BETA</span>
+          ${hideBeta ? "" : `<span class="es-logo-beta">BETA</span>`}
         </span>
       </${tag}>
     `;

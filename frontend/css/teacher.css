@@ -783,30 +783,40 @@ h3 {
   box-shadow: none;
 }
 
+.sidebar .es-logo-beta,
+.sidebar-brand .es-logo-beta,
+.sidebar .beta-badge,
+.sidebar-brand .beta-badge {
+  display: none !important;
+}
+
 .dash .class-switch-card {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 12px;
-  background: rgba(30, 41, 59, 0.4);
-  border: 1px solid rgba(51, 65, 85, 0.4);
-  border-radius: 12px;
+  padding: 10px !important;
+  background: rgba(30, 41, 59, 0.4) !important;
+  border: 1px solid rgba(51, 65, 85, 0.5) !important;
+  border-radius: 12px !important;
 }
 
 .dash .class-switch-card:hover {
-  background: rgba(30, 41, 59, 0.8);
+  background: rgba(30, 41, 59, 0.8) !important;
 }
 
 .dash .class-switch-copy {
   min-width: 0;
-  display: grid;
-  gap: 2px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: nowrap;
 }
 
 .dash .class-switch-copy strong {
-  display: block;
+  display: inline;
+  min-width: 0;
   font-size: 0.84rem;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -818,9 +828,16 @@ h3 {
 }
 
 .dash .class-switch-copy small {
+  flex-shrink: 0;
+  margin: 0;
   color: #94a3b8;
   font-size: 0.72rem;
   font-weight: 500;
+  white-space: nowrap;
+}
+
+.dash .class-switch-copy small::before {
+  content: "· ";
 }
 
 .dash .class-switch-caret {
@@ -2390,27 +2407,54 @@ html.is-telegram-miniapp .noise {
   justify-content: center;
   text-align: center;
   isolation: isolate;
-  background: rgba(2, 6, 23, 0.92) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+}
+
+.gen-loading,
+.gen-loading-overlay,
+.pdf-export-overlay {
+  background: rgba(15, 23, 42, 0.85) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+.gen-loading-bg,
+.gen-particles,
+.gen-forge {
+  display: none !important;
 }
 
 .gen-loading-panel {
   width: min(28rem, 92vw);
   padding: 2rem;
-  border: 1px solid #1e293b;
-  border-radius: 16px;
-  background: #0f172a;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
 }
 
-.gen-loading-spinner {
-  width: 32px;
-  height: 32px;
+.gen-loading-panel,
+.pdf-export-panel {
+  background: #1e293b !important;
+  border: 1px solid #334155 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+
+.gen-loading-title,
+.gen-loading h2,
+.pdf-export-title {
+  color: #ffffff !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  background: none !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.gen-loading-spinner,
+.pdf-export-spinner {
+  width: 32px !important;
+  height: 32px !important;
   margin: 0 auto 16px;
-  border-radius: 50%;
-  border: 2px solid #334155;
-  border-top-color: #10b981;
+  border-radius: 50% !important;
+  border: 2px solid #334155 !important;
+  border-top-color: #34d399 !important;
+  box-shadow: none !important;
   animation: spin360 0.85s linear infinite;
 }
 
@@ -2499,9 +2543,9 @@ html.is-telegram-miniapp .noise {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(2, 6, 23, 0.92) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(15, 23, 42, 0.85) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
 }
 
 .pdf-export-panel {
@@ -3200,9 +3244,9 @@ html.is-telegram-miniapp .noise {
 }
 
 .pdf-export-overlay {
-  background: rgba(2, 6, 23, 0.92) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(15, 23, 42, 0.85) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
 }
 
 .pdf-export-panel {
@@ -3210,10 +3254,10 @@ html.is-telegram-miniapp .noise {
   max-width: min(92vw, 28rem);
   width: 100%;
   padding: 2rem;
-  border: 1px solid #1e293b;
-  border-radius: 16px;
-  background: #0f172a;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
+  border: 1px solid #334155 !important;
+  border-radius: 16px !important;
+  background: #1e293b !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5) !important;
 }
 
 .pdf-export-spinner {
@@ -3987,9 +4031,9 @@ html.figure-lightbox-open body {
   inset: 0;
   z-index: 9999;
   border-radius: 0;
-  background: #0f172a !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  background: rgba(15, 23, 42, 0.85) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
 }
 
 .gen-empty h2,
@@ -6398,23 +6442,28 @@ html.figure-lightbox-open body {
   }
 }
 
-/* ОГЭ русский */
-.oge-rus-shared {
+/* ОГЭ русский — экран кабинета */
+.oge-rus-shared,
+.passage-container,
+.passage-box,
+.reading-passage-box {
   grid-column: 1 / -1;
-  margin: 8px 0;
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: 1px solid rgba(94, 234, 212, 0.28);
-  background: rgba(94, 234, 212, 0.06);
+  margin: 16px 0;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #e2e8f0;
 }
 .oge-rus-shared-title {
   margin: 0 0 8px;
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #5eead4;
+  color: #f8fafc;
 }
-.oge-rus-shared-body { font-family: "Times New Roman", Georgia, serif; line-height: 1.6; white-space: pre-wrap; }
+.oge-rus-shared-body { font-family: "Times New Roman", Georgia, serif; line-height: 1.6; white-space: pre-wrap; color: #e2e8f0; }
 
 /* ОГЭ математика 1–5: общий сюжет + чертёж */
 .math-oge-context {
@@ -10115,6 +10164,7 @@ html.figure-lightbox-open body {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  margin-left: auto;
   padding: 2px 6px;
   font-size: 10px;
   line-height: 1.2;
@@ -10125,37 +10175,39 @@ html.figure-lightbox-open body {
 }
 
 .nav-live-dot {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: #34d399;
-  box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
-  animation: navLivePulse 1.8s ease-in-out infinite;
+  background: #10b981;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+  animation: navLivePulse 1.6s ease-in-out infinite;
 }
 
 @keyframes navLivePulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.45); opacity: 1; }
-  50% { box-shadow: 0 0 0 4px rgba(52, 211, 153, 0); opacity: 0.85; }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45); opacity: 1; }
+  50% { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0); opacity: 0.85; }
 }
 
 .nav-badge-live {
-  color: #94a3b8;
-  background: transparent;
-  border: 1px solid rgba(51, 65, 85, 0.7);
+  padding: 0;
+  margin-left: auto;
+  color: transparent;
+  background: transparent !important;
+  border: 0 !important;
   animation: none;
 }
 
 .nav-badge-pro {
-  color: #fbbf24;
-  background: transparent;
-  border: 1px solid rgba(251, 191, 36, 0.45);
+  color: rgba(251, 191, 36, 0.8);
+  background: rgba(251, 191, 36, 0.1);
+  border: 0;
   font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 .nav-badge-bonus {
-  color: #94a3b8;
-  background: transparent;
-  border: 1px solid rgba(51, 65, 85, 0.7);
+  display: none !important;
 }
 
 .dash .sidebar-mini {
