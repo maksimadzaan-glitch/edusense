@@ -25,7 +25,7 @@ function formatText(raw) {
         ? window.formatMathText
         : null;
   if (fmt) return fmt(raw);
-  return escapeHtml(String(raw || "")).replace(/\$/g, "");
+  return escapeHtml(String(raw || ""));
 }
 
 /** Align with backend.services.task_answers.normalize_answer */

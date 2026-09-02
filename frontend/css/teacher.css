@@ -2584,7 +2584,8 @@ html.is-telegram-miniapp .noise {
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   background: linear-gradient(155deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.035));
-  backdrop-filter: blur(6px);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   box-shadow:
     0 20px 30px -22px rgba(2, 6, 23, 0.95),
     inset 0 1px 0 rgba(255, 255, 255, 0.22);
@@ -3628,18 +3629,12 @@ html.figure-lightbox-open body {
   font-weight: 900;
   letter-spacing: -0.04em;
   line-height: 1.08;
-  color: #f7f8fa;
-  background: linear-gradient(
-    100deg,
-    #ffffff 18%,
-    var(--gen-accent) 42%,
-    #ffffff 66%
-  );
-  background-size: 220% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: titleShine 5s linear infinite;
+  color: #f8fafc;
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: #f8fafc;
+  animation: none;
 }
 
 @keyframes titleShine {

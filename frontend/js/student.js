@@ -1121,11 +1121,13 @@ function formatTaskHtml(raw, task) {
     return MathOgeUI.formatRichText(text);
   }
   if (typeof formatMathText === "function") return formatMathText(text);
-  return escapeHtml(text).replace(/\$/g, "");
+  return escapeHtml(text);
 }
 
 function payloadImagesHtml(q) {
   const p = q?.payload || {};
+  const n = Number(q?.num);
+  if (p.math_context && n >= 1 && n <= 5) return "";
   const urls = Array.isArray(p.image_urls) ? p.image_urls.slice() : [];
   const single = p.image_url || p.figure_url || q?.imageUrl || q?.image_url;
   if (single && !urls.includes(single)) urls.unshift(single);
@@ -3030,7 +3032,7 @@ function renderTaskCard(q, extrasHtml) {
         <span class="pill mint">${escapeHtml(q.type)}</span>
         <span class="pill">${q.max_score} б.</span>
       </div>
-      <h3>${escapeHtml(q.topic)}</h3>
+      <h3>${typeof formatMathText === "function" ? formatMathText(q.topic) : escapeHtml(q.topic)}</h3>
       ${media}
       <div class="task-text">${formatTaskHtml(q.text, q)}</div>
       ${extras}

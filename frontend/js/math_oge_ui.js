@@ -125,7 +125,10 @@
   function formatTableCell(raw) {
     var text = String(raw || "").trim();
     if (!text || text === "—" || text === "-" || text === "–") return "";
-    if (typeof global.formatMathText === "function" && /\[\[|\\frac|\\sqrt|√|\^/.test(text)) {
+    if (
+      typeof global.formatMathText === "function" &&
+      /\$|\[\[|\\frac|\\sqrt|√|\^|_\{|[A-Za-z]_[A-Za-z]/.test(text)
+    ) {
       return global.formatMathText(text);
     }
     return escapeHtml(text);

@@ -1711,6 +1711,8 @@ function _safeFigureSvg(kind, svg) {
 
 function payloadImagesHtml(task) {
   const p = task?.payload || {};
+  const n = Number(task?.num);
+  if (p.math_context && n >= 1 && n <= 5) return "";
   const urls = Array.isArray(p.image_urls) ? p.image_urls.slice() : [];
   const single = p.image_url || p.figure_url || task?.imageUrl || task?.image_url;
   if (single && !urls.includes(single)) urls.unshift(single);
@@ -2349,11 +2351,24 @@ function renderLinkQrModal() {
 }
 
 function polishFipiText(raw) {
-  // совместимость: подготовка для KaTeX без видимых $
-  if (typeof prepareMathSource === "function") {
-    return prepareMathSource(raw).replace(/\$+/g, " ").replace(/\s+/g, " ").trim();
+  // Plain-text path (clipboard / Telegram): readable math, no bare $
+  if (typeof formatMathText === "function") {
+    const html = formatMathText(raw);
+    const tmp = document.createElement("div");
+    tmp.innerHTML = html;
+    return String(tmp.textContent || "")
+      .replace(/\s+/g, " ")
+      .trim();
   }
-  return String(raw || "").replace(/\$/g, "").trim();
+  if (typeof prepareMathSource === "function") {
+    return prepareMathSource(String(raw || "").replace(/\$+/g, " "))
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+  return String(raw || "")
+    .replace(/\$+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function fracCssForPrint() {
@@ -2723,7 +2738,7 @@ function buildPrintDocument(title, html, css) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin/>
-  <link rel="stylesheet" href="/css/oge_rus_exam.css?v=145"/>
+  <link rel="stylesheet" href="/css/oge_rus_exam.css?v=152"/>
   <style>${css}</style></head><body>
   ${safeHtml}
   <script>

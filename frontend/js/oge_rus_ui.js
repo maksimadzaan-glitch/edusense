@@ -22,7 +22,7 @@
   function formatText(raw) {
     const text = normalizeNewlines(raw).trim();
     if (!text) return "";
-    const needsMath = /\[\[|\\frac|\\sqrt|√/.test(text);
+    const needsMath = /\$|\[\[|\\frac|\\sqrt|√|_\{|[A-Za-z]_([A-Za-z])/.test(text);
     let html;
     if (needsMath && typeof global.formatMathText === "function") {
       // Математика редка в русском; всё равно восстанавливаем абзацы по исходным \\n
@@ -1232,7 +1232,7 @@
 
   function renderListeningBlock(task, opts) {
     const p = payloadOf(task) || {};
-    const script = p.listening_text || "";
+    const script = coerceSharedText(p.listening_text);
     const cid = String((task && task.context_id) || p.context_id || "").trim();
     const srcs = collectAudioCandidates(p, cid);
     const audioUrl = srcs[0] || "";
@@ -1913,6 +1913,8 @@
 
   function payloadImagesHtml(task) {
     const p = payloadOf(task) || {};
+    const n = Number(task && task.num);
+    if (p.math_context && n >= 1 && n <= 5) return "";
     const urls = Array.isArray(p.image_urls) ? p.image_urls.slice() : [];
     const single = p.image_url || p.figure_url || task.imageUrl || task.image_url;
     if (single && urls.indexOf(single) < 0) urls.unshift(single);
@@ -2111,8 +2113,15 @@
       passages.forEach(function (passage) {
         if (shownPassageIds[passage.id]) return;
         const targets = passage.targetTaskNumbers || [];
-        if (!targets.length) return;
-        const first = Math.min.apply(null, targets.map(Number));
+        const first = targets.length
+          ? Math.min.apply(null, targets.map(Number))
+          : passage.kind === "grammar"
+          ? 2
+          : passage.kind === "reading"
+          ? 10
+          : passage.kind === "listening"
+          ? 1
+          : 1;
         if (n !== first) return;
         if (passage.kind === "listening") return;
         if (examMode && !renderCard && passage.kind === "grammar") {

@@ -518,8 +518,16 @@
 
   function formatAnswerKey(raw, part = 1) {
     if (Number(part) === 2) return "";
-    let text = prepareMathSource(raw);
-    if (!text) return "";
+    // Через formatMathText, чтобы $...$ / t_C / √ не ломались
+    const rendered = formatMathText(raw);
+    const plainProbe = String(raw ?? "")
+      .replace(/\$+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    let text = prepareMathSource(
+      String(raw ?? "").replace(/\$\$([\s\S]+?)\$\$/g, " $1 ").replace(/\$([^$\n]+?)\$/g, " $1 ")
+    );
+    if (!text && !rendered) return "";
 
     const lines = text.split(/\n/).map((l) => l.trim()).filter(Boolean);
     let preferred = null;
@@ -544,6 +552,10 @@
     if (plainNum) {
       const shown = text.replace(/\s/g, "").replace(".", ",");
       return `<span class="kim-key-value">${escapeHtml(shown)}</span>`;
+    }
+    // Если исходник с формулами — полный KaTeX-рендер
+    if (/\$|\\sqrt|√|\[\[|_|\\frac/.test(String(raw ?? "")) || /√|⁄|°/.test(plainProbe)) {
+      return `<span class="kim-key-value">${formatMathText(raw)}</span>`;
     }
     return `<span class="kim-key-value">${formatMathText(text)}</span>`;
   }
