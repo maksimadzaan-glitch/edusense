@@ -2840,12 +2840,13 @@ function renderCabinetShell(mainHtml) {
         </div>
 
         <nav class="nav-list" aria-label="Меню ученика">
-          ${NAV.map((item) => {
+          ${NAV.map((item, idx) => {
             const hook = item.action
               ? `data-nav-action="${item.action}"`
               : `data-tab="${item.id}"`;
             return `
             <button type="button" class="nav-item ${!item.action && state.tab === item.id ? "is-active" : ""}"
+              style="--nav-i:${idx}"
               ${hook} data-tour="nav-${item.id}">
               ${icon(item.icon)}
               <span class="nav-item-label">${item.label}</span>
@@ -3590,6 +3591,14 @@ function render() {
   syncExamCopyGuard();
   syncTelegramChrome();
   mountStudentChrome();
+  const sidebar = document.getElementById("app-sidebar");
+  if (sidebar) {
+    sidebar.addEventListener("pointermove", (e) => {
+      const r = sidebar.getBoundingClientRect();
+      sidebar.style.setProperty("--spot-x", `${((e.clientX - r.left) / r.width) * 100}%`);
+      sidebar.style.setProperty("--spot-y", `${((e.clientY - r.top) / r.height) * 100}%`);
+    });
+  }
   if (typeof EduSenseTour !== "undefined") {
     const exam = state.step === "work" || state.step === "review";
     if (!exam) {

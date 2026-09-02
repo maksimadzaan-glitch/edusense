@@ -936,6 +936,137 @@ h3 {
   filter: none;
 }
 
+.sidebar {
+  --spot-x: 50%;
+  --spot-y: 12%;
+  overflow: hidden;
+  animation: sidebarIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.sidebar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    220px 180px at var(--spot-x) var(--spot-y),
+    rgba(52, 211, 153, 0.08),
+    transparent 70%
+  );
+  opacity: 0.9;
+  transition: background 0.2s ease;
+}
+
+.sidebar::after {
+  content: "";
+  position: absolute;
+  top: 18%;
+  right: 0;
+  width: 1px;
+  height: 64%;
+  background: linear-gradient(180deg, transparent, rgba(52, 211, 153, 0.45), transparent);
+  animation: sidebarPulse 3.6s ease-in-out infinite;
+}
+
+@keyframes sidebarIn {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes sidebarPulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.85; }
+}
+
+.sidebar-brand {
+  animation: navItemIn 0.45s ease both;
+}
+
+.sidebar-brand .es-logo-mark,
+.sidebar-brand img {
+  animation: logoBreathe 3.8s ease-in-out infinite;
+}
+
+@keyframes logoBreathe {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(52, 211, 153, 0)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.35)); transform: scale(1.04); }
+}
+
+.dash .class-switch-card {
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.dash .class-switch-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(52, 211, 153, 0.28) !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+.dash .sidebar .nav-item {
+  position: relative;
+  overflow: hidden;
+  animation: navItemIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.05s + var(--nav-i, 0) * 0.045s);
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+@keyframes navItemIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.dash .sidebar .nav-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 20%;
+  bottom: 20%;
+  width: 2px;
+  border-radius: 99px;
+  background: #34d399;
+  transform: scaleY(0);
+  transition: transform 0.22s ease;
+}
+
+.dash .sidebar .nav-item:hover {
+  transform: translateX(2px);
+}
+
+.dash .sidebar .nav-item:hover svg {
+  transform: translateY(-1px) rotate(-8deg);
+  transition: transform 0.22s ease, opacity 0.18s ease;
+}
+
+.dash .sidebar .nav-item.is-active::before {
+  transform: scaleY(1);
+}
+
+.dash .sidebar-foot .user-chip {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.dash .sidebar-foot .user-chip:hover {
+  transform: translateY(-1px);
+  border-color: rgba(52, 211, 153, 0.28);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .sidebar-brand,
+  .sidebar-brand .es-logo-mark,
+  .sidebar-brand img,
+  .dash .sidebar .nav-item,
+  .sidebar::after {
+    animation: none !important;
+  }
+  .dash .sidebar .nav-item:hover,
+  .dash .class-switch-card:hover,
+  .dash .sidebar-foot .user-chip:hover {
+    transform: none;
+  }
+}
+
 .dash .sidebar-foot {
   margin-top: auto;
   padding-top: 0;
@@ -2398,7 +2529,7 @@ html.is-telegram-miniapp .noise {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  overflow: auto;
+  overflow: hidden;
   min-height: 100vh;
   padding: 32px 20px;
   display: flex;
@@ -2417,23 +2548,44 @@ html.is-telegram-miniapp .noise {
   -webkit-backdrop-filter: blur(8px) !important;
 }
 
-.gen-loading-bg,
-.gen-particles,
-.gen-forge {
-  display: none !important;
+.gen-loading-bg {
+  position: absolute;
+  inset: -25%;
+  z-index: 0;
+  background:
+    radial-gradient(46% 40% at 50% 26%, rgba(var(--gen-accent-rgb), 0.16), transparent 68%),
+    radial-gradient(34% 34% at 76% 72%, rgba(16, 185, 129, 0.08), transparent 62%),
+    radial-gradient(30% 30% at 20% 78%, rgba(148, 163, 184, 0.06), transparent 60%);
+  filter: blur(38px);
+  animation: genAura 7s ease-in-out infinite alternate;
+  transition: background 0.9s var(--ease);
 }
 
-.gen-loading-panel {
+.gen-loading-copy {
+  position: relative;
+  z-index: 2;
   width: min(28rem, 92vw);
-  padding: 2rem;
-}
-
-.gen-loading-panel,
-.pdf-export-panel {
+  padding: 1.25rem 1.5rem 1.4rem;
+  text-align: center;
   background: #1e293b !important;
   border: 1px solid #334155 !important;
   border-radius: 16px !important;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+
+.gen-loading .gen-forge,
+.pdf-export-overlay .gen-forge {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  margin: 0 0 8px;
+}
+
+.gen-loading[data-step="1"],
+.gen-loading[data-step="2"],
+.gen-loading[data-step="3"] {
+  --gen-accent: #34d399;
+  --gen-accent-rgb: 52, 211, 153;
 }
 
 .gen-loading-title,
@@ -2578,19 +2730,11 @@ html.is-telegram-miniapp .noise {
   color: #94a3b8;
 }
 
-.gen-loading[data-step="1"] {
+.gen-loading[data-step="1"],
+.gen-loading[data-step="2"],
+.gen-loading[data-step="3"] {
   --gen-accent: #34d399;
   --gen-accent-rgb: 52, 211, 153;
-}
-
-.gen-loading[data-step="2"] {
-  --gen-accent: #818cf8;
-  --gen-accent-rgb: 129, 140, 248;
-}
-
-.gen-loading[data-step="3"] {
-  --gen-accent: #22d3ee;
-  --gen-accent-rgb: 34, 211, 238;
 }
 
 @keyframes genCardIn {
@@ -2599,18 +2743,9 @@ html.is-telegram-miniapp .noise {
 }
 
 /* Мягкий ambient light вместо жёсткого пятна */
-.gen-loading-bg {
-  display: none !important;
-  position: absolute;
-  inset: -25%;
-  z-index: 0;
-  background:
-    radial-gradient(46% 40% at 50% 26%, rgba(var(--gen-accent-rgb), 0.16), transparent 68%),
-    radial-gradient(34% 34% at 76% 72%, rgba(129, 140, 248, 0.09), transparent 62%),
-    radial-gradient(30% 30% at 20% 78%, rgba(94, 234, 212, 0.06), transparent 60%);
-  filter: blur(38px);
-  animation: genAura 7s ease-in-out infinite alternate;
-  transition: background 0.9s var(--ease);
+.gen-loading .gen-loading-bg,
+.pdf-export-overlay .gen-loading-bg {
+  display: block;
 }
 
 @keyframes genAura {
@@ -2833,6 +2968,49 @@ html.is-telegram-miniapp .noise {
     rgba(255, 255, 255, 0.55) 50%,
     transparent 62%
   );
+}
+
+.gen-forge.is-pdf .gen-forge-card {
+  background: linear-gradient(155deg, #f8fafc, #e2e8f0);
+  border-color: rgba(148, 163, 184, 0.55);
+}
+
+.gen-forge.is-pdf .gen-forge-card i {
+  background: rgba(15, 23, 42, 0.16);
+}
+
+.gen-forge.is-pdf .gen-forge-card-tag {
+  background: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.45);
+}
+
+.gen-forge.is-pdf .gen-forge-scene::before {
+  content: "";
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  top: 12%;
+  height: 2px;
+  z-index: 6;
+  border-radius: 99px;
+  background: linear-gradient(90deg, transparent, #34d399, transparent);
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.7);
+  animation: pdfScan 2.1s ease-in-out infinite;
+}
+
+@keyframes pdfScan {
+  0% { top: 14%; opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { top: 78%; opacity: 0; }
+}
+
+.pdf-export-overlay {
+  --gen-accent: #34d399;
+  --gen-accent-rgb: 52, 211, 153;
+  isolation: isolate;
+  overflow: hidden;
+  gap: 4px;
 }
 
 /* Шаг «Сшиваем часть 2»: страницы входят друг в друга и подсвечиваются в такт */

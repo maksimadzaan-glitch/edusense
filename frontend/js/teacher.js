@@ -2968,10 +2968,12 @@ function showPdfExportOverlay() {
   el.setAttribute("aria-modal", "true");
   el.setAttribute("aria-label", "Генерация PDF");
   el.innerHTML = `
-    <div class="pdf-export-panel">
-      <div class="pdf-export-spinner" aria-hidden="true"></div>
-      <p class="pdf-export-title">Готовим PDF</p>
-      <p class="pdf-export-sub">Верстка A4 и чертежи</p>
+    <div class="gen-loading-bg"></div>
+    ${forgeParticlesHtml()}
+    ${forgeSceneHtml("pdf")}
+    <div class="pdf-export-panel gen-loading-copy">
+      <p class="pdf-export-title">Собираем PDF</p>
+      <p class="pdf-export-sub">Верстка A4, тексты и чертежи</p>
     </div>
   `;
   document.body.appendChild(el);
@@ -4013,14 +4015,35 @@ function genForgeCardsHtml(n = 5) {
     .join("");
 }
 
+function forgeParticlesHtml() {
+  return `<div class="gen-particles" aria-hidden="true">${"<i></i>".repeat(8)}</div>`;
+}
+
+function forgeSceneHtml(kind = "kim") {
+  const pdf = kind === "pdf";
+  return `
+    <div class="gen-forge${pdf ? " is-pdf" : ""}" aria-hidden="true">
+      <div class="gen-forge-ambient"></div>
+      <div class="gen-forge-scene">
+        <span class="gen-forge-shadow"></span>
+        <span class="gen-forge-ring gen-forge-ring-a"></span>
+        <span class="gen-forge-ring gen-forge-ring-b"></span>
+        <div class="gen-forge-deck">${genForgeCardsHtml(pdf ? 4 : 5)}</div>
+        <div class="gen-forge-core"><em></em></div>
+      </div>
+    </div>`;
+}
+
 function renderGeneratingStage() {
   const subject = state.classroom?.subject || "предмету";
   const exam = examLabel(state.classroom?.exam_type || "oge");
   const steps = ["Кодификатор", "Тексты", "Чертежи", "Готово"];
   return `
     <div class="gen-loading" id="gen-loading" data-step="0" aria-live="polite" aria-busy="true">
-      <div class="gen-loading-panel">
-        <div class="gen-loading-spinner" aria-hidden="true"></div>
+      <div class="gen-loading-bg"></div>
+      ${forgeParticlesHtml()}
+      ${forgeSceneHtml("kim")}
+      <div class="gen-loading-copy">
         <p class="gen-loading-kicker">КИМ · ${escapeHtml(exam)}</p>
         <h2 class="gen-loading-title">Собираем вариант</h2>
         <p class="gen-loading-sub">${escapeHtml(subject)} · ${generatorRequestCount()} заданий</p>
@@ -7716,12 +7739,13 @@ function renderDashboard() {
         </div>
 
         <nav class="nav-list" aria-label="Меню учителя">
-          ${NAV.map((item) => {
+          ${NAV.map((item, idx) => {
             const hook = item.action
               ? `data-nav-action="${item.action}"`
               : `data-tab="${item.id}"`;
             return `
             <button type="button" class="nav-item ${state.tab === item.id ? "is-active" : ""}"
+              style="--nav-i:${idx}"
               ${hook} data-tour="nav-${item.id}">
               ${icon(item.icon)}
               <span class="nav-item-label">${item.label}</span>
@@ -7821,7 +7845,7 @@ function startGenStepsCycle() {
     "Подгоняем чертежи и ключи…",
     "Вариант почти готов…",
   ];
-  const stitchIndex = -1;
+  const stitchIndex = 2;
 
   const paint = (i) => {
     items.forEach((el, idx) => {
@@ -7862,6 +7886,16 @@ function enhanceEffects() {
       el.style.setProperty("--my", `${((e.clientY - r.top) / r.height) * 100}%`);
     });
   });
+
+  const sidebar = document.getElementById("app-sidebar");
+  if (sidebar && !sidebar.dataset.spotBound) {
+    sidebar.dataset.spotBound = "1";
+    sidebar.addEventListener("pointermove", (e) => {
+      const r = sidebar.getBoundingClientRect();
+      sidebar.style.setProperty("--spot-x", `${((e.clientX - r.left) / r.width) * 100}%`);
+      sidebar.style.setProperty("--spot-y", `${((e.clientY - r.top) / r.height) * 100}%`);
+    });
+  }
 
   document.querySelectorAll(".num[data-count]").forEach((el) => {
     const target = Number(el.getAttribute("data-count") || 0);
